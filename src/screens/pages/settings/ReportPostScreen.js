@@ -1,0 +1,107 @@
+import { View, ScrollView, TouchableOpacity, Image } from "react-native";
+import React, { useState } from "react";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useNavigation } from "@react-navigation/native";
+import styles from "./Styles";
+import { IMAGES, SVG_IMAGES } from "../../../constants/images";
+import TextComponent from "../../../components/TextComponent";
+import { COLORS } from "../../../constants/colors";
+import { FONTS } from "../../../constants/fonts";
+import CustomHeader from "../../../components/CustomHeader";
+import BtnPrimary from "../../../components/BtnPrimary";
+import { SCREENS } from "../../../constants/Screen";
+import CustomTextInput from "../../../components/CustomTextInput";
+const ReportUserScreen = () => {
+  const insets = useSafeAreaInsets();
+  const navigation = useNavigation();
+  const [blockedUsers, setBlockedUsers] = useState(false);
+  const toggleBlockedUser = (user) => {
+    setBlockedUsers(!blockedUsers);
+  };
+  return (
+    <View
+      style={[
+        styles.safeArea,
+        {
+          paddingTop: insets.top,
+        },
+      ]}
+    >
+      <CustomHeader title={"Report post"} opacity={0} />
+      <ScrollView
+        contentContainerStyle={styles.scrollViewContent}
+        keyboardShouldPersistTaps="handled"
+      >
+        <View style={[styles.wrapper]}>
+          <TextComponent
+            fontFamily={FONTS.Samsungsharpsans_Bold}
+            title={
+              blockedUsers
+                ? "This post has been successfully reported."
+                : "Please describe why you are reporting this post?"
+            }
+            fontSize={30}
+            marginBottom={15}
+            color={COLORS.primary}
+          />
+          <TextComponent
+            fontFamily={FONTS.Samsungsharpsans_Medium}
+            title={
+              blockedUsers
+                ? "This post has been reported to our team, we take reporting very seriously and will remove posts and ban users if necessary."
+                : "After you report this post, our team will review it and take any necessary action."
+            }
+            fontSize={14}
+            color={COLORS.primary}
+            marginBottom={20}
+          />
+          {blockedUsers ? null : (
+            <>
+              <CustomTextInput
+                isMultiline={true}
+                numberOfLines={5}
+                input={{
+                  height: 140,
+                  marginBottom: 0,
+                  backgroundColor: "#EAE9E8",
+                }}
+                inputBox={{
+                  backgroundColor: "#EAE9E8",
+                  height: 160,
+                }}
+                placeholderText={"Reason for report..."}
+              />
+            </>
+          )}
+        </View>
+      </ScrollView>
+      <View style={[styles.footBtns]}>
+        {blockedUsers ? (
+          <BtnPrimary
+            onPress={() =>
+              navigation.navigate(SCREENS.NavigationRoutes, {
+                screen: SCREENS.ProfileDetails,
+              })
+            }
+            marginBottom={15}
+            title={"Return"}
+            style={{
+              marginTop: "auto",
+            }}
+          />
+        ) : (
+          <BtnPrimary
+            onPress={toggleBlockedUser}
+            marginBottom={15}
+            title={"Block"}
+            style={{
+              marginTop: "auto",
+            }}
+          />
+        )}
+      </View>
+    </View>
+  );
+};
+
+export default ReportUserScreen;
