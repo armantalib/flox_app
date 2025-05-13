@@ -49,9 +49,9 @@ const StepTwoScreen = () => {
     // Trigger medium haptic feedback
     ReactNativeHapticFeedback.trigger("impactMedium", hapticOptions);
 
-    // Navigate to StepThree
-    navigation.navigate(SCREENS.AuthRoutes, {
-      screen: SCREENS.StepThree,
+   // Navigate to the home screen
+    navigation.navigate(SCREENS.TabRoutes, {
+      screen: SCREENS.TabHome,
     });
   };
 

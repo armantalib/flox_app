@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   Text,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { styles } from "../Styles";
 import GradientBackground from "../../../components/GradientBackground";
 import { commonStyle } from "../../../constants/style";
@@ -20,10 +20,17 @@ import { verticalScale } from "react-native-size-matters";
 import { SVG_IMAGES } from "../../../constants/images";
 import { SCREENS } from "../../../constants/Screen";
 import ReactNativeHapticFeedback from "react-native-haptic-feedback"; // Import haptic feedback
+import { PickerBottomSheet } from "../../../components/BottomSheets/PickerBottomSheet";
+import PickerItem from "../../../components/BottomSheets/PickerItem";
+import { custom_data } from "../../../constants";
 
-const StepThreeScreen = () => {
+const StepThreeScreen = (props) => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
+  const refGender = useRef();
+  const refAge = useRef();
+  const refCountry = useRef();
+  const [state, setState] = useState({ gender: '', age: '', country: '' })
 
   // Haptic feedback options
   const hapticOptions = {
@@ -92,8 +99,10 @@ const StepThreeScreen = () => {
                 <Text style={[styles.optionText, styles.optionText1]}>
                   Select your gender
                 </Text>
-                <TouchableOpacity style={styles.dropbutton}>
-                  <Text style={styles.text}>Select</Text>
+                <TouchableOpacity 
+                onPress={()=>refGender.current.open()}
+                style={styles.dropbutton}>
+                  <Text style={styles.text}>{state.gender?state.gender:'Select'}</Text>
                   <SVG_IMAGES.DownArrow_SVG />
                 </TouchableOpacity>
               </View>
@@ -152,6 +161,25 @@ const StepThreeScreen = () => {
           />
         </View>
       </View>
+
+      <PickerBottomSheet
+        {...props}
+        refRBSheet={refGender}
+        heightLen={0.4}
+        headerText='Select Gender'
+        closeSheet={() => refGender.current.close()}
+      >
+        {custom_data.gender_data.map((item, index) => (
+          <PickerItem
+            text={item.name}
+            onPress={() => {
+              setState(prevState => ({ ...prevState, gender: item.name }))
+              refGender.current.close()
+            }}
+          />
+        ))}
+
+      </PickerBottomSheet>
     </KeyboardAvoidingView>
   );
 };

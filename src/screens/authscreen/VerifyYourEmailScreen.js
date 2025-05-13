@@ -6,7 +6,7 @@ import {
   Text,
   TouchableOpacity,
 } from "react-native";
-import React from "react";
+import React, { useMemo, useState } from "react";
 import { styles } from "./Styles";
 import GradientBackground from "../../components/GradientBackground";
 import { commonStyle } from "../../constants/style";
@@ -23,12 +23,15 @@ import { SCREENS } from "../../constants/Screen";
 import VerifyIcon from "../../components/svgcomponent/VerifyIcon";
 import { useKeyboard } from "../../providers/KeyboardOpenProvider";
 import ReactNativeHapticFeedback from "react-native-haptic-feedback"; // Import haptic feedback
+import { dataPost } from "../../utils/myAxios";
 
-const VerifyYourEmailScreen = () => {
+const VerifyYourEmailScreen = (props) => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
   const { isKeyboardVisible } = useKeyboard();
-
+  const [input, setInput] = useState({ code: '' });
+  const {pData} = props.route.params;
+  const [sendedCode, setSendedCode] = useState(pData?.emailCode);
   // Haptic feedback options
   const hapticOptions = {
     enableVibrateFallback: true, // Fallback to vibration if haptic feedback is not supported
@@ -42,9 +45,27 @@ const VerifyYourEmailScreen = () => {
     // Navigate to the CreateYourPassword screen
     navigation.navigate(SCREENS.AuthRoutes, {
       screen: SCREENS.CreateYourPassword,
+      params: {
+        pData:pData
+      },
     });
   };
 
+  const sendNewCode = async () => {
+    let data = {
+      email: pData?.email,
+    }
+    const endPoint = 'users/send-code';
+    const response = await dataPost(endPoint, data);
+    if (response?.success) {
+      setSendedCode(response?.code)
+    }
+  }
+  const isCheckValidation = useMemo(() => {
+    return (
+      input.code?.trim() == sendedCode
+    );
+  }, [input]);
   return (
     <KeyboardAvoidingView
       style={commonStyle.safeArea}
@@ -81,19 +102,24 @@ const VerifyYourEmailScreen = () => {
               color={COLORS.primary}
               fontSize={14}
               marginBottom={15}
-              title="Please enter the six digit verification code sent to your email, make sure to check your spam too."
+              title="Please enter the four digit verification code sent to your email, make sure to check your spam too."
               fontFamily={FONTS.Samsungsharpsans_Medium}
             />
 
             {/* Email Input */}
             <CustomTextInput
-              placeholderText={"X X X X X X"}
-              rightIcon={() => <VerifyIcon />}
+              placeholderText={"X X X X"}
+              rightIcon={() => <VerifyIcon color={sendedCode==input.code?COLORS.success: '#2C2C2C'} />}
+              value={input.code}
+              maxLength={4}
+              keyboardType={'number-pad'}
+              onChangeText={(val) => setInput(prevState => ({ ...prevState, code: val }))}
             />
 
             {/* Resend Code */}
             <TouchableOpacity
               onPress={() => {
+                sendNewCode()
                 // Add your resend code logic here
               }}
             >
@@ -108,6 +134,7 @@ const VerifyYourEmailScreen = () => {
           {/* Button */}
           <BtnPrimary
             marginBottom={10}
+            isDisable={!isCheckValidation}
             onPress={handleNextPress} // Use the haptic feedback handler
             title="Next"
           />

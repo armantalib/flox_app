@@ -19,6 +19,8 @@ const CustomTextInput = ({
   isMultiline = false,
   numberOfLines = 1,
   onFocus, // Added onFocus as a prop
+  maxLength,
+  secureTextEntry
 }) => {
   const [isFocused, setFocused] = useState(false);
 
@@ -34,6 +36,7 @@ const CustomTextInput = ({
           value={value}
           onSubmitEditing={onSubmitEditing}
           onChangeText={onChangeText}
+          maxLength={maxLength}
           onFocus={() => {
             if (onFocus) onFocus(); // Call the onFocus prop if provided
             setFocused(true);
@@ -43,6 +46,7 @@ const CustomTextInput = ({
           editable={editable && !disabled}
           multiline={isMultiline}
           numberOfLines={numberOfLines}
+          secureTextEntry={secureTextEntry}
         />
         {rightIcon && <View style={styles.iconContainer}>{rightIcon()}</View>}
       </View>

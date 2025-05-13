@@ -10,6 +10,10 @@ export const COLORS = {
   border: "#EAEAEA",
   green: "#89DD87",
   lemon: "#87A1DD",
+  disable: "#F8F8F8",
+  disableFont: "#8A8A8A",
+  success: "#28a745",
+  danger: "#dc3545",
 };
 
 const appTheme = { COLORS };

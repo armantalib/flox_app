@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   Platform,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { styles } from "./Styles";
 import GradientBackground from "../../components/GradientBackground";
 import { commonStyle } from "../../constants/style";
@@ -22,11 +22,17 @@ import { useNavigation } from "@react-navigation/native";
 import { SCREENS } from "../../constants/Screen";
 import { useKeyboard } from "../../providers/KeyboardOpenProvider";
 import ReactNativeHapticFeedback from "react-native-haptic-feedback"; // Import haptic feedback
+import { validateEmail } from "../../utils/Regex";
+import { dataPost } from "../../utils/myAxios";
+import stylesG from "../../assets/css/stylesG";
+import { normalize } from "../../utils/Metrics";
 
-const CreateYourAccountScreen = () => {
+const CreateYourAccountScreen = (props) => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
   const { isKeyboardVisible } = useKeyboard();
+  const [loader, setLoader] = useState(false)
+  const [input, setInput] = useState({ email: '', username: '' });
 
   // Haptic feedback options
   const hapticOptions = {
@@ -37,12 +43,46 @@ const CreateYourAccountScreen = () => {
   const handleNextPress = () => {
     // Trigger medium haptic feedback
     ReactNativeHapticFeedback.trigger("impactMedium", hapticOptions);
-
-    // Navigate to the VerifyYourEmail screen
-    navigation.navigate(SCREENS.AuthRoutes, {
-      screen: SCREENS.VerifyYourEmail,
-    });
+    sendCodeToEmail()
   };
+
+  const sendCodeToEmail = async () => {
+    setLoader(true)
+    let data = {
+      email: input?.email?.toLocaleLowerCase().trim(),
+    }
+    const endPoint = 'users/send-code';
+    const response = await dataPost(endPoint, data);
+    setLoader(false)
+    if (response?.success) {
+      console.log("Sign Up Code", response?.code);
+      // Navigate to the VerifyYourEmail screen
+      navigation.navigate(SCREENS.AuthRoutes, {
+        screen: SCREENS.VerifyYourEmail,
+        params: {
+          pData: {
+            ...input,
+            emailCode: response?.code
+          }
+        },
+      });
+    }
+  }
+
+  const isCheckValidation = useMemo(() => {
+    let checkEmail = validateEmail(input.email)
+    return (
+      input.username?.trim() &&
+      input.email?.trim() &&
+      !(/\s/.test(input.username)) &&
+      checkEmail
+    );
+  }, [input]);
+  const checkSpaceUsername = useMemo(() => {
+    return (
+      /\s/.test(input.username)
+    );
+  }, [input]);
 
   return (
     <KeyboardAvoidingView
@@ -85,15 +125,22 @@ const CreateYourAccountScreen = () => {
             />
 
             {/* Email Input */}
+            {checkSpaceUsername && (input.username?.length ?? 0) > 0 ?
+              <Text style={[stylesG.fontBold, { color: COLORS.danger, marginBottom: normalize(5) }]}>Space not allowed in username</Text> : null}
+            {/* Password Input */}
             <CustomTextInput
               placeholderText={"Username"}
               rightIcon={() => <SVG_IMAGES.User_SVG />}
+              value={input.username}
+              onChangeText={(val) => setInput(prevState => ({ ...prevState, username: val }))}
             />
-
-            {/* Password Input */}
+            {!validateEmail(input.email) && (input.email?.length ?? 0) > 0 ?
+              <Text style={[stylesG.fontBold, { color: COLORS.danger, marginBottom: normalize(5) }]}>Please enter valid email</Text> : null}
             <CustomTextInput
-              placeholderText={"Password"}
-              rightIcon={() => <SVG_IMAGES.Password_SVG />}
+              placeholderText={"Email"}
+              rightIcon={() => <SVG_IMAGES.Email_SVG />}
+              value={input.email}
+              onChangeText={(val) => setInput(prevState => ({ ...prevState, email: val }))}
             />
 
             {/* Forgot Password */}
@@ -115,7 +162,9 @@ const CreateYourAccountScreen = () => {
           {/* Button */}
           <BtnPrimary
             onPress={handleNextPress} // Use the haptic feedback handler
+            isDisable={!isCheckValidation}
             marginBottom={10}
+            loader={loader}
             title="Next"
           />
         </View>

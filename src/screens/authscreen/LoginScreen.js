@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   Platform,
 } from "react-native";
-import React from "react";
+import React, { useMemo, useState } from "react";
 import { styles } from "./Styles";
 import GradientBackground from "../../components/GradientBackground";
 import { commonStyle } from "../../constants/style";
@@ -22,11 +22,20 @@ import { useNavigation } from "@react-navigation/native";
 import { SCREENS } from "../../constants/Screen";
 import { useKeyboard } from "../../providers/KeyboardOpenProvider";
 import ReactNativeHapticFeedback from "react-native-haptic-feedback"; // Import haptic feedback
+import { validateEmail } from "../../utils/Regex";
+import { useDispatch } from "react-redux";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { dataPost } from "../../utils/myAxios";
+import { storeData } from "../../utils/async_storage";
+import { setUser } from "../../storeTolkit/userSlice";
 
 const LoginScreen = () => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
   const { isKeyboardVisible } = useKeyboard();
+  const [input, setInput] = useState({ email: 'marmantalib@gmail.com', password: '123456' });
+  const [loader, setLoader] = useState(false)
+  const dispatch = useDispatch();
 
   // Haptic feedback options
   const hapticOptions = {
@@ -38,11 +47,40 @@ const LoginScreen = () => {
     // Trigger medium haptic feedback
     ReactNativeHapticFeedback.trigger("impactMedium", hapticOptions);
 
-    // Navigate to the home screen
-    navigation.navigate(SCREENS.TabRoutes, {
-      screen: SCREENS.TabHome,
-    });
+    loginUser();
   };
+
+  const loginUser = async () => {
+    const fcmToken = await AsyncStorage.getItem('fcmToken');
+    setLoader(true)
+    let data = {
+      email: input?.email,
+      password: input?.password,
+      fcmtoken: fcmToken ? fcmToken : '',
+    }
+    const endPoint = 'auth';
+    const response = await dataPost(endPoint, data);
+    setLoader(false)
+    if (response?.success) {
+      await storeData('token', response?.token)
+      await storeData('user_role', response?.user?.type);
+      await storeData('user_data', response?.user);
+      dispatch(setUser(response?.user));
+      // Navigate to the home screen
+      navigation.navigate(SCREENS.TabRoutes, {
+        screen: SCREENS.TabHome,
+      });
+    }
+  }
+
+  const isCheckValidation = useMemo(() => {
+    let checkEmail = validateEmail(input.email)
+    return (
+      input.password?.trim() &&
+      input.email?.trim() &&
+      checkEmail
+    );
+  }, [input]);
 
   return (
     <KeyboardAvoidingView
@@ -95,12 +133,17 @@ const LoginScreen = () => {
               placeholderText={"Email"}
               keyboardType={"email-address"}
               rightIcon={() => <SVG_IMAGES.Email_SVG />}
+              value={input.email}
+              onChangeText={(val) => setInput(prevState => ({ ...prevState, email: val }))}
             />
 
             {/* Password Input */}
             <CustomTextInput
               placeholderText={"Password"}
               rightIcon={() => <SVG_IMAGES.Password_SVG />}
+              secureTextEntry={true}
+              value={input.password}
+              onChangeText={(val) => setInput(prevState => ({ ...prevState, password: val }))}
             />
 
             {/* Forgot Password */}
@@ -121,8 +164,10 @@ const LoginScreen = () => {
           {/* Button */}
           <BtnPrimary
             onPress={handleNextPress} // Use the haptic feedback handler
+            loader={loader}
+            isDisable={!isCheckValidation}
             marginBottom={10}
-            title="Next"
+            title="Login"
           />
         </View>
       </ScrollView>

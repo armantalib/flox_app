@@ -19,16 +19,23 @@ import { useNavigation } from "@react-navigation/native";
 import { SCREENS } from "../../../constants/Screen";
 import { SVG_IMAGES } from "../../../constants/images";
 import ReactNativeHapticFeedback from "react-native-haptic-feedback"; // Import haptic feedback
+import { dataPost } from "../../../utils/myAxios";
+import { storeData } from "../../../utils/async_storage";
+import { setUser } from "../../../storeTolkit/userSlice";
+import { useDispatch } from "react-redux";
 
-const StepOneScreen = () => {
+const StepOneScreen = (props) => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
+  const dispatch = useDispatch();
   const options = [
-    { id: 1, text: `Yes, I have personally\nconsumed an FQ myself` },
-    { id: 2, text: `No, a loved one or\nsomeone I know has` },
+    { id: 1, text: `Yes, I have personally\nconsumed an FQ myself`, value: true },
+    { id: 2, text: `No, a loved one or\nsomeone I know has`, value: false },
   ];
   const [selectedOption, setSelectedOption] = useState(1);
-
+  const [affected, setAffected] = useState(true);
+  const [loader, setLoader] = useState(false);
+  const { pData } = props.route.params;
   // Haptic feedback options
   const hapticOptions = {
     enableVibrateFallback: true,
@@ -38,12 +45,38 @@ const StepOneScreen = () => {
   const handleNextPress = () => {
     // Trigger medium haptic feedback
     ReactNativeHapticFeedback.trigger("impactMedium", hapticOptions);
-
-    // Navigate to StepTwo
-    navigation.navigate(SCREENS.AuthRoutes, {
-      screen: SCREENS.StepTwo,
-    });
+    registerUser();
   };
+
+  const registerUser = async () => {
+    setLoader(true)
+    let data = {
+      email: pData?.email.toLocaleLowerCase().trim(),
+      username: pData?.username,
+      password: pData?.password,
+      fq_antibiotic:affected,
+      image: '',
+      fcmtoken: ''
+    }
+    const endPoint = 'users/signup/member';
+    const response = await dataPost(endPoint, data);
+    setLoader(false)
+    if (response?.success) {
+      await storeData('token', response?.token)
+      await storeData('user_role', response?.user?.type);
+      await storeData('user_data', response?.user);
+      dispatch(setUser(response?.user));
+      if(affected){
+        navigation.navigate(SCREENS.AuthRoutes, {
+          screen: SCREENS.StepThree,
+        });
+      }else{
+        navigation.navigate(SCREENS.AuthRoutes, {
+          screen: SCREENS.StepTwo,
+        });
+      }
+    }
+  }
 
   return (
     <KeyboardAvoidingView
@@ -86,7 +119,10 @@ const StepOneScreen = () => {
                     selectedOption === option.id ? styles.selectedOption : {},
                     index === 0 ? styles.topOption : styles.bottomOption,
                   ]}
-                  onPress={() => setSelectedOption(option.id)}
+                  onPress={() => {
+                    setSelectedOption(option.id)
+                    setAffected(option.value)
+                  }}
                 >
                   <Text style={styles.optionText}>{option.text}</Text>
                   <View style={styles.iconContainer}>
@@ -112,6 +148,7 @@ const StepOneScreen = () => {
           {/* Button with Haptic Feedback */}
           <BtnPrimary
             onPress={handleNextPress}
+            loader={loader}
             marginBottom={10}
             title="Next"
           />

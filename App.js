@@ -5,10 +5,12 @@ import { StyleSheet, LogBox } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import MainStackNavigator from "./src/navigations/StackNavigator";
 import StatusBarWhite from "./src/components/StatusBarWhite";
-import { GestureHandlerRootView } from "react-native-gesture-handler"; 
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { KeyboardProvider } from "./src/providers/KeyboardOpenProvider";
 
 import { Text, TextInput } from 'react-native';
+import { Provider } from 'react-redux';
+import store from './src/storeTolkit/store';
 
 if (Text.defaultProps == null) Text.defaultProps = {};
 if (TextInput.defaultProps == null) TextInput.defaultProps = {};
@@ -25,17 +27,19 @@ LogBox.ignoreLogs([
 
 const App = () => {
   return (
-    <NavigationContainer independent="true">
-      <KeyboardProvider>
-        <StatusBarWhite />
-        {/* <SafeAreaProvider> */}
-        <GestureHandlerRootView>
-          <MainStackNavigator />
-          {/* <UploadPhotos /> */}
-        </GestureHandlerRootView>
-      </KeyboardProvider>
-      {/* </SafeAreaProvider> */}
-    </NavigationContainer>
+    <Provider store={store}>
+      <NavigationContainer independent="true">
+        <KeyboardProvider>
+          <StatusBarWhite />
+          {/* <SafeAreaProvider> */}
+          <GestureHandlerRootView>
+            <MainStackNavigator />
+            {/* <UploadPhotos /> */}
+          </GestureHandlerRootView>
+        </KeyboardProvider>
+        {/* </SafeAreaProvider> */}
+      </NavigationContainer>
+    </Provider>
   );
 };
 

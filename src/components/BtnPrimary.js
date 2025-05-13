@@ -1,5 +1,5 @@
 import React from "react";
-import { TouchableOpacity, Text, StyleSheet } from "react-native";
+import { TouchableOpacity, Text, StyleSheet, ActivityIndicator } from "react-native";
 import { FONTS } from "../constants/fonts";
 import { COLORS } from "../constants/colors";
 import { moderateScale, scale, verticalScale } from "react-native-size-matters";
@@ -12,14 +12,26 @@ const BtnPrimary = ({
   style = {},
   marginBottom = 0,
   userIcon = false,
+  isDisable,
+  loader
 }) => {
   return (
     <TouchableOpacity
       onPress={onPress}
-      style={[styles.btn, style, { marginBottom }]}
+      disabled={loader ? true : isDisable}
+      style={[styles.btn, style, { marginBottom,backgroundColor:isDisable?COLORS.disable:COLORS.black }]}
     >
-      {userIcon && <SVG_IMAGES.Whiteuser_SVG />}
-      <Text style={[styles.btntext, btnText]}>{title}</Text>
+      {loader ?
+        <ActivityIndicator
+          color={COLORS.white}
+          size={'large'}
+        />
+        :
+        <>
+          {userIcon && <SVG_IMAGES.Whiteuser_SVG />}
+          <Text style={[styles.btntext, btnText,{color:isDisable?COLORS.disableFont:COLORS.white}]}>{title}</Text>
+        </>
+      }
     </TouchableOpacity>
   );
 };

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import GradientBackground from "../../components/GradientBackground";
@@ -18,6 +18,8 @@ import SocialCardComponent from "../../components/SocialCardComponent";
 import { SCREENS } from "../../constants/Screen";
 import { normalize } from "../../utils/Metrics";
 import ResourcesCardComp from "../../components/ResourcesCardComp";
+import { useSelector } from "react-redux";
+import { dataGet_ } from "../../utils/myAxios";
 
 const data = [
   {
@@ -42,6 +44,27 @@ const data = [
 const TabHomeScreen = () => {
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
+  const user = useSelector((state) => state?.user?.user);
+
+  useEffect(() => {
+    if (user?.fq_antibiotic) {
+      checkAntibiotic();
+    }
+  }, [])
+
+  const checkAntibiotic = async () => {
+    const endPoint = 'antibiotic/check';
+    const response = await dataGet_(endPoint, {});
+    if (!response.success) {
+      // Navigate to StepFour
+      navigation.navigate(SCREENS.AuthRoutes, {
+        screen: SCREENS.StepThree,
+      });
+    }
+  }
+
+
+
   return (
     <View style={[tabStyle.safeArea]}>
       <GradientBackground />
