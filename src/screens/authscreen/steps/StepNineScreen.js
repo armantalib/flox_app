@@ -19,6 +19,8 @@ import BackBtn from '../../../components/BackBtn';
 import { useNavigation } from '@react-navigation/native';
 import { SCREENS } from '../../../constants/Screen';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback'; // Importing haptic feedback
+import { normalize } from '../../../utils/Metrics';
+import { dataPost } from '../../../utils/myAxios';
 
 const tribes = [
   {
@@ -27,10 +29,30 @@ const tribes = [
   },
 ];
 
-const StepNineScreen = () => {
+const StepNineScreen = (props) => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
   const scrollY = useRef(new Animated.Value(0)).current;
+  const [loader, setLoader] = useState(false)
+  const { pData } = props.route.params
+
+  const submitData = async () => {
+    setLoader(true)
+    let data2 = {...pData}
+    const endPoint = 'antibiotic/create';
+    const response = await dataPost(endPoint, data2);
+    setLoader(false)
+    if (response?.success) {
+      // navigation.navigate(SCREENS.AuthRoutes, {
+      //   screen: SCREENS.StepTen,
+      // });
+      navigation.navigate(SCREENS.TabRoutes, {
+        screen: SCREENS.TabHome,
+      });
+    }
+  }
+
+
 
   const renderItem = ({ item }) => {
     return (
@@ -111,7 +133,7 @@ const StepNineScreen = () => {
                 <Animated.View
                   style={{
                     width: 4,
-                    height: 100, // Scroll thumb height
+                    height: normalize(340), // Scroll thumb height
                     backgroundColor: COLORS.primary,
                     borderRadius: 2,
                     transform: [
@@ -134,10 +156,10 @@ const StepNineScreen = () => {
             onPress={() => {
               // Trigger haptic feedback
               ReactNativeHapticFeedback.trigger('impactMedium');
-              navigation.navigate(SCREENS.AuthRoutes, {
-                screen: SCREENS.StepTen,
-              });
+              submitData()
+           
             }}
+            loader={loader}
             marginBottom={10}
             title="Next"
           />

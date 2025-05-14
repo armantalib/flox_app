@@ -18,6 +18,8 @@ import LinearGradient from "react-native-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
 import { SCREENS } from "../constants/Screen";
 import { BlurView } from "@react-native-community/blur";
+import CustomAvatar from "./BottomSheets/CustomAvatar";
+import { normalize } from "../utils/Metrics";
 
 const { width } = Dimensions.get("window");
 
@@ -53,10 +55,18 @@ const TabHeader = ({ style, image, title, name, chatcount, noticount }) => {
           })
         }
       >
-        <Image
+        <CustomAvatar
+          image={image}
+          width={navHeight - 10}
+          height={navHeight - 10}
+          fontSize={normalize(26)}
+          borderRadius={normalize(50)}
+          name={name}
+        />
+        {/* <Image
           source={image}
           style={styles.profileImage}
-        />
+        /> */}
         <View style={styles.textContainer}>
           <TextComponent
             color={COLORS.white}
@@ -85,7 +95,7 @@ const TabHeader = ({ style, image, title, name, chatcount, noticount }) => {
           })
         }
       >
-        <SVG_IMAGES.Notification_Bell_New_SVG  width={scale(26)} height={scale(26)} marginRight={5} />
+        <SVG_IMAGES.Notification_Bell_New_SVG width={scale(26)} height={scale(26)} marginRight={5} />
         <LinearGradient
           colors={["#3995FF", "#3995FF"]} // White to Black
           start={{ x: 0, y: 1 }} // Bottom
@@ -153,7 +163,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     flex: 1, // So it takes up the middle area between icons
-  },  
+  },
   textContainer: {
     flex: 1,
     marginLeft: 12,

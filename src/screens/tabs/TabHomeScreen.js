@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import GradientBackground from "../../components/GradientBackground";
@@ -45,6 +45,7 @@ const TabHomeScreen = () => {
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
   const user = useSelector((state) => state?.user?.user);
+  const [userJournal, setUserJournal] = useState(null)
 
   useEffect(() => {
     if (user?.fq_antibiotic) {
@@ -55,7 +56,10 @@ const TabHomeScreen = () => {
   const checkAntibiotic = async () => {
     const endPoint = 'antibiotic/check';
     const response = await dataGet_(endPoint, {});
- 
+    if (response.success) {
+      setUserJournal(response?.data)
+    }
+
   }
 
 
@@ -64,9 +68,9 @@ const TabHomeScreen = () => {
     <View style={[tabStyle.safeArea]}>
       <GradientBackground />
       <TabHeader
-        image={IMAGES.UserProfile_IMG}
+        image={user?.image}
         title={"Good morning"}
-        name={"Ben0790"}
+        name={user?.username}
         chatcount={14}
         noticount={6}
       />
@@ -97,7 +101,9 @@ const TabHomeScreen = () => {
             textAlign={"center"}
           />
           <View style={[tabStyle.tabContainer, { marginBottom: normalize(60) }]}>
-            <AnimatedDotSlider />
+            <AnimatedDotSlider
+              content={userJournal}
+            />
           </View>
           <SeeAllComponent
             title="Mindfulness"

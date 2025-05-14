@@ -39,7 +39,7 @@ const tribes = [
     name: "The Antiflox app is designed to empower the community by creating a space where people can connect, share information, and access recovery tools. This screen is specifically for those who have not personally taken fluoroquinolones but are here on behalf of a loved one or someone they know.\n\nWhile your responses won’t be included in the app’s real-time database of statistics, your input is still invaluable in supporting someone affected by fluoroquinolone-associated conditions. By participating, you help provide valuable insights and encouragement to those in need.",
   },
 ];
-const StepEightScreen = (props) => {
+const StepCountScreen = (props) => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
   const scrollY = useRef(new Animated.Value(0)).current;
@@ -62,30 +62,30 @@ const StepEightScreen = (props) => {
           consume_date: '', percent: ''
         })
       } else {
-        showToast("Drug already exist")
+        showToast("Step already exist")
       }
     } else {
       showToast("Please Select Dates since loxing and Percentage recovered")
     }
   }
 
-  const handleNextPress = () => {
-    // Trigger haptic feedback on button press
-    ReactNativeHapticFeedback.trigger("impactMedium");
-    let obkCont = { ...pData };
-    obkCont.recovery_history = drugData
-    // Navigate to the next screen
-    navigation.navigate(SCREENS.AuthRoutes, {
-      screen: SCREENS.StepCountScreen,
-      params: { pData: obkCont },
-    });
-  };
-
-  const isCheckValidation = useMemo(() => {
-    return (
-      (drugData.length ?? 0) >= 1
-    );
-  }, [drugData]);
+    const handleNextPress = () => {
+      // Trigger haptic feedback on button press
+      ReactNativeHapticFeedback.trigger("impactMedium");
+      let obkCont = { ...pData };
+      obkCont.count_history = drugData
+      // Navigate to the next screen
+      navigation.navigate(SCREENS.AuthRoutes, {
+        screen: SCREENS.StepNine,
+        params: { pData: obkCont },
+      });
+    };
+  
+    const isCheckValidation = useMemo(() => {
+      return (
+        (drugData.length ?? 0) >= 1
+      );
+    }, [drugData]);
   return (
     <KeyboardAvoidingView
       style={commonStyle.safeArea}
@@ -117,7 +117,7 @@ const StepEightScreen = (props) => {
               <TextComponent
                 color={COLORS.primary}
                 fontSize={23}
-                title="Add some history about your recovery."
+                title="Add your step count history."
                 marginBottom={7}
                 fontFamily={FONTS.Samsungsharpsans_Bold}
               />
@@ -190,7 +190,7 @@ const StepEightScreen = (props) => {
                             <TextComponent
                               color={COLORS.primary}
                               fontSize={22}
-                              title={item.percentage + '%'}
+                              title={item.percentage}
                               fontFamily={FONTS.Samsungsharpsans_Medium}
                             />
                             <SVG_IMAGES.DownArrow1_SVG />
@@ -207,7 +207,7 @@ const StepEightScreen = (props) => {
                     <TextComponent
                       color={COLORS.primary}
                       fontSize={15}
-                      title={state.consume_date ? state.consume_date : "Add date"}
+                      title={state.consume_date?moment(state.consume_date).format('MMM YYYY') :"Add date"}
                       fontFamily={FONTS.Samsungsharpsans_Medium}
                     />
                   </TouchableOpacity>
@@ -218,7 +218,7 @@ const StepEightScreen = (props) => {
                       <TextComponent
                         color={COLORS.primary}
                         fontSize={22}
-                        title={state?.percent ? state?.percent + '%' : "00%"}
+                        title={state?.percent?state?.percent:"Select"}
                         fontFamily={FONTS.Samsungsharpsans_Medium}
                       />
                       <SVG_IMAGES.DownArrow1_SVG />
@@ -300,9 +300,9 @@ const StepEightScreen = (props) => {
         headerText='Please Select'
         closeSheet={() => refWarn.current.close()}
       >
-        {custom_data.percent_increase.map((item, index) => (
+        {custom_data.step_increment.map((item, index) => (
           <PickerItem
-            text={item.name + "%"}
+            text={item.name+' Steps'}
             onPress={() => {
               setState(prevState => ({ ...prevState, percent: item.name }))
               refWarn.current.close()
@@ -314,4 +314,4 @@ const StepEightScreen = (props) => {
   );
 };
 
-export default StepEightScreen;
+export default StepCountScreen;

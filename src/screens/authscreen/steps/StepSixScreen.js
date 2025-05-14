@@ -752,7 +752,7 @@ const StepSixScreen = (props) => {
           <BtnPrimary
             onPress={handleNextPress} // Use the handler to trigger the haptic feedback
             marginBottom={10}
-            // isDisable={!isCheckValidation}
+            isDisable={!isCheckValidation}
             title="Next"
           />
         </View>

@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   Text,
 } from "react-native";
-import React, { useRef, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import { styles } from "../Styles";
 import GradientBackground from "../../../components/GradientBackground";
 import { commonStyle } from "../../../constants/style";
@@ -33,6 +33,26 @@ const StepSevenScreen = (props) => {
   const [state, setState] = useState({ consume_date: '', warn_doctor: '', supportive_doctor: '' })
   const refWarn = useRef();
   const refSupportive = useRef();
+  const { pData } = props.route.params
+
+    const handleNextPress = () => {
+      // Trigger haptic feedback on button press
+      ReactNativeHapticFeedback.trigger("impactMedium");
+      let obkCont = { ...pData, ...state };
+      // Navigate to the next screen
+      navigation.navigate(SCREENS.AuthRoutes, {
+        screen: SCREENS.StepYesNoFlaxed,
+        params: { pData: obkCont },
+      });
+    };
+
+      const isCheckValidation = useMemo(() => {
+        return (
+          state.consume_date?.trim() &&
+          state.warn_doctor?.trim() &&
+          state.supportive_doctor?.trim()
+        );
+      }, [state]);
 
   return (
     <KeyboardAvoidingView
@@ -146,14 +166,9 @@ const StepSevenScreen = (props) => {
           {/* Button with haptic feedback */}
           <BtnPrimary
             onPress={() => {
-              // Trigger haptic feedback on button press
-              ReactNativeHapticFeedback.trigger("impactMedium");
-
-              // Navigate to the next screen
-              navigation.navigate(SCREENS.AuthRoutes, {
-                screen: SCREENS.StepYesNoFlaxed,
-              });
+             handleNextPress()
             }}
+            isDisable={!isCheckValidation}
             marginBottom={10}
             title="Next"
           />

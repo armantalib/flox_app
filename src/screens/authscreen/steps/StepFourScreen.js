@@ -195,7 +195,7 @@ const StepFourScreen = (props) => {
           {/* Button with Haptic Feedback */}
           <BtnPrimary
             onPress={handleNextPress}
-            // isDisable={!isCheckValidation}
+            isDisable={!isCheckValidation}
             marginBottom={10}
             title="Next"
           />

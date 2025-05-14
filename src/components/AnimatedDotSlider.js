@@ -24,6 +24,7 @@ import {
   ContributionGraph,
   StackedBarChart
 } from "react-native-chart-kit";
+import stylesG from "../assets/css/stylesG";
 const tagsData = [
   { id: 1, title: "Tendonitis", selected: true },
   { id: 2, title: "Neuropathy" },
@@ -73,29 +74,39 @@ export default function AnimatedDotSlider({ content }) {
         paginationStyle={{ position: "absolute", bottom: normalize(-50) }}
       >
         {/* 1st Slide */}
+
         <View
           style={{
             flex: 1,
           }}
         >
           <View style={tabStyle.tabContainerCenter}>
-            <TextComponent
-              color={COLORS.primary}
-              fontSize={27}
-              title={"This month\nI’m feeling"}
-              fontFamily={FONTS.Samsungsharpsans_Medium}
-              textAlign={"center"}
-            />
-            <Text style={tabStyle.h1}>
-              65<Text style={tabStyle.h1small}>%</Text>
-            </Text>
-            <TextComponent
-              color={COLORS.primary}
-              fontSize={27}
-              title={"Recovered"}
-              fontFamily={FONTS.Samsungsharpsans_Medium}
-              textAlign={"center"}
-            />
+            {content ?
+              <>
+                <TextComponent
+                  color={COLORS.primary}
+                  fontSize={27}
+                  title={"This month\nI’m feeling"}
+                  fontFamily={FONTS.Samsungsharpsans_Medium}
+                  textAlign={"center"}
+                />
+                <Text style={tabStyle.h1}>
+                  65<Text style={tabStyle.h1small}>%</Text>
+                </Text>
+                <TextComponent
+                  color={COLORS.primary}
+                  fontSize={27}
+                  title={"Recovered"}
+                  fontFamily={FONTS.Samsungsharpsans_Medium}
+                  textAlign={"center"}
+                />
+              </> :
+              <View style={[{width:'100%',height:normalize(300)},stylesG.contentCenter]}>
+              <Text style={tabStyle.h1}>
+                <Text style={[tabStyle.h1small, { fontSize: normalize(22),lineHeight:normalize(30) }]}>Kindly update this month's data to track the progress</Text>
+              </Text>
+              </View>
+            }
           </View>
         </View>
         {/* 2nd Slide */}
@@ -321,8 +332,10 @@ export default function AnimatedDotSlider({ content }) {
             ]}
           >
             <BarChart
-              style={{    marginVertical: 8,
-                borderRadius: 10}}
+              style={{
+                marginVertical: 8,
+                borderRadius: 10
+              }}
               data={data}
               width={screenWidth}
               height={normalize(240)}
@@ -388,10 +401,10 @@ export default function AnimatedDotSlider({ content }) {
 
 
 const data = {
-  labels: ["J", "F", "M", "A", "M", "J","J"],
+  labels: ["J", "F", "M", "A", "M", "J", "J"],
   datasets: [
     {
-      data: [20, 45, 100, 400, 500, 43,300]
+      data: [20, 45, 100, 400, 500, 43, 300]
     }
   ]
 };
