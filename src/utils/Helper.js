@@ -103,3 +103,9 @@ export function getInitials(name) {
 }
 
 
+
+export function searchFunctions(query, array) {
+  return array.filter(user => user.name.toLowerCase().includes(query.toLowerCase()));
+}
+
+

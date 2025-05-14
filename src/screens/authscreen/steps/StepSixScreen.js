@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import {
   View,
   KeyboardAvoidingView,
@@ -21,6 +21,8 @@ import BackBtn from "../../../components/BackBtn";
 import { useNavigation } from "@react-navigation/native";
 import { SCREENS } from "../../../constants/Screen";
 import ReactNativeHapticFeedback from "react-native-haptic-feedback"; // Import haptic feedback
+import { custom_data } from "../../../constants";
+import { normalize } from "../../../utils/Metrics";
 
 const tagsData = [
   { id: 1, title: "Tendonitis" },
@@ -31,11 +33,24 @@ const tagsData = [
   { id: 6, title: "Neuropathy" },
 ];
 
-const StepFiveScreen = () => {
+const StepSixScreen = (props) => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
   const scrollY = useRef(new Animated.Value(0)).current;
   const [selectedTags, setSelectedTags] = useState([]); // Multi-select state
+  const [tendonData, setTendonData] = useState(custom_data.tendon_data);
+  const [neuropathyData, setNeuropathyData] = useState(custom_data.neuropathy_data);
+  const [CentralData, setCentralData] = useState(custom_data.central_nerve_data);
+  const [AutonomicData, setAutonomicData] = useState(custom_data.autonomic_nerve);
+  const [GastrointestinalData, setGastrointestinalData] = useState(custom_data.gastrointestinal_data);
+  const [MitochondrialData, setMitochondrialData] = useState(custom_data.mitochondrial_data);
+  const [VisionData, setVisionData] = useState(custom_data.vision_data);
+  const [SkinData, setSkinData] = useState(custom_data.skin_data);
+  const [CardiovascularData, setCardiovascularData] = useState(custom_data.cardiovascular_data);
+  const [HearingData, setHearingData] = useState(custom_data.hearing_data);
+  const [HormonalData, setHormonalData] = useState(custom_data.hormonal_data);
+  const [state, setState] = useState({ tendon_issue_resolved: [], neuropathy_nerve_resolved: [], central_nerve_resolved: [], autonomic_nerve_resolved: [], gastrointestinal_resolved: [], mitochondrial_resolved: [], vision_resolved: [], skin_hair_resolved: [], cardio_resolved: [], hearing_resolved: [], hormonal_resolved: [], })
+  const { pData } = props.route.params
 
   // Toggle tag selection
   const toggleTag = (id) => {
@@ -46,8 +61,21 @@ const StepFiveScreen = () => {
     );
   };
 
+  const toggleTendon = (key, value) => {
+    setState((prevState) => {
+      const currentArray = prevState[key] || [];
+      const exists = currentArray.includes(value);
+      return {
+        ...prevState,
+        [key]: exists
+          ? currentArray.filter((item) => item !== value)
+          : [...currentArray, value],
+      };
+    });
+  };
+
   // Dynamic Scroll Indicator Calculation
-  const tagHeight = 50; // Approximate height per tag including margin
+  const tagHeight = 380; // Approximate height per tag including margin
   const visibleHeight = Dimensions.get("screen").height * 0.38; // Visible scroll area
   const contentHeight = tagsData.length * tagHeight; // Total scrollable content height
   const indicatorHeight = Math.max(
@@ -58,13 +86,40 @@ const StepFiveScreen = () => {
   const handleNextPress = () => {
     // Trigger haptic feedback on button press
     ReactNativeHapticFeedback.trigger("impactMedium");
-
+    let obkCont = pData;
+    obkCont.tendon_issue_current = state.tendon_issue_resolved
+    obkCont.neuropathy_nerve_current = state.neuropathy_nerve_resolved
+    obkCont.central_nerve_current = state.central_nerve_resolved
+    obkCont.autonomic_nerve_current = state.autonomic_nerve_resolved
+    obkCont.gastrointestinal_current = state.gastrointestinal_resolved
+    obkCont.mitochondrial_current = state.mitochondrial_resolved
+    obkCont.vision_current = state.vision_resolved
+    obkCont.skin_hair_current = state.skin_hair_resolved
+    obkCont.cardio_current = state.cardio_resolved
+    obkCont.hearing_current = state.hearing_resolved
+    obkCont.hormonal_current = state.hormonal_resolved
     // Navigate to the next screen with the selected symptoms
     navigation.navigate(SCREENS.AuthRoutes, {
-      screen: SCREENS.StepSix,
-      params: { selectedSymptoms: selectedTags },
+      screen: SCREENS.StepSeven,
+      params: { pData: obkCont },
     });
   };
+
+  const isCheckValidation = useMemo(() => {
+    return (
+      (state.tendon_issue_resolved?.length ?? 0) >= 1 &&
+      (state.neuropathy_nerve_resolved?.length ?? 0) >= 1 &&
+      (state.cardio_resolved?.length ?? 0) >= 1 &&
+      (state.autonomic_nerve_resolved?.length ?? 0) >= 1 &&
+      (state.gastrointestinal_resolved?.length ?? 0) >= 1 &&
+      (state.mitochondrial_resolved?.length ?? 0) >= 1 &&
+      (state.vision_resolved?.length ?? 0) >= 1 &&
+      (state.skin_hair_resolved?.length ?? 0) >= 1 &&
+      (state.cardio_resolved?.length ?? 0) >= 1 &&
+      (state.hearing_resolved?.length ?? 0) >= 1 &&
+      (state.hormonal_resolved?.length ?? 0) >= 1
+    );
+  }, [state]);
 
   return (
     <KeyboardAvoidingView
@@ -86,7 +141,7 @@ const StepFiveScreen = () => {
               <TextComponent
                 color={COLORS.primary}
                 fontSize={18}
-                title="Please list ONLY your current symptoms, excluding those that have resolved."
+                title="Please list ONLY symptoms you are currently experiencing, excluding ones resolved."
                 marginBottom={10}
                 lineHeight={24}
                 fontFamily={FONTS.Samsungsharpsans_Bold}
@@ -128,7 +183,7 @@ const StepFiveScreen = () => {
                     },
                   ]}
                 >
-                  {tagsData.map((item) => (
+                  {tendonData.map((item) => (
                     <TouchableOpacity
                       key={item.id}
                       style={[
@@ -139,25 +194,27 @@ const StepFiveScreen = () => {
                           paddingVertical: 10,
                           margin: 5,
                         },
-                        selectedTags.includes(item.id)
+                        state.tendon_issue_resolved.includes(item.name)
                           ? commonStyle.selectedTag
                           : commonStyle.unselectedTag,
                       ]}
-                      onPress={() => toggleTag(item.id)}
+                      onPress={() => toggleTendon('tendon_issue_resolved', item.name)}
                     >
                       <Text
                         style={[
                           commonStyle.tagText,
                           { flexWrap: "wrap", textAlign: "center" },
-                          selectedTags.includes(item.id) &&
-                            commonStyle.selectedText,
+                          state.tendon_issue_resolved.includes(item.name) &&
+                          commonStyle.selectedText,
                         ]}
                       >
-                        {item.title}
+                        {item.name}
                       </Text>
                     </TouchableOpacity>
                   ))}
                 </View>
+
+                {/* Neuropathy (Nerve Damage) */}
 
                 <TextComponent
                   color={COLORS.primary}
@@ -166,8 +223,15 @@ const StepFiveScreen = () => {
                   fontFamily={FONTS.Samsungsharpsans_Bold}
                   marginBottom={7}
                 />
-                <View style={commonStyle.row}>
-                  {tagsData.map((item) => (
+                <View
+                  style={[
+                    commonStyle.row,
+                    {
+                      marginBottom: 10,
+                    },
+                  ]}
+                >
+                  {neuropathyData.map((item) => (
                     <TouchableOpacity
                       key={item.id}
                       style={[
@@ -178,25 +242,468 @@ const StepFiveScreen = () => {
                           paddingVertical: 10,
                           margin: 5,
                         },
-                        selectedTags.includes(item.id)
+                        state.neuropathy_nerve_resolved.includes(item.name)
                           ? commonStyle.selectedTag
                           : commonStyle.unselectedTag,
                       ]}
-                      onPress={() => toggleTag(item.id)}
+                      onPress={() => toggleTendon('neuropathy_nerve_resolved', item.name)}
                     >
                       <Text
                         style={[
                           commonStyle.tagText,
                           { flexWrap: "wrap", textAlign: "center" },
-                          selectedTags.includes(item.id) &&
-                            commonStyle.selectedText,
+                          state.neuropathy_nerve_resolved.includes(item.name) &&
+                          commonStyle.selectedText,
                         ]}
                       >
-                        {item.title}
+                        {item.name}
                       </Text>
                     </TouchableOpacity>
                   ))}
                 </View>
+
+
+                {/* Central Nervous System (CNS) Symptoms */}
+
+                <TextComponent
+                  color={COLORS.primary}
+                  fontSize={14}
+                  title="Central Nervous System (CNS) Symptoms"
+                  fontFamily={FONTS.Samsungsharpsans_Bold}
+                  marginBottom={7}
+                />
+                <View
+                  style={[
+                    commonStyle.row,
+                    {
+                      marginBottom: 10,
+                    },
+                  ]}
+                >
+                  {CentralData.map((item) => (
+                    <TouchableOpacity
+                      key={item.id}
+                      style={[
+                        commonStyle.tag,
+                        {
+                          alignSelf: "flex-start",
+                          paddingHorizontal: 15,
+                          paddingVertical: 10,
+                          margin: 5,
+                        },
+                        state.central_nerve_resolved.includes(item.name)
+                          ? commonStyle.selectedTag
+                          : commonStyle.unselectedTag,
+                      ]}
+                      onPress={() => toggleTendon('central_nerve_resolved', item.name)}
+                    >
+                      <Text
+                        style={[
+                          commonStyle.tagText,
+                          { flexWrap: "wrap", textAlign: "center" },
+                          state.central_nerve_resolved.includes(item.name) &&
+                          commonStyle.selectedText,
+                        ]}
+                      >
+                        {item.name}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+
+
+
+                {/*  Autonomic Nervous System Dysfunction (Dysautonomia, POTS-like Symptoms) */}
+
+                <TextComponent
+                  color={COLORS.primary}
+                  fontSize={14}
+                  title="Autonomic Nervous System Dysfunction (Dysautonomia, POTS-like Symptoms)"
+                  fontFamily={FONTS.Samsungsharpsans_Bold}
+                  marginBottom={7}
+                />
+                <View
+                  style={[
+                    commonStyle.row,
+                    {
+                      marginBottom: 10,
+                    },
+                  ]}
+                >
+                  {AutonomicData.map((item) => (
+                    <TouchableOpacity
+                      key={item.id}
+                      style={[
+                        commonStyle.tag,
+                        {
+                          alignSelf: "flex-start",
+                          paddingHorizontal: 15,
+                          paddingVertical: 10,
+                          margin: 5,
+                        },
+                        state.autonomic_nerve_resolved.includes(item.name)
+                          ? commonStyle.selectedTag
+                          : commonStyle.unselectedTag,
+                      ]}
+                      onPress={() => toggleTendon('autonomic_nerve_resolved', item.name)}
+                    >
+                      <Text
+                        style={[
+                          commonStyle.tagText,
+                          { flexWrap: "wrap", textAlign: "center" },
+                          state.autonomic_nerve_resolved.includes(item.name) &&
+                          commonStyle.selectedText,
+                        ]}
+                      >
+                        {item.name}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+
+
+                {/*  Gastrointestinal Issues */}
+
+                <TextComponent
+                  color={COLORS.primary}
+                  fontSize={14}
+                  title="Gastrointestinal Issues"
+                  fontFamily={FONTS.Samsungsharpsans_Bold}
+                  marginBottom={7}
+                />
+                <View
+                  style={[
+                    commonStyle.row,
+                    {
+                      marginBottom: 10,
+                    },
+                  ]}
+                >
+                  {GastrointestinalData.map((item) => (
+                    <TouchableOpacity
+                      key={item.id}
+                      style={[
+                        commonStyle.tag,
+                        {
+                          alignSelf: "flex-start",
+                          paddingHorizontal: 15,
+                          paddingVertical: 10,
+                          margin: 5,
+                        },
+                        state.gastrointestinal_resolved.includes(item.name)
+                          ? commonStyle.selectedTag
+                          : commonStyle.unselectedTag,
+                      ]}
+                      onPress={() => toggleTendon('gastrointestinal_resolved', item.name)}
+                    >
+                      <Text
+                        style={[
+                          commonStyle.tagText,
+                          { flexWrap: "wrap", textAlign: "center" },
+                          state.gastrointestinal_resolved.includes(item.name) &&
+                          commonStyle.selectedText,
+                        ]}
+                      >
+                        {item.name}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+
+
+                {/*  Mitochondrial Dysfunction & Fatigue */}
+
+                <TextComponent
+                  color={COLORS.primary}
+                  fontSize={14}
+                  title="Mitochondrial Dysfunction & Fatigue"
+                  fontFamily={FONTS.Samsungsharpsans_Bold}
+                  marginBottom={7}
+                />
+                <View
+                  style={[
+                    commonStyle.row,
+                    {
+                      marginBottom: 10,
+                    },
+                  ]}
+                >
+                  {MitochondrialData.map((item) => (
+                    <TouchableOpacity
+                      key={item.id}
+                      style={[
+                        commonStyle.tag,
+                        {
+                          alignSelf: "flex-start",
+                          paddingHorizontal: 15,
+                          paddingVertical: 10,
+                          margin: 5,
+                        },
+                        state.mitochondrial_resolved.includes(item.name)
+                          ? commonStyle.selectedTag
+                          : commonStyle.unselectedTag,
+                      ]}
+                      onPress={() => toggleTendon('mitochondrial_resolved', item.name)}
+                    >
+                      <Text
+                        style={[
+                          commonStyle.tagText,
+                          { flexWrap: "wrap", textAlign: "center" },
+                          state.mitochondrial_resolved.includes(item.name) &&
+                          commonStyle.selectedText,
+                        ]}
+                      >
+                        {item.name}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+
+
+                {/* Vision & Eye Issues */}
+
+                <TextComponent
+                  color={COLORS.primary}
+                  fontSize={14}
+                  title="Vision & Eye Issues"
+                  fontFamily={FONTS.Samsungsharpsans_Bold}
+                  marginBottom={7}
+                />
+                <View
+                  style={[
+                    commonStyle.row,
+                    {
+                      marginBottom: 10,
+                    },
+                  ]}
+                >
+                  {VisionData.map((item) => (
+                    <TouchableOpacity
+                      key={item.id}
+                      style={[
+                        commonStyle.tag,
+                        {
+                          alignSelf: "flex-start",
+                          paddingHorizontal: 15,
+                          paddingVertical: 10,
+                          margin: 5,
+                        },
+                        state.vision_resolved.includes(item.name)
+                          ? commonStyle.selectedTag
+                          : commonStyle.unselectedTag,
+                      ]}
+                      onPress={() => toggleTendon('vision_resolved', item.name)}
+                    >
+                      <Text
+                        style={[
+                          commonStyle.tagText,
+                          { flexWrap: "wrap", textAlign: "center" },
+                          state.vision_resolved.includes(item.name) &&
+                          commonStyle.selectedText,
+                        ]}
+                      >
+                        {item.name}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+
+
+                {/* Skin & Hair Changes*/}
+
+                <TextComponent
+                  color={COLORS.primary}
+                  fontSize={14}
+                  title="Skin & Hair Changes"
+                  fontFamily={FONTS.Samsungsharpsans_Bold}
+                  marginBottom={7}
+                />
+                <View
+                  style={[
+                    commonStyle.row,
+                    {
+                      marginBottom: 10,
+                    },
+                  ]}
+                >
+                  {SkinData.map((item) => (
+                    <TouchableOpacity
+                      key={item.id}
+                      style={[
+                        commonStyle.tag,
+                        {
+                          alignSelf: "flex-start",
+                          paddingHorizontal: 15,
+                          paddingVertical: 10,
+                          margin: 5,
+                        },
+                        state.skin_hair_resolved.includes(item.name)
+                          ? commonStyle.selectedTag
+                          : commonStyle.unselectedTag,
+                      ]}
+                      onPress={() => toggleTendon('skin_hair_resolved', item.name)}
+                    >
+                      <Text
+                        style={[
+                          commonStyle.tagText,
+                          { flexWrap: "wrap", textAlign: "center" },
+                          state.skin_hair_resolved.includes(item.name) &&
+                          commonStyle.selectedText,
+                        ]}
+                      >
+                        {item.name}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+
+
+                {/*   Cardiovascular Symptoms   */}
+
+                <TextComponent
+                  color={COLORS.primary}
+                  fontSize={14}
+                  title="Cardiovascular Symptoms"
+                  fontFamily={FONTS.Samsungsharpsans_Bold}
+                  marginBottom={7}
+                />
+                <View
+                  style={[
+                    commonStyle.row,
+                    {
+                      marginBottom: 10,
+                    },
+                  ]}
+                >
+                  {CardiovascularData.map((item) => (
+                    <TouchableOpacity
+                      key={item.id}
+                      style={[
+                        commonStyle.tag,
+                        {
+                          alignSelf: "flex-start",
+                          paddingHorizontal: 15,
+                          paddingVertical: 10,
+                          margin: 5,
+                        },
+                        state.cardio_resolved.includes(item.name)
+                          ? commonStyle.selectedTag
+                          : commonStyle.unselectedTag,
+                      ]}
+                      onPress={() => toggleTendon('cardio_resolved', item.name)}
+                    >
+                      <Text
+                        style={[
+                          commonStyle.tagText,
+                          { flexWrap: "wrap", textAlign: "center" },
+                          state.cardio_resolved.includes(item.name) &&
+                          commonStyle.selectedText,
+                        ]}
+                      >
+                        {item.name}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+
+
+                {/*   Hearing & Tinnitus Issues   */}
+
+                <TextComponent
+                  color={COLORS.primary}
+                  fontSize={14}
+                  title="Hearing & Tinnitus Issues"
+                  fontFamily={FONTS.Samsungsharpsans_Bold}
+                  marginBottom={7}
+                />
+                <View
+                  style={[
+                    commonStyle.row,
+                    {
+                      marginBottom: 10,
+                    },
+                  ]}
+                >
+                  {HearingData.map((item) => (
+                    <TouchableOpacity
+                      key={item.id}
+                      style={[
+                        commonStyle.tag,
+                        {
+                          alignSelf: "flex-start",
+                          paddingHorizontal: 15,
+                          paddingVertical: 10,
+                          margin: 5,
+                        },
+                        state.hearing_resolved.includes(item.name)
+                          ? commonStyle.selectedTag
+                          : commonStyle.unselectedTag,
+                      ]}
+                      onPress={() => toggleTendon('hearing_resolved', item.name)}
+                    >
+                      <Text
+                        style={[
+                          commonStyle.tagText,
+                          { flexWrap: "wrap", textAlign: "center" },
+                          state.hearing_resolved.includes(item.name) &&
+                          commonStyle.selectedText,
+                        ]}
+                      >
+                        {item.name}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+
+                {/*   Hormonal & Metabolic Changes   */}
+
+                <TextComponent
+                  color={COLORS.primary}
+                  fontSize={14}
+                  title="Hormonal & Metabolic Changes"
+                  fontFamily={FONTS.Samsungsharpsans_Bold}
+                  marginBottom={7}
+                />
+                <View
+                  style={[
+                    commonStyle.row,
+                    {
+                      marginBottom: 10,
+                    },
+                  ]}
+                >
+                  {HormonalData.map((item) => (
+                    <TouchableOpacity
+                      key={item.id}
+                      style={[
+                        commonStyle.tag,
+                        {
+                          alignSelf: "flex-start",
+                          paddingHorizontal: 15,
+                          paddingVertical: 10,
+                          margin: 5,
+                        },
+                        state.hormonal_resolved.includes(item.name)
+                          ? commonStyle.selectedTag
+                          : commonStyle.unselectedTag,
+                      ]}
+                      onPress={() => toggleTendon('hormonal_resolved', item.name)}
+                    >
+                      <Text
+                        style={[
+                          commonStyle.tagText,
+                          { flexWrap: "wrap", textAlign: "center" },
+                          state.hormonal_resolved.includes(item.name) &&
+                          commonStyle.selectedText,
+                        ]}
+                      >
+                        {item.name}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+
+
               </ScrollView>
 
               {/* Custom Scroll Indicator */}
@@ -235,24 +742,17 @@ const StepFiveScreen = () => {
             <TextComponent
               color={COLORS.primary}
               fontSize={15}
-              title="You will be able to update this information later"
+              title="You will not be able to change this information later"
               marginBottom={10}
               fontFamily={FONTS.Samsungsharpsans_Medium}
             />
           </View>
 
-          {/* Button with haptic feedback */}
+          {/* Button */}
           <BtnPrimary
-            onPress={() => {
-              // Trigger haptic feedback on button press
-              ReactNativeHapticFeedback.trigger("impactMedium");
-
-              // Navigate to the next screen
-              navigation.navigate(SCREENS.AuthRoutes, {
-                screen: SCREENS.StepSeven,
-              });
-            }}
+            onPress={handleNextPress} // Use the handler to trigger the haptic feedback
             marginBottom={10}
+            // isDisable={!isCheckValidation}
             title="Next"
           />
         </View>
@@ -261,4 +761,4 @@ const StepFiveScreen = () => {
   );
 };
 
-export default StepFiveScreen;
+export default StepSixScreen;

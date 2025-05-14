@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { View, Text, StyleSheet, Dimensions, TouchableOpacity, ScrollView } from 'react-native'
+import { View, Text, StyleSheet, Dimensions, TouchableOpacity, ScrollView, TextInput } from 'react-native'
 import stylesG from '../../assets/css/stylesG';
 import { font_size, normalize, screenSize700 } from '../../utils/Metrics';
 import RBSheet from 'react-native-raw-bottom-sheet';
@@ -17,11 +17,14 @@ type PropsPass = {
     backgroundColor?: string;
     heightLen?: number;
     textClose?: string;
+    isSearch?: boolean;
+    onChangeText?: () => void;
+
 
 };
 const { width, height } = Dimensions.get('window');
 
-export const PickerBottomSheet: React.FC<PropsPass> = ({ refRBSheet, closeSheet, children, headerText, heightLen, backgroundColor, textClose, onPressText }) => {
+export const PickerBottomSheet: React.FC<PropsPass> = ({ refRBSheet, closeSheet, children, headerText, heightLen, backgroundColor, textClose, onPressText,onChangeText,isSearch }) => {
     const [filterData, setFilterData] = useState<[]>([])
     const [currentIndex, setCurrentIndex] = useState<number>(0)
 
@@ -61,7 +64,22 @@ export const PickerBottomSheet: React.FC<PropsPass> = ({ refRBSheet, closeSheet,
                         </View>
 
                         <View style={{ marginTop: 20 }}></View>
-                        
+                        {isSearch?
+                        <View style={[stylesG.flexRow, { width: '100%', height: normalize(45), borderWidth: normalize(1), borderColor: 'rgba(73, 73, 232, 0.3)', borderRadius: normalize(8) }]}>
+                            <TextInput
+                                style={[{ width: '85%', height: normalize(45), paddingLeft: normalize(15) }]}
+                                placeholder='Search'
+                                onChangeText={onChangeText}
+                            />
+                            <View style={{ width: '15%', alignItems: 'center', justifyContent: 'center' }}>
+                                <Icons
+                                    name={'search1'}
+                                    family={'AntDesign'}
+                                    size={22}
+                                    color={COLORS.primary}
+                                />
+                            </View>
+                        </View>:null}
                         <ScrollView showsVerticalScrollIndicator={false}>
                             {children}
 

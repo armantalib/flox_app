@@ -67,9 +67,16 @@ const LoginScreen = () => {
       await storeData('user_data', response?.user);
       dispatch(setUser(response?.user));
       // Navigate to the home screen
-      navigation.navigate(SCREENS.TabRoutes, {
-        screen: SCREENS.TabHome,
-      });
+
+      if (response?.fq_antibiotic == null && response?.user?.fq_antibiotic == true) {
+        navigation.navigate(SCREENS.AuthRoutes, {
+          screen: SCREENS.StepThree,
+        });
+      } else {
+        navigation.navigate(SCREENS.TabRoutes, {
+          screen: SCREENS.TabHome,
+        });
+      }
     }
   }
 

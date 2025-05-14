@@ -17,6 +17,7 @@ import StepSevenScreen from '../screens/authscreen/steps/StepSevenScreen';
 import StepEightScreen from '../screens/authscreen/steps/StepEightScreen';
 import StepNineScreen from '../screens/authscreen/steps/StepNineScreen';
 import StepTenScreen from '../screens/authscreen/steps/StepTenScreen';
+import StepYesNoFlaxed from '../screens/authscreen/steps/StepYesNoFlaxed';
 const Stack = createStackNavigator();
 
 const AuthRoutes = () => {
@@ -104,6 +105,11 @@ const AuthRoutes = () => {
       <Stack.Screen
         name="StepTen"
         component={StepTenScreen}
+        options={{headerShown: false}}
+      />
+       <Stack.Screen
+        name="StepYesNoFlaxed"
+        component={StepYesNoFlaxed}
         options={{headerShown: false}}
       />
     </Stack.Navigator>

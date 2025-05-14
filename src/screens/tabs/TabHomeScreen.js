@@ -55,12 +55,7 @@ const TabHomeScreen = () => {
   const checkAntibiotic = async () => {
     const endPoint = 'antibiotic/check';
     const response = await dataGet_(endPoint, {});
-    if (!response.success) {
-      // Navigate to StepFour
-      navigation.navigate(SCREENS.AuthRoutes, {
-        screen: SCREENS.StepThree,
-      });
-    }
+ 
   }
 
 

@@ -17,6 +17,7 @@ export const SCREENS = {
   StepNine: "StepNine",
   StepTen: "StepTen",
   ProfileDetails: "ProfileDetails",
+  StepYesNoFlaxed: "StepYesNoFlaxed",
 
   // Bottom Tab Navigation
   TabHome: "TabHome",
