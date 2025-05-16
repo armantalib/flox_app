@@ -1,0 +1,126 @@
+ssh -i "confidate_api.pem" ubuntu@ec2-34-225-57-120.compute-1.amazonaws.com
+
+ssh -i "antiflox.pem" ubuntu@ec2-3-82-192-188.compute-1.amazonaws.com
+ssh -i "floxapp_pair.pem" ubuntu@ec2-13-62-25-70.eu-north-1.compute.amazonaws.com
+
+ec2-54-145-234-123.compute-1.amazonaws.com
+ec2-34-225-57-120.compute-1.amazonaws.com
+
+
+chmod 400 "bantiflox.pem"
+
+sudo chmod 777 /media/part1
+sudo rm -rf folderName
+
+ Sudo apt-get update
+
+rm ~/.ssh/known_hosts
+
+git fetch origin
+git reset --hard origin/main
+git pull origin main --allow-unrelated-histories
+git stash
+git pull origin main
+git stash pop  
+
+git stash
+git stash drop
+git pull
+
+rm -rf my-repo
+
+
+// page reload issue
+try_files $uri.html $uri $uri/ /index.html;
+
+
+
+
+
+
+
+
+
+
+
+server {
+    server_name app.digitallogic.app;
+
+    location / {
+        proxy_pass  http://localhost:5000/;
+        proxy_read_timeout 300;
+        proxy_connect_timeout 300;
+        proxy_send_timeout 300;
+        client_max_body_size 50M; 
+    }
+
+
+    location /ai-language-tutor/backend/ {
+        proxy_pass http://localhost:5002/;
+        proxy_read_timeout 300;
+        proxy_connect_timeout 300;
+        proxy_send_timeout 300; 
+        client_max_body_size 50M;
+    }
+
+    location /chat/ {
+        proxy_pass http://localhost:8004/;
+        proxy_read_timeout 300;
+        proxy_connect_timeout 300;
+        proxy_send_timeout 300;
+        client_max_body_size 50M;
+    }
+
+    location /api/ {
+        proxy_pass http://localhost:8003/;
+        proxy_read_timeout 300;
+        proxy_connect_timeout 300;
+        proxy_send_timeout 300;
+        client_max_body_size 50M;
+    }
+
+     location /ble_pro/api/ {
+        proxy_pass http://localhost:8090; #whatever port your app runs on
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+
+
+
+
+
+
+
+
+
+
+    listen [::]:443 ssl ipv6only=on; # managed by Certbot
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/app.digitallogic.app/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/app.digitallogic.app/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+}
+
+
+
+
+
+server {
+    if ($host = app.digitallogic.app) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+
+
+    listen 80 default_server;
+    listen [::]:80 default_server;
+    server_name _;
+    return 404; # managed by Certbot
+
+
+}
