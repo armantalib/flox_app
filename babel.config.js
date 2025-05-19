@@ -4,7 +4,8 @@ module.exports = {
   env: {
     production: {
       plugins: [
-        ['react-native-reanimated/plugin', {strict: false}], // Disable strict mode
+        ['react-native-reanimated/plugin'], // Disable strict mode
+       ['react-native-paper/babel'],
       ],
     },
   },
