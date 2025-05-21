@@ -1,5 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { constant } from '../constraints';
 
 type InitialStateType = {
   marketplace: any | null;

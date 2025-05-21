@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
   Text,
 } from "react-native";
-import React, { useMemo, useRef, useState } from "react";
+import React, { useMemo, useRef, useState, useEffect } from "react";
 import { styles } from "../Styles";
 import GradientBackground from "../../../components/GradientBackground";
 import { commonStyle } from "../../../constants/style";
@@ -32,6 +32,7 @@ import PickerItem from "../../../components/BottomSheets/PickerItem";
 import { normalize } from "../../../utils/Metrics";
 import stylesG from "../../../assets/css/stylesG";
 import { showToast } from "../../../components/General";
+import { useSelector } from "react-redux";
 
 const tribes = [
   {
@@ -48,6 +49,14 @@ const StepEightScreen = (props) => {
   const [dateModal, setDateModal] = useState(false)
   const refWarn = useRef();
   const { pData } = props.route.params
+  const {stepsData} = useSelector((state) => state?.steps);
+
+  useEffect(() => {
+    if (stepsData) {
+      setDrugData(stepsData?.recovery_history)
+    }
+  }, [])
+
 
   const addDrugFun = () => {
     if (state.consume_date && state.percent) {
@@ -62,7 +71,7 @@ const StepEightScreen = (props) => {
           consume_date: '', percent: ''
         })
       } else {
-        showToast("Drug already exist")
+        showToast("Recovery date already exist")
       }
     } else {
       showToast("Please Select Dates since loxing and Percentage recovered")

@@ -3,7 +3,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import userReducer from './userSlice';
 import orderReducer from './orderSlice';
 import chatData from './ChatData';
-import communitySlice from './communitySlice';
+import stepsSlice from './stepsSlice';
 import marketplaceSlice from './marketplaceSlice';
 
 const store = configureStore({
@@ -11,7 +11,7 @@ const store = configureStore({
     user: userReducer,
     order: orderReducer,
     chat: chatData,
-    community: communitySlice,
+    steps: stepsSlice,
     marketplace: marketplaceSlice,
     // Other reducers go here
   },

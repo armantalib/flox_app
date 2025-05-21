@@ -4,8 +4,8 @@ import {FONTS} from '../constants/fonts';
 import {scale} from 'react-native-size-matters';
 import {COLORS} from '../constants/colors';
 
-export default function ToggleSwitch() {
-  const [selected, setSelected] = useState('Yearly');
+export default function ToggleSwitch({toggleValue}) {
+  const [selected, setSelected] = useState('Monthly');
   const translateX = new Animated.Value(selected === 'Yearly' ? 1 : 0);
 
   const toggleSwitch = option => {
@@ -15,6 +15,7 @@ export default function ToggleSwitch() {
       duration: 200,
       useNativeDriver: false,
     }).start();
+    toggleValue(option)
   };
 
   return (

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Dimensions, ScrollView, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import GradientBackground from "../../components/GradientBackground";
@@ -16,10 +16,31 @@ import ResourcesComponent from "../../components/ResourcesComponent";
 import Slick from "react-native-slick";
 import { SCREENS } from "../../constants/Screen";
 import ResourcesCardComp from "../../components/ResourcesCardComp";
+import { dataGet_ } from "../../utils/myAxios";
+import { setExploreStat } from "../../storeTolkit/stepsSlice";
+import { useDispatch, useSelector } from "react-redux";
 
-const TabExplorerScreen = () => {
+const TabExplorerScreen = (props) => {
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
+  const user = useSelector((state) => state?.user?.user);
+  const dispatch = useDispatch();
+
+
+  useEffect(() => {
+    if (user?.fq_antibiotic) {
+      checkAntibiotic();
+    }
+  }, [])
+  const checkAntibiotic = async () => {
+    const endPoint = 'antibiotic/counts';
+    const response = await dataGet_(endPoint, {});
+    if (response.success) {
+      dispatch(setExploreStat(response))
+    }
+  }
+
+
   return (
     <View style={[tabStyle.safeArea]}>
       <GradientBackground />
@@ -88,7 +109,7 @@ const TabExplorerScreen = () => {
             count2={"2000"}
           />
 
-  
+
         </View>
       </ScrollView>
     </View>

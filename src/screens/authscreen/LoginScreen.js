@@ -33,7 +33,7 @@ const LoginScreen = () => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
   const { isKeyboardVisible } = useKeyboard();
-  const [input, setInput] = useState({ email: '', password: '' });
+  const [input, setInput] = useState({ email: 'marmantalib@gmail.com', password: '123456' });
   const [loader, setLoader] = useState(false)
   const dispatch = useDispatch();
 

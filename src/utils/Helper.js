@@ -108,4 +108,171 @@ export function searchFunctions(query, array) {
   return array.filter(user => user.name.toLowerCase().includes(query.toLowerCase()));
 }
 
+export function searchByDate(targetMonth, data) {
+
+  // Convert ISO date to "YYYY-MM"
+  const toYearMonth = isoString => new Date(isoString).toISOString().slice(0, 7);
+
+  // Filter items where date starts with the targetMonth (e.g. "2025-05")
+  const results = data.filter(item => toYearMonth(item.date) === targetMonth);
+
+  return results;
+}
+
+export function searchByDate2(targetDate, data) {
+
+  // Helper to extract just the date part in `YYYY-MM-DD` format
+  const toDateOnly = isoString => new Date(isoString).toISOString().split("T")[0];
+  
+  const results = data.filter(item => toDateOnly(item.date) === targetDate);
+  
+  return results;
+}
+
+
+export function getAverageYearPercentage(targetYear, data) {
+  const getYear = isoString => new Date(isoString).getFullYear();
+  const monthlySums = Array(12).fill(0);
+
+  data.forEach(item => {
+    const date = new Date(item.date);
+    if (isNaN(date)) return; // skip invalid dates
+
+    const year = date.getUTCFullYear(); // use getUTCFullYear for consistent parsing
+    const month = date.getUTCMonth();  // use getUTCMonth (0–11)
+
+    if (year === targetYear) {
+      monthlySums[month] += item.percentage;
+    }
+  });
+
+  const total = monthlySums.reduce((sum, val) => sum + val, 0);
+  const average = parseFloat((total / 12).toFixed(2)); // always divide by 12
+
+  return {
+    monthlySums,
+    averageYearPercentage: average
+  };
+}
+
+
+export function getYearlyPercentages(data, startYear, endYear) {
+  const yearsCount = endYear - startYear + 1;
+  const yearlySums = new Array(yearsCount).fill(0);
+  const yearlyCounts = new Array(yearsCount).fill(0);
+
+  data.forEach(item => {
+    const dateObj = new Date(item.date);
+    if (isNaN(dateObj.getTime())) return;
+
+    const year = dateObj.getUTCFullYear();
+    if (year >= startYear && year <= endYear) {
+      const index = year - startYear;
+      const percentage = parseFloat(item.percentage);
+      if (!isNaN(percentage)) {
+        yearlySums[index] += percentage;
+        yearlyCounts[index] += 1;
+      }
+    }
+  });
+
+  const yearlyPercentages = yearlySums.map((sum, index) => {
+    const count = yearlyCounts[index];
+    return count > 0 ? parseFloat((sum / count).toFixed(2)) : 0;
+  });
+
+  const totalSum = yearlyPercentages.reduce((sum, val) => sum + val, 0);
+  const validYearCount = yearlyPercentages.filter(val => val > 0).length;
+  const averagePercentage = validYearCount > 0
+    ? parseFloat((totalSum / validYearCount).toFixed(2))
+    : 0;
+
+  return {
+    yearlyPercentages,
+    averagePercentage
+  };
+}
+
+
+export function getYearlyStepTotals(targetYear, data) {
+  const monthlySteps = Array(12).fill(0); // Index 0 = Jan, ..., 11 = Dec
+
+  data.forEach(item => {
+    const date = new Date(item.date);
+    if (isNaN(date)) return; // Skip invalid dates
+
+    const year = date.getUTCFullYear();
+    const month = date.getUTCMonth();
+
+    if (year === targetYear && typeof item.steps === 'number') {
+      monthlySteps[month] += item.steps;
+    }
+  });
+
+  const totalSteps = monthlySteps.reduce((sum, steps) => sum + steps, 0);
+
+  return {
+    monthlySteps,
+    totalSteps
+  };
+}
+
+
+export function getYearlyStepCounts(data, startYear, endYear) {
+  const yearsCount = endYear - startYear + 1;
+  const yearlyStepSums = new Array(yearsCount).fill(0);
+
+  data.forEach(item => {
+    const dateObj = new Date(item.date);
+    if (isNaN(dateObj.getTime())) return;
+
+    const year = dateObj.getUTCFullYear();
+    if (year >= startYear && year <= endYear) {
+      const index = year - startYear;
+      const steps = parseInt(item.steps, 10);
+      if (!isNaN(steps)) {
+        yearlyStepSums[index] += steps;
+      }
+    }
+  });
+
+  const totalSteps = yearlyStepSums.reduce((sum, val) => sum + val, 0);
+
+  return {
+    yearlySteps: yearlyStepSums,
+    average: totalSteps // total steps across all years
+  };
+}
+
+
+export function countAgeGroups(ages) {
+  const ageGroups = {};
+  
+  // Define the ranges
+  for (let start = 0; start <= 60; start += 5) {
+    const end = start + 4;
+    const label = `${start}-${end}`;
+    ageGroups[label] = 0;
+  }
+
+  // Special group for 65+
+  ageGroups["65+"] = 0;
+
+  // Count ages into the correct group
+  for (const age of ages) {
+    if (age > 65) {
+      ageGroups["65+"]++;
+    } else {
+      const groupStart = Math.floor(age / 5) * 5;
+      const groupEnd = groupStart + 4;
+      const label = `${groupStart}-${groupEnd}`;
+      if (ageGroups[label] !== undefined) {
+        ageGroups[label]++;
+      }
+    }
+  }
+
+  return ageGroups;
+}
+
 

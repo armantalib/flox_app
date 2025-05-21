@@ -25,10 +25,14 @@ import {
   ContributionGraph,
   StackedBarChart
 } from "react-native-chart-kit";
+import { useSelector } from "react-redux";
+import { numberWithCommas } from "../utils/Math";
+import moment from "moment";
 const screenWidth = Dimensions.get("window").width;
 
 export default function AnimatedExploreDotSlider({ content }) {
   const scrollY = useRef(new Animated.Value(0)).current;
+  const { exploreStat } = useSelector((state) => state?.steps);
   return (
     <View style={{ flex: 1, position: "relative", padding: 7 }}>
       <Slick
@@ -65,11 +69,11 @@ export default function AnimatedExploreDotSlider({ content }) {
               fontFamily={FONTS.Samsungsharpsans_Bold}
               textAlign={"center"}
             />
-            <Text style={[tabStyle.h1, tabStyle.h1Font]}>5,163</Text>
+            <Text style={[tabStyle.h1, tabStyle.h1Font]}>{numberWithCommas(exploreStat?.totalUsers)}</Text>
             <TextComponent
               color={COLORS.primary}
               fontSize={22}
-              title={"Since\n12/02/2024"}
+              title={`Since\n${moment().format('DD/MM/YYYY')}`}
               fontFamily={FONTS.Samsungsharpsans_Bold}
               textAlign={"center"}
             />
@@ -96,11 +100,11 @@ export default function AnimatedExploreDotSlider({ content }) {
             {/* Row 1: Men */}
             <View style={tabStyle.row}>
               <View style={tabStyle.column}>
-                <Text style={tabStyle.number}>2,142</Text>
+                <Text style={tabStyle.number}>{numberWithCommas(exploreStat?.genderMale)}</Text>
                 <Text style={tabStyle.label}>Men</Text>
               </View>
               <View style={tabStyle.column}>
-                <Text style={tabStyle.percentage}>38%</Text>
+                <Text style={tabStyle.percentage}>{exploreStat?.malePercent}%</Text>
                 <Text style={tabStyle.label}>Percent</Text>
               </View>
             </View>
@@ -111,11 +115,11 @@ export default function AnimatedExploreDotSlider({ content }) {
             {/* Row 2: Women */}
             <View style={tabStyle.row}>
               <View style={tabStyle.column}>
-                <Text style={tabStyle.number}>3,142</Text>
+                <Text style={tabStyle.number}>{numberWithCommas(exploreStat?.genderFemale)}</Text>
                 <Text style={tabStyle.label}>Women</Text>
               </View>
               <View style={tabStyle.column}>
-                <Text style={tabStyle.percentage}>62%</Text>
+                <Text style={tabStyle.percentage}>{exploreStat?.femalePercent}%</Text>
                 <Text style={tabStyle.label}>Percent</Text>
               </View>
             </View>
@@ -270,252 +274,49 @@ export default function AnimatedExploreDotSlider({ content }) {
               )}
               scrollEventThrottle={16}
             >
-              <View
-                style={[
-                  tabStyle.flexRow,
-                  {
-                    marginBottom: verticalScale(4),
-                    borderBottomWidth: 1,
-                    borderBottomColor: "#EAEAEA",
-                    paddingBottom: verticalScale(7),
-                    marginBottom: verticalScale(7),
-                  },
-                ]}
-              >
-                <TouchableOpacity
+              {exploreStat?.consumed.map((item) => (
+                <View
                   style={[
-                    tabStyle.dropbutton1,
+                    tabStyle.flexRow,
                     {
-                      width: 90,
-                      paddingHorizontal: 5,
+                      marginBottom: verticalScale(4),
+                      borderBottomWidth: 1,
+                      borderBottomColor: "#EAEAEA",
+                      paddingBottom: verticalScale(7),
+                      marginBottom: verticalScale(7),
                     },
                   ]}
                 >
+                  <View
+                    style={[
+                      tabStyle.dropbutton1,
+                      {
+                        width: 90,
+                        paddingHorizontal: 5,
+                      },
+                    ]}
+                  >
+                    <TextComponent
+                      color={COLORS.white}
+                      fontSize={9}
+                      title={item.consume}
+                      fontFamily={FONTS.Samsungsharpsans_Bold}
+                    />
+                  </View>
                   <TextComponent
-                    color={COLORS.white}
-                    fontSize={9}
-                    title={"Ciprofloxacin"}
+                    color={COLORS.primary}
+                    fontSize={22}
+                    title={numberWithCommas(item.pills)}
                     fontFamily={FONTS.Samsungsharpsans_Bold}
                   />
-                </TouchableOpacity>
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"2,145"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"56%"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-              </View>
-              <View
-                style={[
-                  tabStyle.flexRow,
-                  {
-                    marginBottom: verticalScale(4),
-                    borderBottomWidth: 1,
-                    borderBottomColor: "#EAEAEA",
-                    paddingBottom: verticalScale(7),
-                    marginBottom: verticalScale(7),
-                  },
-                ]}
-              >
-                <TouchableOpacity
-                  style={[
-                    tabStyle.dropbutton1,
-                    {
-                      width: 90,
-                      paddingHorizontal: 5,
-                    },
-                  ]}
-                >
                   <TextComponent
-                    color={COLORS.white}
-                    fontSize={9}
-                    title={"Levofloxacin"}
+                    color={COLORS.primary}
+                    fontSize={22}
+                    title={item.percentage + "%"}
                     fontFamily={FONTS.Samsungsharpsans_Bold}
                   />
-                </TouchableOpacity>
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"1,145"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"28%"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-              </View>
-              <View
-                style={[
-                  tabStyle.flexRow,
-                  {
-                    marginBottom: verticalScale(4),
-                    borderBottomWidth: 1,
-                    borderBottomColor: "#EAEAEA",
-                    paddingBottom: verticalScale(7),
-                    marginBottom: verticalScale(7),
-                  },
-                ]}
-              >
-                <TouchableOpacity
-                  style={[
-                    tabStyle.dropbutton1,
-                    {
-                      width: 90,
-                      paddingHorizontal: 5,
-                    },
-                  ]}
-                >
-                  <TextComponent
-                    color={COLORS.white}
-                    fontSize={9}
-                    title={"Ciprofloxacin"}
-                    fontFamily={FONTS.Samsungsharpsans_Bold}
-                  />
-                </TouchableOpacity>
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"2,145"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"56%"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-              </View>
-              <View
-                style={[
-                  tabStyle.flexRow,
-                  {
-                    marginBottom: verticalScale(4),
-                    borderBottomWidth: 1,
-                    borderBottomColor: "#EAEAEA",
-                    paddingBottom: verticalScale(7),
-                    marginBottom: verticalScale(7),
-                  },
-                ]}
-              >
-                <TouchableOpacity
-                  style={[
-                    tabStyle.dropbutton1,
-                    {
-                      width: 90,
-                      paddingHorizontal: 5,
-                    },
-                  ]}
-                >
-                  <TextComponent
-                    color={COLORS.white}
-                    fontSize={9}
-                    title={"Levofloxacin"}
-                    fontFamily={FONTS.Samsungsharpsans_Bold}
-                  />
-                </TouchableOpacity>
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"1,145"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"28%"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-              </View>
-              <View
-                style={[
-                  tabStyle.flexRow,
-                  {
-                    marginBottom: verticalScale(4),
-                    borderBottomWidth: 1,
-                    borderBottomColor: "#EAEAEA",
-                    paddingBottom: verticalScale(7),
-                    marginBottom: verticalScale(7),
-                  },
-                ]}
-              >
-                <TouchableOpacity
-                  style={[
-                    tabStyle.dropbutton1,
-                    {
-                      width: 90,
-                      paddingHorizontal: 5,
-                    },
-                  ]}
-                >
-                  <TextComponent
-                    color={COLORS.white}
-                    fontSize={9}
-                    title={"Ciprofloxacin"}
-                    fontFamily={FONTS.Samsungsharpsans_Bold}
-                  />
-                </TouchableOpacity>
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"2,145"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"56%"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-              </View>
-              <View
-                style={[
-                  tabStyle.flexRow,
-                  {
-                    marginBottom: verticalScale(4),
-                    borderBottomWidth: 1,
-                    borderBottomColor: "#EAEAEA",
-                    paddingBottom: verticalScale(7),
-                    marginBottom: verticalScale(7),
-                  },
-                ]}
-              >
-                <TouchableOpacity
-                  style={[
-                    tabStyle.dropbutton1,
-                    {
-                      width: 90,
-                      paddingHorizontal: 5,
-                    },
-                  ]}
-                >
-                  <TextComponent
-                    color={COLORS.white}
-                    fontSize={9}
-                    title={"Levofloxacin"}
-                    fontFamily={FONTS.Samsungsharpsans_Bold}
-                  />
-                </TouchableOpacity>
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"1,145"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"28%"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-              </View>
+                </View>
+              ))}
             </ScrollView>
 
             {/* Custom Scroll Indicator */}
@@ -621,349 +422,57 @@ export default function AnimatedExploreDotSlider({ content }) {
               )}
               scrollEventThrottle={16}
             >
-              <View
-                style={[
-                  tabStyle.flexRow,
-                  {
-                    marginBottom: verticalScale(4),
-                    borderBottomWidth: 1,
-                    borderBottomColor: "#EAEAEA",
-                    paddingBottom: verticalScale(7),
-                    marginBottom: verticalScale(7),
-                  },
-                ]}
-              >
-                <TouchableOpacity
+              {exploreStat?.takenWith.map((item) => (
+                <View
                   style={[
-                    tabStyle.dropbutton1,
+                    tabStyle.flexRow,
                     {
-                      width: 90,
-                      paddingHorizontal: 5,
+                      marginBottom: verticalScale(4),
+                      borderBottomWidth: 1,
+                      borderBottomColor: "#EAEAEA",
+                      paddingBottom: verticalScale(7),
+                      marginBottom: verticalScale(7),
                     },
                   ]}
                 >
+                  <TouchableOpacity
+                    style={[
+                      tabStyle.dropbutton1,
+                      {
+                        width: 90,
+                        paddingHorizontal: 5,
+                      },
+                    ]}
+                  >
+                    <TextComponent
+                      color={COLORS.white}
+                      fontSize={9}
+                      title={item.combine}
+                      fontFamily={FONTS.Samsungsharpsans_Bold}
+                    />
+                  </TouchableOpacity>
+
                   <TextComponent
-                    color={COLORS.white}
-                    fontSize={9}
-                    title={"Ciprofloxacin"}
+                    color={COLORS.primary}
+                    fontSize={22}
+                    title={item.minPills}
                     fontFamily={FONTS.Samsungsharpsans_Bold}
                   />
-                </TouchableOpacity>
 
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"12"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"1"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"9"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-              </View>
-              <View
-                style={[
-                  tabStyle.flexRow,
-                  {
-                    marginBottom: verticalScale(4),
-                    borderBottomWidth: 1,
-                    borderBottomColor: "#EAEAEA",
-                    paddingBottom: verticalScale(7),
-                    marginBottom: verticalScale(7),
-                  },
-                ]}
-              >
-                <TouchableOpacity
-                  style={[
-                    tabStyle.dropbutton1,
-                    {
-                      width: 90,
-                      paddingHorizontal: 5,
-                    },
-                  ]}
-                >
                   <TextComponent
-                    color={COLORS.white}
-                    fontSize={9}
-                    title={"Ciprofloxacin"}
+                    color={COLORS.primary}
+                    fontSize={22}
+                    title={item.maxPills}
                     fontFamily={FONTS.Samsungsharpsans_Bold}
                   />
-                </TouchableOpacity>
-
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"12"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"1"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"9"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-              </View>
-              <View
-                style={[
-                  tabStyle.flexRow,
-                  {
-                    marginBottom: verticalScale(4),
-                    borderBottomWidth: 1,
-                    borderBottomColor: "#EAEAEA",
-                    paddingBottom: verticalScale(7),
-                    marginBottom: verticalScale(7),
-                  },
-                ]}
-              >
-                <TouchableOpacity
-                  style={[
-                    tabStyle.dropbutton1,
-                    {
-                      width: 90,
-                      paddingHorizontal: 5,
-                    },
-                  ]}
-                >
                   <TextComponent
-                    color={COLORS.white}
-                    fontSize={9}
-                    title={"Ciprofloxacin"}
+                    color={COLORS.primary}
+                    fontSize={22}
+                    title={item.avgPills}
                     fontFamily={FONTS.Samsungsharpsans_Bold}
                   />
-                </TouchableOpacity>
-
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"12"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"1"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"9"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-              </View>
-              <View
-                style={[
-                  tabStyle.flexRow,
-                  {
-                    marginBottom: verticalScale(4),
-                    borderBottomWidth: 1,
-                    borderBottomColor: "#EAEAEA",
-                    paddingBottom: verticalScale(7),
-                    marginBottom: verticalScale(7),
-                  },
-                ]}
-              >
-                <TouchableOpacity
-                  style={[
-                    tabStyle.dropbutton1,
-                    {
-                      width: 90,
-                      paddingHorizontal: 5,
-                    },
-                  ]}
-                >
-                  <TextComponent
-                    color={COLORS.white}
-                    fontSize={9}
-                    title={"Ciprofloxacin"}
-                    fontFamily={FONTS.Samsungsharpsans_Bold}
-                  />
-                </TouchableOpacity>
-
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"12"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"1"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"9"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-              </View>
-              <View
-                style={[
-                  tabStyle.flexRow,
-                  {
-                    marginBottom: verticalScale(4),
-                    borderBottomWidth: 1,
-                    borderBottomColor: "#EAEAEA",
-                    paddingBottom: verticalScale(7),
-                    marginBottom: verticalScale(7),
-                  },
-                ]}
-              >
-                <TouchableOpacity
-                  style={[
-                    tabStyle.dropbutton1,
-                    {
-                      width: 90,
-                      paddingHorizontal: 5,
-                    },
-                  ]}
-                >
-                  <TextComponent
-                    color={COLORS.white}
-                    fontSize={9}
-                    title={"Ciprofloxacin"}
-                    fontFamily={FONTS.Samsungsharpsans_Bold}
-                  />
-                </TouchableOpacity>
-
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"12"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"1"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"9"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-              </View>
-              <View
-                style={[
-                  tabStyle.flexRow,
-                  {
-                    marginBottom: verticalScale(4),
-                    borderBottomWidth: 1,
-                    borderBottomColor: "#EAEAEA",
-                    paddingBottom: verticalScale(7),
-                    marginBottom: verticalScale(7),
-                  },
-                ]}
-              >
-                <TouchableOpacity
-                  style={[
-                    tabStyle.dropbutton1,
-                    {
-                      width: 90,
-                      paddingHorizontal: 5,
-                    },
-                  ]}
-                >
-                  <TextComponent
-                    color={COLORS.white}
-                    fontSize={9}
-                    title={"Ciprofloxacin"}
-                    fontFamily={FONTS.Samsungsharpsans_Bold}
-                  />
-                </TouchableOpacity>
-
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"12"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"1"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"9"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-              </View>
-              <View
-                style={[
-                  tabStyle.flexRow,
-                  {
-                    marginBottom: verticalScale(4),
-                    borderBottomWidth: 1,
-                    borderBottomColor: "#EAEAEA",
-                    paddingBottom: verticalScale(7),
-                    marginBottom: verticalScale(7),
-                  },
-                ]}
-              >
-                <TouchableOpacity
-                  style={[
-                    tabStyle.dropbutton1,
-                    {
-                      width: 90,
-                      paddingHorizontal: 5,
-                    },
-                  ]}
-                >
-                  <TextComponent
-                    color={COLORS.white}
-                    fontSize={9}
-                    title={"Ciprofloxacin"}
-                    fontFamily={FONTS.Samsungsharpsans_Bold}
-                  />
-                </TouchableOpacity>
-
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"12"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"1"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"9"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-              </View>
+                </View>
+              ))}
             </ScrollView>
 
             {/* Custom Scroll Indicator */}
@@ -1069,153 +578,57 @@ export default function AnimatedExploreDotSlider({ content }) {
               )}
               scrollEventThrottle={16}
             >
-              <View
-                style={[
-                  tabStyle.flexRow,
-                  {
-                    marginBottom: verticalScale(4),
-                    borderBottomWidth: 1,
-                    borderBottomColor: "#EAEAEA",
-                    paddingBottom: verticalScale(7),
-                    marginBottom: verticalScale(7),
-                  },
-                ]}
-              >
-                <TouchableOpacity
+              {exploreStat?.takenWith.map((item) => (
+                <View
                   style={[
-                    tabStyle.dropbutton1,
+                    tabStyle.flexRow,
                     {
-                      width: 90,
-                      paddingHorizontal: 5,
+                      marginBottom: verticalScale(4),
+                      borderBottomWidth: 1,
+                      borderBottomColor: "#EAEAEA",
+                      paddingBottom: verticalScale(7),
+                      marginBottom: verticalScale(7),
                     },
                   ]}
                 >
+                  <TouchableOpacity
+                    style={[
+                      tabStyle.dropbutton1,
+                      {
+                        width: 90,
+                        paddingHorizontal: 5,
+                      },
+                    ]}
+                  >
+                    <TextComponent
+                      color={COLORS.white}
+                      fontSize={9}
+                      title={item.combine}
+                      fontFamily={FONTS.Samsungsharpsans_Bold}
+                    />
+                  </TouchableOpacity>
+
                   <TextComponent
-                    color={COLORS.white}
-                    fontSize={9}
-                    title={"Nothing"}
+                    color={COLORS.primary}
+                    fontSize={22}
+                    title={item.minPills}
                     fontFamily={FONTS.Samsungsharpsans_Bold}
                   />
-                </TouchableOpacity>
 
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"1"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"1"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"9"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-              </View>
-              <View
-                style={[
-                  tabStyle.flexRow,
-                  {
-                    marginBottom: verticalScale(4),
-                    borderBottomWidth: 1,
-                    borderBottomColor: "#EAEAEA",
-                    paddingBottom: verticalScale(7),
-                    marginBottom: verticalScale(7),
-                  },
-                ]}
-              >
-                <TouchableOpacity
-                  style={[
-                    tabStyle.dropbutton1,
-                    {
-                      width: 90,
-                      paddingHorizontal: 5,
-                    },
-                  ]}
-                >
                   <TextComponent
-                    color={COLORS.white}
-                    fontSize={9}
-                    title={"NSAIDS"}
+                    color={COLORS.primary}
+                    fontSize={22}
+                    title={item.maxPills}
                     fontFamily={FONTS.Samsungsharpsans_Bold}
                   />
-                </TouchableOpacity>
-
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"1"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"1"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"9"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-              </View>
-              <View
-                style={[
-                  tabStyle.flexRow,
-                  {
-                    marginBottom: verticalScale(4),
-                    borderBottomWidth: 1,
-                    borderBottomColor: "#EAEAEA",
-                    paddingBottom: verticalScale(7),
-                    marginBottom: verticalScale(7),
-                  },
-                ]}
-              >
-                <TouchableOpacity
-                  style={[
-                    tabStyle.dropbutton1,
-                    {
-                      width: 90,
-                      paddingHorizontal: 5,
-                    },
-                  ]}
-                >
                   <TextComponent
-                    color={COLORS.white}
-                    fontSize={9}
-                    title={"Corticosteroids"}
+                    color={COLORS.primary}
+                    fontSize={22}
+                    title={item.avgPills}
                     fontFamily={FONTS.Samsungsharpsans_Bold}
                   />
-                </TouchableOpacity>
-
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"1"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"1"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"9"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-              </View>
+                </View>
+              ))}
             </ScrollView>
 
             {/* Custom Scroll Indicator */}
@@ -1279,11 +692,11 @@ export default function AnimatedExploreDotSlider({ content }) {
             {/* Row 1: Men */}
             <View style={tabStyle.row}>
               <View style={tabStyle.column}>
-                <Text style={tabStyle.number}>63</Text>
+                <Text style={tabStyle.number}>{numberWithCommas(exploreStat?.doctorWarn?.doctorWarnYes)}</Text>
                 <Text style={tabStyle.label}>Yes</Text>
               </View>
               <View style={tabStyle.column}>
-                <Text style={tabStyle.percentage}>2%</Text>
+                <Text style={tabStyle.percentage}>{exploreStat?.doctorWarn?.warnYesPer}%</Text>
                 <Text style={tabStyle.label}>Percent</Text>
               </View>
             </View>
@@ -1294,11 +707,11 @@ export default function AnimatedExploreDotSlider({ content }) {
             {/* Row 2: Women */}
             <View style={tabStyle.row}>
               <View style={tabStyle.column}>
-                <Text style={tabStyle.number}>3,142</Text>
+                <Text style={tabStyle.number}>{numberWithCommas(exploreStat?.doctorWarn?.doctorWarnNo)}</Text>
                 <Text style={tabStyle.label}>No</Text>
               </View>
               <View style={tabStyle.column}>
-                <Text style={tabStyle.percentage}>98%</Text>
+                <Text style={tabStyle.percentage}>{exploreStat?.doctorWarn?.warnNoPer}%</Text>
                 <Text style={tabStyle.label}>Percent</Text>
               </View>
             </View>
@@ -1316,7 +729,7 @@ export default function AnimatedExploreDotSlider({ content }) {
             <TextComponent
               color={COLORS.primary}
               fontSize={17}
-              title={"Did your doctor warn you  about serious side effects?"}
+              title={"Was your doctor supportive after and provided you with care?"}
               marginBottom={0}
               fontFamily={FONTS.Samsungsharpsans_Bold}
               textAlign={"center"}
@@ -1325,11 +738,11 @@ export default function AnimatedExploreDotSlider({ content }) {
             {/* Row 1: Men */}
             <View style={tabStyle.row}>
               <View style={tabStyle.column}>
-                <Text style={tabStyle.number}>532</Text>
+                <Text style={tabStyle.number}>{numberWithCommas(exploreStat?.doctorSupport?.doctorWarnYesSup)}</Text>
                 <Text style={tabStyle.label}>Yes</Text>
               </View>
               <View style={tabStyle.column}>
-                <Text style={tabStyle.percentage}>18%</Text>
+                <Text style={tabStyle.percentage}>{numberWithCommas(exploreStat?.doctorSupport?.warnYesPerSup)}%</Text>
                 <Text style={tabStyle.label}>Percent</Text>
               </View>
             </View>
@@ -1340,11 +753,11 @@ export default function AnimatedExploreDotSlider({ content }) {
             {/* Row 2: Women */}
             <View style={tabStyle.row}>
               <View style={tabStyle.column}>
-                <Text style={tabStyle.number}>2,712</Text>
+                <Text style={tabStyle.number}>{numberWithCommas(exploreStat?.doctorSupport?.doctorWarnNoSup)}</Text>
                 <Text style={tabStyle.label}>No</Text>
               </View>
               <View style={tabStyle.column}>
-                <Text style={tabStyle.percentage}>98%</Text>
+                <Text style={tabStyle.percentage}>{numberWithCommas(exploreStat?.doctorSupport?.warnNoPerSup)}%</Text>
                 <Text style={tabStyle.label}>Percent</Text>
               </View>
             </View>
@@ -1360,7 +773,7 @@ export default function AnimatedExploreDotSlider({ content }) {
           <View style={tabStyle.tableHeader}>
             <TextComponent
               color={COLORS.primary}
-              fontSize={13}
+              fontSize={15}
               title={"Severity"}
               marginBottom={15}
               fontFamily={FONTS.Samsungsharpsans_Bold}
@@ -1369,7 +782,7 @@ export default function AnimatedExploreDotSlider({ content }) {
 
             <TextComponent
               color={COLORS.primary}
-              fontSize={13}
+              fontSize={15}
               title={"Number"}
               marginBottom={15}
               fontFamily={FONTS.Samsungsharpsans_Bold}
@@ -1378,16 +791,8 @@ export default function AnimatedExploreDotSlider({ content }) {
 
             <TextComponent
               color={COLORS.primary}
-              fontSize={13}
+              fontSize={15}
               title={"Percent"}
-              textAlign={"center"}
-              marginBottom={15}
-              fontFamily={FONTS.Samsungsharpsans_Bold}
-            />
-            <TextComponent
-              color={COLORS.primary}
-              fontSize={13}
-              title={"Average"}
               textAlign={"center"}
               marginBottom={15}
               fontFamily={FONTS.Samsungsharpsans_Bold}
@@ -1425,7 +830,7 @@ export default function AnimatedExploreDotSlider({ content }) {
                   },
                 ]}
               >
-                <TouchableOpacity
+                <View
                   style={[
                     tabStyle.dropbutton1,
                     {
@@ -1437,28 +842,21 @@ export default function AnimatedExploreDotSlider({ content }) {
                   <TextComponent
                     color={COLORS.white}
                     fontSize={9}
-                    title={"Mild"}
+                    title={'Mild'}
                     fontFamily={FONTS.Samsungsharpsans_Bold}
                   />
-                </TouchableOpacity>
-
+                </View>
                 <TextComponent
                   color={COLORS.primary}
                   fontSize={22}
-                  title={"1"}
+                  title={numberWithCommas(exploreStat?.severity?.sev_mild)}
                   fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"1"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
+                  textAlign={'right'}
                 />
                 <TextComponent
                   color={COLORS.primary}
                   fontSize={22}
-                  title={"9"}
+                  title={numberWithCommas(exploreStat?.severity?.sev_mildP)}
                   fontFamily={FONTS.Samsungsharpsans_Bold}
                 />
               </View>
@@ -1474,7 +872,7 @@ export default function AnimatedExploreDotSlider({ content }) {
                   },
                 ]}
               >
-                <TouchableOpacity
+                <View
                   style={[
                     tabStyle.dropbutton1,
                     {
@@ -1486,31 +884,26 @@ export default function AnimatedExploreDotSlider({ content }) {
                   <TextComponent
                     color={COLORS.white}
                     fontSize={9}
-                    title={"Moderate"}
+                    title={'Moderate'}
                     fontFamily={FONTS.Samsungsharpsans_Bold}
                   />
-                </TouchableOpacity>
-
+                </View>
                 <TextComponent
                   color={COLORS.primary}
                   fontSize={22}
-                  title={"1"}
+                  title={numberWithCommas(exploreStat?.severity?.sev_moderate)}
                   fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"1"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
+                  textAlign={'center'}
                 />
                 <TextComponent
                   color={COLORS.primary}
                   fontSize={22}
-                  title={"9"}
+                  title={numberWithCommas(exploreStat?.severity?.sev_moderateP)}
                   fontFamily={FONTS.Samsungsharpsans_Bold}
+                  textAlign={'right'}
                 />
               </View>
+
               <View
                 style={[
                   tabStyle.flexRow,
@@ -1523,7 +916,7 @@ export default function AnimatedExploreDotSlider({ content }) {
                   },
                 ]}
               >
-                <TouchableOpacity
+                <View
                   style={[
                     tabStyle.dropbutton1,
                     {
@@ -1534,29 +927,65 @@ export default function AnimatedExploreDotSlider({ content }) {
                 >
                   <TextComponent
                     color={COLORS.white}
-                    fontSize={8}
-                    title={"Severe"}
+                    fontSize={9}
+                    title={'Severe'}
                     fontFamily={FONTS.Samsungsharpsans_Bold}
                   />
-                </TouchableOpacity>
-
+                </View>
                 <TextComponent
                   color={COLORS.primary}
                   fontSize={22}
-                  title={"1"}
+                  title={numberWithCommas(exploreStat?.severity?.sev_severe)}
                   fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"1"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
+                  textAlign={'right'}
                 />
                 <TextComponent
                   color={COLORS.primary}
                   fontSize={22}
-                  title={"9"}
+                  title={numberWithCommas(exploreStat?.severity?.sev_severeP)}
+                  fontFamily={FONTS.Samsungsharpsans_Bold}
+                  textAlign={'right'}
+                />
+              </View>
+
+              <View
+                style={[
+                  tabStyle.flexRow,
+                  {
+                    marginBottom: verticalScale(4),
+                    borderBottomWidth: 1,
+                    borderBottomColor: "#EAEAEA",
+                    paddingBottom: verticalScale(7),
+                    marginBottom: verticalScale(7),
+                  },
+                ]}
+              >
+                <View
+                  style={[
+                    tabStyle.dropbutton1,
+                    {
+                      width: 90,
+                      paddingHorizontal: 5,
+                    },
+                  ]}
+                >
+                  <TextComponent
+                    color={COLORS.white}
+                    fontSize={9}
+                    title={'Severe +'}
+                    fontFamily={FONTS.Samsungsharpsans_Bold}
+                  />
+                </View>
+                <TextComponent
+                  color={COLORS.primary}
+                  fontSize={22}
+                  title={numberWithCommas(exploreStat?.severity?.sev_severePlus)}
+                  fontFamily={FONTS.Samsungsharpsans_Bold}
+                />
+                <TextComponent
+                  color={COLORS.primary}
+                  fontSize={22}
+                  title={numberWithCommas(exploreStat?.severity?.sev_severePlusP)}
                   fontFamily={FONTS.Samsungsharpsans_Bold}
                 />
               </View>
@@ -1976,212 +1405,49 @@ export default function AnimatedExploreDotSlider({ content }) {
               )}
               scrollEventThrottle={16}
             >
-              <View
-                style={[
-                  tabStyle.flexRow,
-                  {
-                    marginBottom: verticalScale(4),
-                    borderBottomWidth: 1,
-                    borderBottomColor: "#EAEAEA",
-                    paddingBottom: verticalScale(7),
-                    marginBottom: verticalScale(7),
-                  },
-                ]}
-              >
-                <TouchableOpacity
+              {exploreStat.drugPercentageFloxed.map((item, index) => (
+                <View
                   style={[
-                    tabStyle.dropbutton1,
+                    tabStyle.flexRow,
                     {
-                      width: 90,
-                      paddingHorizontal: 5,
+                      marginBottom: verticalScale(4),
+                      borderBottomWidth: 1,
+                      borderBottomColor: "#EAEAEA",
+                      paddingBottom: verticalScale(7),
+                      marginBottom: verticalScale(7),
                     },
                   ]}
                 >
+                  <TouchableOpacity
+                    style={[
+                      tabStyle.dropbutton1,
+                      {
+                        minWidth: normalize(10),
+                        paddingHorizontal: normalize(10),
+                      },
+                    ]}
+                  >
+                    <TextComponent
+                      color={COLORS.white}
+                      fontSize={9}
+                      title={item.name}
+                      fontFamily={FONTS.Samsungsharpsans_Bold}
+                    />
+                  </TouchableOpacity>
                   <TextComponent
-                    color={COLORS.white}
-                    fontSize={9}
-                    title={"Amoxicillin"}
+                    color={COLORS.primary}
+                    fontSize={22}
+                    title={item.total}
                     fontFamily={FONTS.Samsungsharpsans_Bold}
                   />
-                </TouchableOpacity>
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"2,145"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"56%"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-              </View>
-              <View
-                style={[
-                  tabStyle.flexRow,
-                  {
-                    marginBottom: verticalScale(4),
-                    borderBottomWidth: 1,
-                    borderBottomColor: "#EAEAEA",
-                    paddingBottom: verticalScale(7),
-                    marginBottom: verticalScale(7),
-                  },
-                ]}
-              >
-                <TouchableOpacity
-                  style={[
-                    tabStyle.dropbutton1,
-                    {
-                      width: 90,
-                      paddingHorizontal: 5,
-                    },
-                  ]}
-                >
                   <TextComponent
-                    color={COLORS.white}
-                    fontSize={9}
-                    title={"Augmentin"}
+                    color={COLORS.primary}
+                    fontSize={22}
+                    title={item.yesPercentage + '%'}
                     fontFamily={FONTS.Samsungsharpsans_Bold}
                   />
-                </TouchableOpacity>
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"1,145"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"28%"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-              </View>
-              <View
-                style={[
-                  tabStyle.flexRow,
-                  {
-                    marginBottom: verticalScale(4),
-                    borderBottomWidth: 1,
-                    borderBottomColor: "#EAEAEA",
-                    paddingBottom: verticalScale(7),
-                    marginBottom: verticalScale(7),
-                  },
-                ]}
-              >
-                <TouchableOpacity
-                  style={[
-                    tabStyle.dropbutton1,
-                    {
-                      width: 90,
-                      paddingHorizontal: 5,
-                    },
-                  ]}
-                >
-                  <TextComponent
-                    color={COLORS.white}
-                    fontSize={9}
-                    title={"NSAIDS"}
-                    fontFamily={FONTS.Samsungsharpsans_Bold}
-                  />
-                </TouchableOpacity>
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"2,145"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"56%"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-              </View>
-              <View
-                style={[
-                  tabStyle.flexRow,
-                  {
-                    marginBottom: verticalScale(4),
-                    borderBottomWidth: 1,
-                    borderBottomColor: "#EAEAEA",
-                    paddingBottom: verticalScale(7),
-                    marginBottom: verticalScale(7),
-                  },
-                ]}
-              >
-                <TouchableOpacity
-                  style={[
-                    tabStyle.dropbutton1,
-                    {
-                      width: 90,
-                      paddingHorizontal: 5,
-                    },
-                  ]}
-                >
-                  <TextComponent
-                    color={COLORS.white}
-                    fontSize={9}
-                    title={"Corticosteroids"}
-                    fontFamily={FONTS.Samsungsharpsans_Bold}
-                  />
-                </TouchableOpacity>
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"1,145"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"28%"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-              </View>
-
-              <View
-                style={[
-                  tabStyle.flexRow,
-                  {
-                    marginBottom: verticalScale(4),
-                    borderBottomWidth: 1,
-                    borderBottomColor: "#EAEAEA",
-                    paddingBottom: verticalScale(7),
-                    marginBottom: verticalScale(7),
-                  },
-                ]}
-              >
-                <TouchableOpacity
-                  style={[
-                    tabStyle.dropbutton1,
-                    {
-                      width: 90,
-                      paddingHorizontal: 5,
-                    },
-                  ]}
-                >
-                  <TextComponent
-                    color={COLORS.white}
-                    fontSize={9}
-                    title={"Gabapentin"}
-                    fontFamily={FONTS.Samsungsharpsans_Bold}
-                  />
-                </TouchableOpacity>
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"2,145"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"56%"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-              </View>
+                </View>
+              ))}
 
             </ScrollView>
 
@@ -2433,252 +1699,49 @@ export default function AnimatedExploreDotSlider({ content }) {
               )}
               scrollEventThrottle={16}
             >
-              <View
-                style={[
-                  tabStyle.flexRow,
-                  {
-                    marginBottom: verticalScale(4),
-                    borderBottomWidth: 1,
-                    borderBottomColor: "#EAEAEA",
-                    paddingBottom: verticalScale(7),
-                    marginBottom: verticalScale(7),
-                  },
-                ]}
-              >
-                <TouchableOpacity
+              {exploreStat?.country.map((item, index) => (
+                <View
                   style={[
-                    tabStyle.dropbutton1,
+                    tabStyle.flexRow,
                     {
-                      width: 90,
-                      paddingHorizontal: 5,
+                      marginBottom: verticalScale(4),
+                      borderBottomWidth: 1,
+                      borderBottomColor: "#EAEAEA",
+                      paddingBottom: verticalScale(7),
+                      marginBottom: verticalScale(7),
                     },
                   ]}
                 >
+                  <TouchableOpacity
+                    style={[
+                      tabStyle.dropbutton1,
+                      {
+                        width: 90,
+                        paddingHorizontal: 5,
+                      },
+                    ]}
+                  >
+                    <TextComponent
+                      color={COLORS.white}
+                      fontSize={9}
+                      title={item.country}
+                      fontFamily={FONTS.Samsungsharpsans_Bold}
+                    />
+                  </TouchableOpacity>
                   <TextComponent
-                    color={COLORS.white}
-                    fontSize={9}
-                    title={"USA"}
+                    color={COLORS.primary}
+                    fontSize={22}
+                    title={item.count}
                     fontFamily={FONTS.Samsungsharpsans_Bold}
                   />
-                </TouchableOpacity>
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"2,145"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"56%"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-              </View>
-              <View
-                style={[
-                  tabStyle.flexRow,
-                  {
-                    marginBottom: verticalScale(4),
-                    borderBottomWidth: 1,
-                    borderBottomColor: "#EAEAEA",
-                    paddingBottom: verticalScale(7),
-                    marginBottom: verticalScale(7),
-                  },
-                ]}
-              >
-                <TouchableOpacity
-                  style={[
-                    tabStyle.dropbutton1,
-                    {
-                      width: 90,
-                      paddingHorizontal: 5,
-                    },
-                  ]}
-                >
                   <TextComponent
-                    color={COLORS.white}
-                    fontSize={9}
-                    title={"UK"}
+                    color={COLORS.primary}
+                    fontSize={22}
+                    title={item.percent + '%'}
                     fontFamily={FONTS.Samsungsharpsans_Bold}
                   />
-                </TouchableOpacity>
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"1,145"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"28%"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-              </View>
-              <View
-                style={[
-                  tabStyle.flexRow,
-                  {
-                    marginBottom: verticalScale(4),
-                    borderBottomWidth: 1,
-                    borderBottomColor: "#EAEAEA",
-                    paddingBottom: verticalScale(7),
-                    marginBottom: verticalScale(7),
-                  },
-                ]}
-              >
-                <TouchableOpacity
-                  style={[
-                    tabStyle.dropbutton1,
-                    {
-                      width: 90,
-                      paddingHorizontal: 5,
-                    },
-                  ]}
-                >
-                  <TextComponent
-                    color={COLORS.white}
-                    fontSize={9}
-                    title={"USA"}
-                    fontFamily={FONTS.Samsungsharpsans_Bold}
-                  />
-                </TouchableOpacity>
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"2,145"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"56%"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-              </View>
-              <View
-                style={[
-                  tabStyle.flexRow,
-                  {
-                    marginBottom: verticalScale(4),
-                    borderBottomWidth: 1,
-                    borderBottomColor: "#EAEAEA",
-                    paddingBottom: verticalScale(7),
-                    marginBottom: verticalScale(7),
-                  },
-                ]}
-              >
-                <TouchableOpacity
-                  style={[
-                    tabStyle.dropbutton1,
-                    {
-                      width: 90,
-                      paddingHorizontal: 5,
-                    },
-                  ]}
-                >
-                  <TextComponent
-                    color={COLORS.white}
-                    fontSize={9}
-                    title={"UK"}
-                    fontFamily={FONTS.Samsungsharpsans_Bold}
-                  />
-                </TouchableOpacity>
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"1,145"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"28%"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-              </View>
-              <View
-                style={[
-                  tabStyle.flexRow,
-                  {
-                    marginBottom: verticalScale(4),
-                    borderBottomWidth: 1,
-                    borderBottomColor: "#EAEAEA",
-                    paddingBottom: verticalScale(7),
-                    marginBottom: verticalScale(7),
-                  },
-                ]}
-              >
-                <TouchableOpacity
-                  style={[
-                    tabStyle.dropbutton1,
-                    {
-                      width: 90,
-                      paddingHorizontal: 5,
-                    },
-                  ]}
-                >
-                  <TextComponent
-                    color={COLORS.white}
-                    fontSize={9}
-                    title={"USA"}
-                    fontFamily={FONTS.Samsungsharpsans_Bold}
-                  />
-                </TouchableOpacity>
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"2,145"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"56%"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-              </View>
-              <View
-                style={[
-                  tabStyle.flexRow,
-                  {
-                    marginBottom: verticalScale(4),
-                    borderBottomWidth: 1,
-                    borderBottomColor: "#EAEAEA",
-                    paddingBottom: verticalScale(7),
-                    marginBottom: verticalScale(7),
-                  },
-                ]}
-              >
-                <TouchableOpacity
-                  style={[
-                    tabStyle.dropbutton1,
-                    {
-                      width: 90,
-                      paddingHorizontal: 5,
-                    },
-                  ]}
-                >
-                  <TextComponent
-                    color={COLORS.white}
-                    fontSize={9}
-                    title={"UK"}
-                    fontFamily={FONTS.Samsungsharpsans_Bold}
-                  />
-                </TouchableOpacity>
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"1,145"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-                <TextComponent
-                  color={COLORS.primary}
-                  fontSize={22}
-                  title={"28%"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-              </View>
+                </View>
+              ))}
             </ScrollView>
 
             {/* Custom Scroll Indicator */}

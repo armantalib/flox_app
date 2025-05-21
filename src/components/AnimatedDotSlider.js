@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import {
   Animated,
   Dimensions,
@@ -25,6 +25,15 @@ import {
   StackedBarChart
 } from "react-native-chart-kit";
 import stylesG from "../assets/css/stylesG";
+import { searchByDate } from "../utils/Helper";
+import moment from "moment";
+import { useNavigation } from "@react-navigation/native";
+import { SCREENS } from "../constants/Screen";
+import { useDispatch, useSelector } from "react-redux";
+import { setStepsData } from "../storeTolkit/stepsSlice";
+import HomeSymptomSliderComp from "./HomeSymptomSliderComp";
+import HomeSliderRecoveryChart from "./HomeSliderRecoveryChart";
+import HomeSliderBarChart from "./HomeSliderBarChart";
 const tagsData = [
   { id: 1, title: "Tendonitis", selected: true },
   { id: 2, title: "Neuropathy" },
@@ -49,9 +58,27 @@ const tagsData = [
   { id: 21, title: "Fatigue" },
 ];
 const screenWidth = Dimensions.get("window").width;
-export default function AnimatedDotSlider({ content }) {
+export default function AnimatedDotSlider({ content }, ...props) {
   const scrollY = useRef(new Animated.Value(0)).current;
   const [selectedTag, setSelectedTag] = useState(1);
+  const [currentMonthPer, setCurrentMonthPer] = useState(null);
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const { stepsData } = useSelector((state) => state?.steps);
+
+  useEffect(() => {
+    checkPerDateBy();
+  }, [stepsData])
+
+  const checkPerDateBy = async () => {
+    if (stepsData?.recovery_history) {
+      const date = moment().format('YYYY-MM')
+      let searchDate = searchByDate(date, stepsData?.recovery_history)
+      if (searchDate.length > 0) {
+        setCurrentMonthPer(searchDate[0])
+      }
+    }
+  }
 
   return (
     <View style={{ flex: 1, position: "relative", padding: 7 }}>
@@ -80,8 +107,8 @@ export default function AnimatedDotSlider({ content }) {
             flex: 1,
           }}
         >
-          <View style={tabStyle.tabContainerCenter}>
-            {content ?
+          {currentMonthPer ?
+            <View style={tabStyle.tabContainerCenter}>
               <>
                 <TextComponent
                   color={COLORS.primary}
@@ -91,7 +118,8 @@ export default function AnimatedDotSlider({ content }) {
                   textAlign={"center"}
                 />
                 <Text style={tabStyle.h1}>
-                  65<Text style={tabStyle.h1small}>%</Text>
+                  {currentMonthPer?.percentage}
+                  <Text style={tabStyle.h1small}>%</Text>
                 </Text>
                 <TextComponent
                   color={COLORS.primary}
@@ -100,266 +128,59 @@ export default function AnimatedDotSlider({ content }) {
                   fontFamily={FONTS.Samsungsharpsans_Medium}
                   textAlign={"center"}
                 />
-              </> :
-              <View style={[{width:'100%',height:normalize(300)},stylesG.contentCenter]}>
-              <Text style={tabStyle.h1}>
-                <Text style={[tabStyle.h1small, { fontSize: normalize(22),lineHeight:normalize(30) }]}>Kindly update this month's data to track the progress</Text>
-              </Text>
-              </View>
-            }
-          </View>
-        </View>
-        {/* 2nd Slide */}
-        <View
-          style={{
-            flex: 1,
-          }}
-        >
-          <TextComponent
-            color={COLORS.primary}
-            fontSize={23}
-            title={"Symptoms I’m\ncurrently experiencing"}
-            marginBottom={15}
-            fontFamily={FONTS.Samsungsharpsans_Bold}
-          />
-          {/* Scrollable Tags Container */}
-          <View
-            style={[
-              {
-                height: Dimensions.get("screen").height * 0.34,
-                flexDirection: "row",
-                overflow: "hidden",
-              },
-            ]}
-          >
-            <ScrollView
-              contentContainerStyle={{ flexGrow: 1 }}
-              showsVerticalScrollIndicator={false}
-              onScroll={Animated.event(
-                [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-                { useNativeDriver: false }
-              )}
-              scrollEventThrottle={16}
-            >
-              <View style={commonStyle.row}>
-                {tagsData.map((item) => (
-                  <TouchableOpacity
-                    key={item.id}
-                    style={[
-                      commonStyle.tag,
-                      {
-                        alignSelf: "flex-start",
-                        paddingHorizontal: 13,
-                        paddingVertical: 10,
-                        margin: 5,
-                      },
-                      item.id === selectedTag
-                        ? commonStyle.selectedTag
-                        : commonStyle.unselectedTag,
-                    ]}
-                    onPress={() => setSelectedTag(item.id)}
-                  >
-                    <Text
-                      style={[
-                        commonStyle.tagText,
-                        { flexWrap: "wrap", textAlign: "center" },
-                        item.id === selectedTag && commonStyle.selectedText,
-                      ]}
-                    >
-                      {item.title}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-            </ScrollView>
-
-            {/* Custom Scroll Indicator */}
+              </>
+            </View> :
             <View
-              style={{
-                width: 4,
-                height: "100%",
-                backgroundColor: "#EAEAEA",
-                marginLeft: 10,
-                borderRadius: 2,
-                overflow: "hidden",
-              }}
+              style={[
+                tabStyle.tabContainerCenter,
+                {
+                  paddingTop: verticalScale(5),
+                  paddingBottom: verticalScale(25),
+                },
+              ]}
             >
-              <Animated.View
-                style={{
-                  width: 4,
-                  height: 120,
-                  backgroundColor: COLORS.primary,
-                  borderRadius: 2,
-                  transform: [
-                    {
-                      translateY: scrollY.interpolate({
-                        inputRange: [0, 300], // Adjust based on content height
-                        outputRange: [0, 150], // Adjust based on container height
-                        extrapolate: "clamp",
-                      }),
-                    },
-                  ],
+              <TextComponent
+                color={COLORS.primary}
+                fontSize={26}
+                title={"Record your recovery"}
+                fontFamily={FONTS.Samsungsharpsans_Bold}
+                textAlign={"center"}
+              />
+              <TextComponent
+                color={COLORS.primary}
+                fontSize={23}
+                title={
+                  "Track your progress this month to view your results!"
+                }
+                fontFamily={FONTS.Samsungsharpsans_Medium}
+                textAlign={"center"}
+              />
+              <BtnPrimary
+                title="Next"
+                onPress={() => {
+                  // Trigger haptic feedback
+                  navigation.navigate(SCREENS.AuthRoutes, {
+                    screen: SCREENS.StepEight,
+                    params: { pData: { update: true, } },
+                  });
                 }}
               />
             </View>
-          </View>
+          }
         </View>
+        {/* 2nd Slide */}
+        <HomeSymptomSliderComp
+          {...props}
+        />
+
         {/* 3rd Slide */}
-        <View
-          style={{
-            flex: 1,
-          }}
-        >
-          <View style={[tabStyle.flexRow, tabStyle.mb8]}>
-            <TextComponent
-              color={COLORS.primary}
-              fontSize={20}
-              title={"Recovery"}
-              fontFamily={FONTS.Samsungsharpsans_Bold}
-            />
-            <TextComponent
-              color={COLORS.primary}
-              fontSize={14}
-              title={`Wed, Dec 11th`}
-              fontFamily={FONTS.Samsungsharpsans_Bold}
-            />
-          </View>
-          <View style={[tabStyle.flexRow, tabStyle.mb8]}>
-            <Text style={tabStyle.h2}>
-              65<Text style={tabStyle.h2small}>%</Text>
-            </Text>
-            <ToggleSwitch />
-          </View>
-          <View
-            style={[
-              {
-                height: normalize(260),
-                flexDirection: "row",
-                overflow: "hidden",
-                paddingTop: 10,
-                marginTop: normalize(10),
-                marginBottom: verticalScale(1),
-              },
-            ]}
-          >
-
-
-            <LineChart
-              data={{
-                labels: ["January", "February", "March", "April", "May", "June"],
-                datasets: [
-                  {
-                    data: [
-                      Math.random() * 100,
-                      Math.random() * 100,
-                      Math.random() * 100,
-                      Math.random() * 100,
-                      Math.random() * 100,
-                      Math.random() * 100
-                    ]
-                  }
-                ]
-              }}
-              width={Dimensions.get("window").width} // from react-native
-              height={normalize(240)}
-              yAxisLabel=""
-              yAxisSuffix="%"
-              yAxisInterval={1} // optional, defaults to 1
-              chartConfig={{
-                backgroundColor: "transparent",
-                backgroundGradientFrom: "#000000",
-                backgroundGradientTo: "#FFFFFF",
-                decimalPlaces: 0, // optional, defaults to 2dp
-                color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                labelColor: (opacity = 1) => `#FFFFFF`,
-                style: {
-                  borderRadius: 10
-                },
-                propsForDots: {
-                  r: "6",
-                  strokeWidth: "2",
-                  stroke: "#FFFFFF"
-                }
-              }}
-              bezier
-              style={{
-                marginVertical: 8,
-                borderRadius: 10
-              }}
-            />
-
-          </View>
-        </View>
+        <HomeSliderRecoveryChart
+          {...props}
+        />
         {/* 4rth Slide */}
-        <View
-          style={{
-            flex: 1,
-          }}
-        >
-          <View style={[tabStyle.flexRow, tabStyle.mb8]}>
-            <TextComponent
-              color={COLORS.primary}
-              fontSize={20}
-              title={"Average Steps"}
-              fontFamily={FONTS.Samsungsharpsans_Bold}
-            />
-            <TextComponent
-              color={COLORS.primary}
-              fontSize={14}
-              title={`Wed, Dec 11th`}
-              fontFamily={FONTS.Samsungsharpsans_Bold}
-            />
-          </View>
-          <View style={[tabStyle.flexRow, tabStyle.mb8]}>
-            <TextComponent
-              color={COLORS.primary}
-              fontSize={27}
-              title={`4,532`}
-              fontFamily={FONTS.Samsungsharpsans_Medium}
-            />
-            <ToggleSwitch />
-          </View>
-          <View
-            style={[
-              {
-                height: normalize(260),
-                flexDirection: "row",
-                overflow: "hidden",
-                paddingTop: 10,
-                marginTop: normalize(10),
-                marginBottom: verticalScale(1),
-              },
-            ]}
-          >
-            <BarChart
-              style={{
-                marginVertical: 8,
-                borderRadius: 10
-              }}
-              data={data}
-              width={screenWidth}
-              height={normalize(240)}
-              yAxisLabel=""
-              chartConfig={{
-                backgroundColor: "transparent",
-                backgroundGradientFrom: "#000000",
-                backgroundGradientTo: "#FFFFFF",
-                decimalPlaces: 0, // optional, defaults to 2dp
-                color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                labelColor: (opacity = 1) => `#FFFFFF`,
-                style: {
-                  borderRadius: 10
-                },
-                propsForDots: {
-                  r: "6",
-                  strokeWidth: "2",
-                  stroke: "#FFFFFF"
-                }
-              }}
-              verticalLabelRotation={30}
-            />
-          </View>
-        </View>
+        <HomeSliderBarChart
+          {...props}
+        />
         {/* 5th Slide */}
         <View
           style={{

@@ -18,8 +18,9 @@ import SocialCardComponent from "../../components/SocialCardComponent";
 import { SCREENS } from "../../constants/Screen";
 import { normalize } from "../../utils/Metrics";
 import ResourcesCardComp from "../../components/ResourcesCardComp";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { dataGet_ } from "../../utils/myAxios";
+import { setStepsData } from "../../storeTolkit/stepsSlice";
 
 const data = [
   {
@@ -41,12 +42,12 @@ const data = [
   },
 ];
 
-const TabHomeScreen = () => {
+const TabHomeScreen = (props) => {
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
   const user = useSelector((state) => state?.user?.user);
   const [userJournal, setUserJournal] = useState(null)
-
+  const dispatch = useDispatch();
   useEffect(() => {
     if (user?.fq_antibiotic) {
       checkAntibiotic();
@@ -56,10 +57,9 @@ const TabHomeScreen = () => {
   const checkAntibiotic = async () => {
     const endPoint = 'antibiotic/check';
     const response = await dataGet_(endPoint, {});
-    if (response.success) {
-      setUserJournal(response?.data)
+    if (response.success) {  
+      dispatch(setStepsData(response?.data))
     }
-
   }
 
 
@@ -103,6 +103,7 @@ const TabHomeScreen = () => {
           <View style={[tabStyle.tabContainer, { marginBottom: normalize(60) }]}>
             <AnimatedDotSlider
               content={userJournal}
+              {...props}
             />
           </View>
           <SeeAllComponent

@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
   Text,
 } from "react-native";
-import React, { useMemo, useRef, useState } from "react";
+import React, { useMemo, useRef, useState,useEffect } from "react";
 import { styles } from "../Styles";
 import GradientBackground from "../../../components/GradientBackground";
 import { commonStyle } from "../../../constants/style";
@@ -32,6 +32,9 @@ import PickerItem from "../../../components/BottomSheets/PickerItem";
 import { normalize } from "../../../utils/Metrics";
 import stylesG from "../../../assets/css/stylesG";
 import { showToast } from "../../../components/General";
+import { useDispatch, useSelector } from "react-redux";
+import { dataPut } from "../../../utils/myAxios";
+import { setStepsData } from "../../../storeTolkit/stepsSlice";
 
 const tribes = [
   {
@@ -45,9 +48,18 @@ const StepCountScreen = (props) => {
   const scrollY = useRef(new Animated.Value(0)).current;
   const [state, setState] = useState({ consume_date: '', percent: '' })
   const [drugData, setDrugData] = useState([])
+  const [loader, setLoader] = useState(false)
   const [dateModal, setDateModal] = useState(false)
   const refWarn = useRef();
   const { pData } = props.route.params
+  const { stepsData } = useSelector((state) => state?.steps);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (stepsData) {
+      setDrugData(stepsData?.count_history)
+    }
+  }, [])
 
   const addDrugFun = () => {
     if (state.consume_date && state.percent) {
@@ -56,7 +68,7 @@ const StepCountScreen = (props) => {
       const exists = data.some(item => item.date === state.consume_date);
 
       if (!exists) {
-        data.push({ date: state.consume_date, percentage: state.percent });
+        data.push({ date: state.consume_date, steps: state.percent });
         setDrugData(data);
         setState({
           consume_date: '', percent: ''
@@ -69,23 +81,45 @@ const StepCountScreen = (props) => {
     }
   }
 
-    const handleNextPress = () => {
-      // Trigger haptic feedback on button press
-      ReactNativeHapticFeedback.trigger("impactMedium");
-      let obkCont = { ...pData };
-      obkCont.count_history = drugData
-      // Navigate to the next screen
-      navigation.navigate(SCREENS.AuthRoutes, {
-        screen: SCREENS.StepNine,
-        params: { pData: obkCont },
+  const handleNextPress = () => {
+    // Trigger haptic feedback on button press
+    ReactNativeHapticFeedback.trigger("impactMedium");
+    let obkCont = { ...pData };
+    obkCont.count_history = drugData
+    // Navigate to the next screen
+    if (stepsData) {
+      updateData();
+      return
+    }
+    navigation.navigate(SCREENS.AuthRoutes, {
+      screen: SCREENS.StepNine,
+      params: { pData: obkCont },
+    });
+  };
+
+  const updateData = async () => {
+    let data = {
+      id: stepsData?._id,
+      recovery_history: pData?.recovery_history,
+      count_history: drugData
+    }
+    setLoader(true)
+    const endPoint = 'antibiotic/update-recovery';
+    const response = await dataPut(endPoint, data);
+    setLoader(false)
+    if (response?.success) {
+      dispatch(setStepsData(response?.data))
+      navigation.navigate(SCREENS.TabRoutes, {
+        screen: SCREENS.TabHome,
       });
-    };
-  
-    const isCheckValidation = useMemo(() => {
-      return (
-        (drugData.length ?? 0) >= 1
-      );
-    }, [drugData]);
+    }
+  }
+
+  const isCheckValidation = useMemo(() => {
+    return (
+      (drugData.length ?? 0) >= 1
+    );
+  }, [drugData]);
   return (
     <KeyboardAvoidingView
       style={commonStyle.safeArea}
@@ -159,7 +193,7 @@ const StepCountScreen = (props) => {
                       color={COLORS.primary}
                       fontSize={18}
                       lineHeight={20}
-                      title={"Percentage recovered"}
+                      title={"Average steps per day"}
                       fontFamily={FONTS.Samsungsharpsans_Bold}
                       textAlign={"right"}
                     />
@@ -190,7 +224,7 @@ const StepCountScreen = (props) => {
                             <TextComponent
                               color={COLORS.primary}
                               fontSize={22}
-                              title={item.percentage}
+                              title={item.steps}
                               fontFamily={FONTS.Samsungsharpsans_Medium}
                             />
                             <SVG_IMAGES.DownArrow1_SVG />
@@ -207,7 +241,7 @@ const StepCountScreen = (props) => {
                     <TextComponent
                       color={COLORS.primary}
                       fontSize={15}
-                      title={state.consume_date?moment(state.consume_date).format('MMM YYYY') :"Add date"}
+                      title={state.consume_date ? moment(state.consume_date).format('MMM YYYY') : "Add date"}
                       fontFamily={FONTS.Samsungsharpsans_Medium}
                     />
                   </TouchableOpacity>
@@ -218,7 +252,7 @@ const StepCountScreen = (props) => {
                       <TextComponent
                         color={COLORS.primary}
                         fontSize={22}
-                        title={state?.percent?state?.percent:"Select"}
+                        title={state?.percent ? state?.percent : "Select"}
                         fontFamily={FONTS.Samsungsharpsans_Medium}
                       />
                       <SVG_IMAGES.DownArrow1_SVG />
@@ -277,6 +311,7 @@ const StepCountScreen = (props) => {
               handleNextPress()
             }}
             isDisable={!isCheckValidation}
+            loader={loader}
             marginBottom={10}
             title="Next"
           />
@@ -302,7 +337,7 @@ const StepCountScreen = (props) => {
       >
         {custom_data.step_increment.map((item, index) => (
           <PickerItem
-            text={item.name+' Steps'}
+            text={item.name + ' Steps'}
             onPress={() => {
               setState(prevState => ({ ...prevState, percent: item.name }))
               refWarn.current.close()
