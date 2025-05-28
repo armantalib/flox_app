@@ -21,6 +21,7 @@ import ResourcesCardComp from "../../components/ResourcesCardComp";
 import { useDispatch, useSelector } from "react-redux";
 import { dataGet_ } from "../../utils/myAxios";
 import { setStepsData } from "../../storeTolkit/stepsSlice";
+import { setCategoriesHub, setCategoryExplore } from "../../storeTolkit/hubSlice";
 
 const data = [
   {
@@ -46,19 +47,30 @@ const TabHomeScreen = (props) => {
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
   const user = useSelector((state) => state?.user?.user);
+  const { categoriesHub } = useSelector((state) => state?.hub);
   const [userJournal, setUserJournal] = useState(null)
+  const [cardData, setCardData] = useState(null)
   const dispatch = useDispatch();
   useEffect(() => {
     if (user?.fq_antibiotic) {
       checkAntibiotic();
     }
+    getCardData()
   }, [])
 
   const checkAntibiotic = async () => {
     const endPoint = 'antibiotic/check';
     const response = await dataGet_(endPoint, {});
-    if (response.success) {  
+    if (response.success) {
       dispatch(setStepsData(response?.data))
+    }
+  }
+
+  const getCardData = async () => {
+    const endPoint = 'hub/category/post';
+    const response = await dataGet_(endPoint, {});
+    if (response.success) {
+      dispatch(setCategoriesHub(response?.data))
     }
   }
 
@@ -106,17 +118,22 @@ const TabHomeScreen = (props) => {
               {...props}
             />
           </View>
-          <SeeAllComponent
-            title="Mindfulness"
-            onPress={() =>
-              navigation.navigate(SCREENS.NavigationRoutes, {
-                screen: SCREENS.Explore,
-              })
-            }
-          />
-          <View style={{ flex: 1, overflow: "visible" }}>
-            <CardComponent data={data} />
-          </View>
+          {categoriesHub ?
+            <>
+              <SeeAllComponent
+                title={categoriesHub[0]?.category}
+                onPress={() => {
+                  dispatch(setCategoryExplore(categoriesHub[0]))
+                  navigation.navigate(SCREENS.NavigationRoutes, {
+                    screen: SCREENS.Explore,
+                  })
+                }
+                }
+              />
+              <View style={{ flex: 1, overflow: "visible" }}>
+                <CardComponent data={categoriesHub[0]?.posts} />
+              </View>
+            </> : null}
 
           <View style={{ height: verticalScale(25) }} />
           <TextComponent

@@ -99,6 +99,7 @@ const styles = StyleSheet.create({
     fontFamily: FONTS.Samsungsharpsans_Bold,
     color: COLORS.white,
     marginBottom: verticalScale(8),
+    width:'70%'
   },
   description: {
     fontSize: scale(13),

@@ -1405,7 +1405,7 @@ export default function AnimatedExploreDotSlider({ content }) {
               )}
               scrollEventThrottle={16}
             >
-              {exploreStat.drugPercentageFloxed.map((item, index) => (
+              {exploreStat?.drugPercentageFloxed.map((item, index) => (
                 <View
                   style={[
                     tabStyle.flexRow,

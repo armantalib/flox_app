@@ -14,9 +14,14 @@ import { FONTS } from "../constants/fonts";
 import { SCREENS } from "../constants/Screen";
 import { useNavigation } from "@react-navigation/native";
 import { SVG_IMAGES } from "../constants/images";
+import moment from "moment";
+import { useDispatch } from "react-redux";
+import { setHubPostDetail } from "../storeTolkit/hubSlice";
+
 const MeditationCard = ({ item, showLiked }) => {
   const navigation = useNavigation();
   const [isLiked, setIsLiked] = useState(false);
+  const dispatch = useDispatch();
   const toggleLike = () => {
     setIsLiked(!isLiked);
   };
@@ -32,19 +37,19 @@ const MeditationCard = ({ item, showLiked }) => {
               })
             }
           >
-            <Image source={item.image} style={styles.image} />
+            <Image source={{ uri: item?.image }} style={styles.image} />
+            {moment(item.createdAt).format('DD/MM/YYYY') == moment().format('DD/MM/YYYY') ?
+              <LinearGradient
+                colors={["#3995FF", "#3995FF"]}
+                start={{ x: 0, y: 1 }}
+                end={{ x: 1, y: 0 }}
+                style={styles.badgeContainer}
+              >
+                <Text style={styles.badgeText}>New</Text>
+              </LinearGradient> : null}
 
-            <LinearGradient
-              colors={["#3995FF", "#3995FF"]}
-              start={{ x: 0, y: 1 }}
-              end={{ x: 1, y: 0 }}
-              style={styles.badgeContainer}
-            >
-              <Text style={styles.badgeText}>New</Text>
-            </LinearGradient>
-
-            {item.date && <Text style={styles.dateText}>{item.date}</Text>}
-            <Text style={styles.duration}>{item.duration}</Text>
+            {item.createdAt && <Text style={styles.dateText}>{moment(item.createdAt).format('DD/MM/YYYY')}</Text>}
+            <Text style={styles.duration}>{item.min_read}</Text>
             {showLiked && (
               <TouchableOpacity
                 onPress={toggleLike}
@@ -80,15 +85,17 @@ const MeditationCard = ({ item, showLiked }) => {
         </View>
         <View style={{ paddingHorizontal: moderateScale(7) }}>
           <TouchableOpacity
-            onPress={() =>
+            onPress={() => {
+              dispatch(setHubPostDetail(item))
               navigation.navigate(SCREENS.NavigationRoutes, {
                 screen: SCREENS.ExploreDetails,
               })
             }
+            }
           >
             <Text style={styles.title}>{item.title}</Text>
           </TouchableOpacity>
-          <Text style={styles.description}>{item.description}</Text>
+          <Text style={styles.description} numberOfLines={3}>{item.desc}</Text>
         </View>
       </View>
     </View>

@@ -13,21 +13,33 @@ import { COLORS } from "../constants/colors";
 import { FONTS } from "../constants/fonts";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SVG_IMAGES } from "../constants/images";
+import moment from "moment";
+import { useNavigation } from "@react-navigation/native";
+import { useDispatch } from "react-redux";
+import { SCREENS } from "../constants/Screen";
+import { setHubPostDetail } from "../storeTolkit/hubSlice";
 
 const MeditationCard = ({ item, showLiked, onPressPray }) => {
   const [isLiked, setIsLiked] = useState(false);
+  const dispatch = useDispatch();
+   const navigation = useNavigation();
   const toggleLike = () => {
     setIsLiked(!isLiked);
   };
   return (
     <TouchableOpacity
-      onPress={item.onPress}
+      onPress={()=>{
+        dispatch(setHubPostDetail(item))
+        navigation.navigate(SCREENS.NavigationRoutes, {
+          screen: SCREENS.ExploreDetails,
+        })
+      }}
       activeOpacity={0.8}
       style={styles.card}
     >
       <View style={styles.content}>
         <View style={styles.imageContainer}>
-          <Image source={item.image} style={styles.image} />
+          <Image source={{uri:item?.image}} style={styles.image} />
           <LinearGradient
             colors={["#3995FF", "#3995FF"]}
             start={{ x: 0, y: 1 }}
@@ -36,8 +48,8 @@ const MeditationCard = ({ item, showLiked, onPressPray }) => {
           >
             <Text style={styles.badgeText}>New</Text>
           </LinearGradient>
-          {item.date && <Text style={styles.dateText}>{item.date}</Text>}
-          <Text style={styles.duration}>{item.duration}</Text>
+          {item.createdAt && <Text style={styles.dateText}>{moment(item?.createdAt).format('DD/MM/YYYY')}</Text>}
+          <Text style={styles.duration}>{item.min_read}</Text>
           {showLiked && (
             <TouchableOpacity
               onPress={toggleLike}
@@ -65,8 +77,8 @@ const MeditationCard = ({ item, showLiked, onPressPray }) => {
           <View style={styles.overlay} />
         </View>
         <View style={{ paddingHorizontal: moderateScale(5) }}>
-          <Text style={styles.title}>{item.title}</Text>
-          <Text style={styles.description}>{item.description}</Text>
+          <Text style={styles.title} numberOfLines={2}>{item.title}</Text>
+          <Text style={styles.description} numberOfLines={2}>{item.desc}</Text>
         </View>
       </View>
     </TouchableOpacity>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { ScrollView, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import GradientBackground from "../../components/GradientBackground";
@@ -13,6 +13,9 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import SeeAllComponent from "../../components/SeeAllComponent";
 import CardComponent from "../../components/CardComponent";
 import { SCREENS } from "../../constants/Screen";
+import { useDispatch, useSelector } from "react-redux";
+import { dataGet_ } from "../../utils/myAxios";
+import { setCategoriesHub, setCategoryExplore } from "../../storeTolkit/hubSlice";
 
 const data = [
   {
@@ -99,13 +102,28 @@ const data3 = [
 const TabHubScreen = () => {
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
+  const user = useSelector((state) => state?.user?.user);
+  const { categoriesHub } = useSelector((state) => state?.hub);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    getCardData()
+  }, [])
+
+  const getCardData = async () => {
+    const endPoint = 'hub/category/post';
+    const response = await dataGet_(endPoint, {});
+    if (response.success) {
+      dispatch(setCategoriesHub(response?.data))
+    }
+  }
   return (
     <View style={[tabStyle.safeArea]}>
       <GradientBackground />
       <TabHeader
-        image={IMAGES.UserProfile_IMG}
+        image={user?.image}
         title={"Good morning"}
-        name={"Ben0790"}
+        name={user?.username}
         chatcount={14}
         noticount={6}
       />
@@ -128,22 +146,29 @@ const TabHubScreen = () => {
         <View style={[tabStyle.wrapper]}>
           <View style={{ paddingTop: verticalScale(27) }} />
           <TextComponent
-            color={COLORS.primary}
-            fontSize={31}
-            title={"Recovery Hub"}
-            marginBottom={25}
-            fontFamily={FONTS.Samsungsharpsans_Bold}
-            textAlign={"center"}
-          />
-          <SeeAllComponent
-            title="Mindfulness"
-            onPress={() =>
-              navigation.navigate(SCREENS.NavigationRoutes, {
-                screen: SCREENS.Explore,
-              })
-            }
-          />
-          <CardComponent showLiked data={data} />
+              color={COLORS.primary}
+              fontSize={31}
+              title={"Recovery Hub"}
+              marginBottom={25}
+              fontFamily={FONTS.Samsungsharpsans_Bold}
+              textAlign={"center"}
+            />
+          {categoriesHub.map((item,index)=>(
+          <>
+            <SeeAllComponent
+              title={item.category}
+              onPress={() =>{
+                   dispatch(setCategoryExplore(item))
+                navigation.navigate(SCREENS.NavigationRoutes, {
+                  screen: SCREENS.Explore,
+                })
+              }
+              }
+            />
+            <CardComponent showLiked data={item?.posts} />
+          </>
+          ))}
+          {/* 
           <View style={{ height: verticalScale(25) }} />
           <SeeAllComponent
             title="Science"
@@ -152,8 +177,8 @@ const TabHubScreen = () => {
                 screen: SCREENS.Explore,
               })
             }
-          />
-          <CardComponent showLiked data={data1} />
+          /> */}
+          {/* <CardComponent showLiked data={data1} />
           <View style={{ height: verticalScale(25) }} />
           <SeeAllComponent
             title="Recovery Stories"
@@ -173,7 +198,7 @@ const TabHubScreen = () => {
               })
             }
           />
-          <CardComponent showLiked data={data3} />
+          <CardComponent showLiked data={data3} /> */}
           <View style={{ height: verticalScale(5) }} />
         </View>
       </ScrollView>

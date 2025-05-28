@@ -1,5 +1,5 @@
 import { View, FlatList, TouchableOpacity, Text } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import GradientBackground from "../../../components/GradientBackground";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import TextComponent from "../../../components/TextComponent";
@@ -12,6 +12,9 @@ import CardTwoItemsComponent from "../../../components/CardTwoItemsComponent";
 import { IMAGES } from "../../../constants/images";
 import { verticalScale } from "react-native-size-matters";
 import { SCREENS } from "../../../constants/Screen";
+import { useDispatch, useSelector } from "react-redux";
+import { dataGet_ } from "../../../utils/myAxios";
+import { setHubPostDetail } from "../../../storeTolkit/hubSlice";
 
 const categories = [
   "All",
@@ -85,7 +88,39 @@ const data = [
 const ExploreScreen = () => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
+  const dispatch = useDispatch();
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [selectedCategoryAll, setSelectedCategoryAll] = useState(null);
+  const [exploreData, setExploreData] = useState([]);
+  const [filterData, setFilterData] = useState([]);
+  const { categoryExplore } = useSelector((state) => state?.hub);
+
+  useEffect(() => {
+    getCardData();
+  }, [categoryExplore])
+
+
+  const getCardData = async () => {
+    const endPoint = 'hub/category/posts/' + categoryExplore?._id;
+    const response = await dataGet_(endPoint, {});
+    if (response.success) {
+      setExploreData(response?.data)
+    }
+    if (response?.categories.length >= 1) {
+      let obj = {
+        "_id": "6836a929fbe1db78b3e8b422",
+        "name": "All",
+        "type": "filter",
+        "category": "68344dc66ebacffeb7b4121d",
+        "createdAt": "2025-05-28T06:11:53.388Z",
+        "__v": 0
+      }
+      let mArray = response?.categories;
+      mArray.unshift(obj)
+      setFilterData(mArray)
+
+    }
+  }
 
   return (
     <View style={styles.safeArea}>
@@ -106,14 +141,14 @@ const ExploreScreen = () => {
           <TextComponent
             color={COLORS.primary}
             fontSize={31}
-            title="Mindfulness"
+            title={categoryExplore?.category}
             marginBottom={20}
             fontFamily={FONTS.Samsungsharpsans_Bold}
             textAlign="center"
           />
           <View>
             <FlatList
-              data={categories}
+              data={filterData}
               horizontal
               showsHorizontalScrollIndicator={false}
               keyExtractor={(item) => item}
@@ -121,17 +156,20 @@ const ExploreScreen = () => {
                 <TouchableOpacity
                   style={[
                     styles.categoryButton,
-                    selectedCategory === item && styles.selectedCategoryButton,
+                    selectedCategory === item.name && styles.selectedCategoryButton,
                   ]}
-                  onPress={() => setSelectedCategory(item)}
+                  onPress={() => {
+                    setSelectedCategory(item.name)
+                    setSelectedCategoryAll(item)
+                  }}
                 >
                   <Text
                     style={[
                       styles.categoryText,
-                      selectedCategory === item && styles.selectedCategoryText,
+                      selectedCategory === item.name && styles.selectedCategoryText,
                     ]}
                   >
-                    {item}
+                    {item?.name}
                   </Text>
                 </TouchableOpacity>
               )}
@@ -148,17 +186,9 @@ const ExploreScreen = () => {
                 navigation.navigate(SCREENS.NavigationRoutes, {
                   screen: SCREENS.Music,
                 })
-
-                // console.log("CEA")
-                
               }
 
-              onPress={() =>
-                navigation.navigate(SCREENS.NavigationRoutes, {
-                  screen: SCREENS.ExploreDetails,
-                })
-              }
-              data={data}
+              data={exploreData}
             />
           </View>
         </View>
