@@ -5,7 +5,7 @@ import { SVG_IMAGES } from "../constants/images";
 import TextComponent from "./TextComponent";
 import { moderateScale } from "react-native-size-matters";
 import { useNavigation } from "@react-navigation/native";
-const CustomHeader = ({ title, opacity, rightTitle, dotShow }) => {
+const CustomHeader = ({ title, opacity, rightTitle, dotShow,onPressTitle }) => {
   const navigation = useNavigation();
   return (
     <View style={styles.header}>
@@ -33,6 +33,7 @@ const CustomHeader = ({ title, opacity, rightTitle, dotShow }) => {
             opacity: opacity,
           },
         ]}
+        onPress={onPressTitle}
       >
         <TextComponent
             color={COLORS.white}

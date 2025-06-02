@@ -527,8 +527,104 @@ const drugList =
         };
     });
 
+
+
+    const categoriesList =
+    [
+        {
+            id: '1',
+            name: 'General'
+        },
+        {
+            id: '2',
+            name: 'Newcomer'
+        },
+        {
+            id: '3',
+            name: 'Diagnosis'
+        },
+        {
+            id: '4',
+            name: 'Symptoms'
+        },
+        {
+            id: '5',
+            name: 'Flare'
+        },
+        {
+            id: '6',
+            name: 'Medication'
+        },
+        {
+            id: '7',
+            name: 'Treatments'
+        },
+        {
+            id: '8',
+            name: 'Science'
+        },
+        {
+            id: '9',
+            name: 'Supplements'
+        },
+        {
+            id: '10',
+            name: 'Chat'
+        },
+        {
+            id: '11',
+            name: 'Relapse'
+        },
+        {
+            id: '12',
+            name: 'Recovery'
+        },
+        {
+            id: '13',
+            name: 'Long Term'
+        },
+        {
+            id: '14',
+            name: 'Outreach'
+        },
+        {
+            id: '15',
+            name: 'Update'
+        },
+    ];
+
+
+    const sortList =
+    [
+        {
+            id: '1',
+            name: 'Most recent (default)'
+        },
+        {
+            id: '2',
+            name: 'Most popular'
+        },
+        {
+            id: '3',
+            name: 'This Week'
+        },
+        {
+            id: '4',
+            name: 'This Month'
+        },
+        {
+            id: '5',
+            name: 'This Year'
+        },
+        {
+            id: '6',
+            name: 'All Time'
+        },
+    ];
+
+
 export default {
-    hormonal_data, yes_no, percent_increase,drugList,step_increment,
+    hormonal_data, yes_no, percent_increase,drugList,step_increment,categoriesList,sortList,
     mitochondrial_data, vision_data, skin_data, cardiovascular_data, hearing_data,
     neuropathy_data, central_nerve_data, autonomic_nerve, gastrointestinal_data,
     tendon_data,

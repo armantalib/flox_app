@@ -4,6 +4,7 @@ type InitialStateType = {
   categoriesHub: any | null;
   categoryExplore: any | null;
   hubPostDetail: any | null;
+  musicDetail: any | null;
 
 
 };
@@ -12,6 +13,7 @@ const initialState: InitialStateType = {
   categoriesHub: null, 
   hubPostDetail:null,
   categoryExplore:null,
+  musicDetail:null,
 
 };
 
@@ -28,6 +30,9 @@ const hubSlice = createSlice({
     setCategoryExplore: (state, action) => {
       state.categoryExplore = action.payload;
     },
+    setMusicDetail: (state, action) => {
+      state.musicDetail = action.payload;
+    },
 
 
 
@@ -35,6 +40,6 @@ const hubSlice = createSlice({
   },
 });
 
-export const { setCategoriesHub,setHubPostDetail,setCategoryExplore } = hubSlice.actions;
+export const { setCategoriesHub,setHubPostDetail,setCategoryExplore,setMusicDetail } = hubSlice.actions;
 
 export default hubSlice.reducer;

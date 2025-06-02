@@ -19,6 +19,7 @@
 		49F96E1A261647819B7A381F /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8E62D2436C584C59AC8E7752 /* EvilIcons.ttf */; };
 		4F24519FA9534082BEB6C506 /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1E70DD0BC6154A2882BC9A40 /* Ionicons.ttf */; };
 		4F457E065F46430B877C5838 /* Feather.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 24F5DF2E67DB4B7C8A0E298F /* Feather.ttf */; };
+		52A3EBF42DEDC03B00B4AC25 /* dummy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52A3EBF32DEDC03B00B4AC25 /* dummy.swift */; };
 		59A62A21D72C42798D7F8B57 /* FontAwesome5_Brands.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0EEA4647F89247F5A476F1B3 /* FontAwesome5_Brands.ttf */; };
 		6A91140B5CD448F788B80D02 /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D82221616C0E4DF49C42120B /* Entypo.ttf */; };
 		7699B88040F8A987B510C191 /* libPods-Flox-FloxTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-Flox-FloxTests.a */; };
@@ -65,6 +66,8 @@
 		2AA400984D9849D3A6AB5DE1 /* Fontisto.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Fontisto.ttf; path = ../src/assets/fonts/Fontisto.ttf; sourceTree = "<group>"; };
 		3B4392A12AC88292D35C810B /* Pods-Flox.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Flox.debug.xcconfig"; path = "Target Support Files/Pods-Flox/Pods-Flox.debug.xcconfig"; sourceTree = "<group>"; };
 		414EFFC9460649208F22E4E9 /* LeagueSpartan-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "LeagueSpartan-SemiBold.ttf"; path = "../src/assets/fonts/LeagueSpartan-SemiBold.ttf"; sourceTree = "<group>"; };
+		52A3EBF22DEDC03B00B4AC25 /* Flox-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Flox-Bridging-Header.h"; sourceTree = "<group>"; };
+		52A3EBF32DEDC03B00B4AC25 /* dummy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = dummy.swift; sourceTree = "<group>"; };
 		5709B34CF0A7D63546082F79 /* Pods-Flox.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Flox.release.xcconfig"; path = "Target Support Files/Pods-Flox/Pods-Flox.release.xcconfig"; sourceTree = "<group>"; };
 		590372B485B644BD961D1493 /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = ../src/assets/fonts/Octicons.ttf; sourceTree = "<group>"; };
 		5B7EB9410499542E8C5724F5 /* Pods-Flox-FloxTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Flox-FloxTests.debug.xcconfig"; path = "Target Support Files/Pods-Flox-FloxTests/Pods-Flox-FloxTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -137,6 +140,8 @@
 				13B07FB71A68108700A75B9A /* main.m */,
 				13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */,
 				F15861B07535F71945D84E11 /* PrivacyInfo.xcprivacy */,
+				52A3EBF32DEDC03B00B4AC25 /* dummy.swift */,
+				52A3EBF22DEDC03B00B4AC25 /* Flox-Bridging-Header.h */,
 			);
 			name = Flox;
 			sourceTree = "<group>";
@@ -280,7 +285,7 @@
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
-						LastSwiftMigration = 1120;
+						LastSwiftMigration = 1620;
 					};
 				};
 			};
@@ -488,6 +493,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */,
+				52A3EBF42DEDC03B00B4AC25 /* dummy.swift in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -580,6 +586,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.floxhealth.app;
 				PRODUCT_NAME = Flox;
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "Flox-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -611,6 +618,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.floxhealth.app;
 				PRODUCT_NAME = Flox;
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "Flox-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};

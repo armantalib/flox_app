@@ -3,7 +3,7 @@ import { showToast } from '../components/General';
 import { getItem } from './async_storage';
 
 // const urlParent = "https://api.antiflox.com/";
-const urlParent = "http://192.168.100.40:8080/"
+const urlParent = "http://192.168.100.41:8080/"
 const mainUrl = urlParent + "api/";
 export const socketUrl = urlParent;
 
