@@ -48,6 +48,10 @@ const CreatePostScreen = (props) => {
   }, []);
 
   const checkValidation = () => {
+    if(!category){
+      showToast("Please Select Category")
+      return
+    }
     if (!content) {
       showToast("Please enter content")
       return

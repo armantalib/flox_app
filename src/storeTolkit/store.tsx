@@ -6,6 +6,7 @@ import chatData from './ChatData';
 import stepsSlice from './stepsSlice';
 import hubSlice from './hubSlice';
 import marketplaceSlice from './marketplaceSlice';
+import communitySlice from './communitySlice';
 
 const store = configureStore({
   reducer: {
@@ -15,6 +16,7 @@ const store = configureStore({
     steps: stepsSlice,
     hub: hubSlice,
     marketplace: marketplaceSlice,
+    community: communitySlice,
     // Other reducers go here
   },
 });

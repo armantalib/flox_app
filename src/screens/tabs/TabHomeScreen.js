@@ -22,6 +22,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { dataGet_ } from "../../utils/myAxios";
 import { setStepsData } from "../../storeTolkit/stepsSlice";
 import { setCategoriesHub, setCategoryExplore } from "../../storeTolkit/hubSlice";
+import { getGreeting } from "../../utils/Helper";
 
 const data = [
   {
@@ -81,7 +82,7 @@ const TabHomeScreen = (props) => {
       <GradientBackground />
       <TabHeader
         image={user?.image}
-        title={"Good morning"}
+        title={getGreeting()}
         name={user?.username}
         chatcount={14}
         noticount={6}

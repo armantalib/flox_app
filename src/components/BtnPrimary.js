@@ -13,13 +13,14 @@ const BtnPrimary = ({
   marginBottom = 0,
   userIcon = false,
   isDisable,
-  loader
+  loader,
+  backgroundColor
 }) => {
   return (
     <TouchableOpacity
       onPress={onPress}
       disabled={loader ? true : isDisable}
-      style={[styles.btn, style, { marginBottom,backgroundColor:isDisable?COLORS.disable:COLORS.black }]}
+      style={[styles.btn, style, { marginBottom,backgroundColor:isDisable?COLORS.disable:backgroundColor?backgroundColor:COLORS.black }]}
     >
       {loader ?
         <ActivityIndicator

@@ -5,26 +5,15 @@ import styles from "./Styles";
 import CustomHeader from "../../../components/CustomHeader";
 import { IMAGES } from "../../../constants/images";
 import { COLORS } from "../../../constants/colors";
-import CommunityOneComponent from "../../../components/CommunityOneComponent";
+import CommunityOneComponent, { SinglePostShow } from "../../../components/CommunityOneComponent";
 import BtnPrimary from "../../../components/BtnPrimary";
 import { moderateScale, scale, verticalScale } from "react-native-size-matters";
+import { useSelector } from "react-redux";
+import { useEffect } from "react";
+import { dataPost } from "../../../utils/myAxios";
 
 const posts = [
-  {
-    id: "1",
-    name: "Karis Ryan",
-    time: "20 hr ago",
-    content:
-      "The more floxies we have active here the more we can raise awareness, perform studies, support eachother and fight back against big pharma...",
-    likes: 6,
-    comments: 16,
-    profileImage: IMAGES.User1_Img,
-    general: "General",
-    backgroundColor: COLORS.primary,
-    likes: true,
-    reply: false,
-    replyShow: false,
-  },
+
   {
     id: "2",
     name: "Danie Muse",
@@ -64,6 +53,24 @@ const posts = [
 const PostScreen = () => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
+  const { postDetail } = useSelector((state) => state?.community);
+
+
+  const onPressLikeFun = async () => {
+    let data = {
+
+    }
+    const endPoint = 'community/posts/' + postDetail?._id + '/like';
+    const response = await dataPost(endPoint, data);
+    const endPoint2 = 'community/posts/' + postDetail?._id + '/single';
+    const response2 = await dataPost(endPoint2, data);
+    if(response2.success){
+      
+      
+    }
+    
+        
+  }
 
   return (
     <KeyboardAvoidingView
@@ -86,6 +93,10 @@ const PostScreen = () => {
         keyboardShouldPersistTaps="handled"
       >
         <View style={styles.wrapper}>
+          <SinglePostShow
+            item={postDetail}
+            onPressLike={() => onPressLikeFun()}
+          />
           <CommunityOneComponent
             data={posts}
             onPress={() =>
@@ -97,18 +108,19 @@ const PostScreen = () => {
         </View>
       </ScrollView>
       <View style={styles.footer}>
-      <BtnPrimary
-        title={"Reply"}
-        style={{
-          backgroundColor: COLORS.blue,
-          width: "27.5%",
-          height: verticalScale(37.5),
-          padding: 0,
-        }}
-        btnText={{
-          fontSize: scale(12.5),
-        }}
-      />
+        <BtnPrimary
+          title={"Reply"}
+          backgroundColor={COLORS.blue}
+          style={{
+            backgroundColor: COLORS.blue,
+            width: "27.5%",
+            height: verticalScale(37.5),
+            padding: 0,
+          }}
+          btnText={{
+            fontSize: scale(12.5),
+          }}
+        />
 
       </View>
     </KeyboardAvoidingView>

@@ -32,21 +32,20 @@ const CustomAvatar: React.FC<ButtonProps> = ({
 }) => (
     <>
         {image ?
-            <TouchableOpacity
-                onPress={onPress}
+            <View
+
             >
                 <Image
                     source={{ uri: image }}
                     style={{ width: width ? width : normalize(50), height: height ? height : normalize(50), borderRadius: borderRadius ? borderRadius : normalize(50) }}
                 />
-            </TouchableOpacity>
+            </View>
             :
-            <TouchableOpacity
-                onPress={onPress}
+            <View
                 style={{ width: width ? width : normalize(50), height: height ? height : normalize(50), borderRadius: borderRadius ? borderRadius : normalize(50), backgroundColor: backgroundColor ? backgroundColor : COLORS.blue, justifyContent: 'center', alignItems: 'center' }}
             >
                 <Text style={[stylesG.fontBold, { fontSize: fontSize ? fontSize : normalize(18), color: textColor ? textColor : COLORS.white }]}>{getInitials(name)}</Text>
-            </TouchableOpacity>
+            </View>
         }
     </>
 );

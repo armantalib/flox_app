@@ -19,6 +19,7 @@ import ResourcesCardComp from "../../components/ResourcesCardComp";
 import { dataGet_ } from "../../utils/myAxios";
 import { setExploreStat } from "../../storeTolkit/stepsSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { getGreeting } from "../../utils/Helper";
 
 const TabExplorerScreen = (props) => {
   const navigation = useNavigation();
@@ -46,7 +47,7 @@ const TabExplorerScreen = (props) => {
       <GradientBackground />
       <TabHeader
         image={IMAGES.UserProfile_IMG}
-        title={"Good morning"}
+        title={getGreeting()}
         name={"Ben0790"}
         chatcount={14}
         noticount={6}

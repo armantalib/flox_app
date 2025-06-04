@@ -11,39 +11,73 @@ import { scale, verticalScale } from "react-native-size-matters";
 import { COLORS } from "../constants/colors";
 import { FONTS } from "../constants/fonts";
 import { SVG_IMAGES } from "../constants/images";
+import CustomAvatar from "./BottomSheets/CustomAvatar";
+import { normalize } from "../utils/Metrics";
+import moment from "moment";
+import { setPostDetail } from "../storeTolkit/communitySlice";
+import { useDispatch } from "react-redux";
+import { useNavigation } from "@react-navigation/native";
+import { SCREENS } from "../constants/Screen";
 
-const MeditationCard = ({ item, isLastChild }) => {
+const MeditationCard = ({ item, isLastChild }, ...props) => {
+  console.log("ITe",item);
+  
+  const dispatch = useDispatch();
+  const navigation = useNavigation();
   return (
     <View style={[styles.itemBox, isLastChild && styles.lastItem]}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={item.onPress} activeOpacity={0.8}>
-          <Image source={item.profileImage} style={styles.profileImage} />
+        <TouchableOpacity onPress={()=>{
+              navigation.navigate(SCREENS.NavigationRoutes, {
+                screen: SCREENS.ProfileDetails,
+              })
+        }} activeOpacity={0.8}>
+          {/* <Image source={{uri}} style={styles.profileImage} /> */}
+          <CustomAvatar
+            image={item?.user?.image}
+            width={normalize(50)}
+            height={normalize(50)}
+            fontSize={normalize(26)}
+            borderRadius={normalize(50)}
+            name={item?.user?.username}
+          />
         </TouchableOpacity>
         <TouchableOpacity onPress={item.onPress} activeOpacity={0.8}>
-          <Text style={styles.name}>{item.name}</Text>
-          <Text style={styles.time}>{item.time}</Text>
+          <Text style={styles.name}>{item?.user?.username}</Text>
+          <Text style={styles.time}>{moment(item.createdAt).fromNow()}</Text>
         </TouchableOpacity>
         <View
           style={[
             styles.dropbutton,
             styles.dropbutton1,
             {
-              backgroundColor: item.backgroundColor, // Dark background
+              backgroundColor: item?.category === 'General' ? COLORS.grey :
+                item?.category === 'Newcomer' ? COLORS.green :
+                  COLORS.lemon, // Dark background
             },
           ]}
         >
-          <Text style={styles.name1}>{item.general}</Text>
+          <Text style={styles.name1}>{item?.category}</Text>
         </View>
         <TouchableOpacity style={styles.dotsSTyle}>
           <SVG_IMAGES.DotsIcon_SVG />
         </TouchableOpacity>
       </View>
-      <Text style={styles.content}>{item.content}</Text>
+      <TouchableOpacity
+        onPress={() => {
+          dispatch(setPostDetail(item))
+          navigation.navigate(SCREENS.NavigationRoutes, {
+            screen: SCREENS.Post,
+          })
+        }}
+      >
+        <Text style={styles.content} numberOfLines={3}>{item.content}</Text>
+      </TouchableOpacity>
       <View style={styles.footer}>
-        <Text style={styles.footerText}>🥰 {item.likes} Likes</Text>
+        <Text style={styles.footerText}>🥰 {item.likes.length} Likes</Text>
         <TouchableOpacity>
           <Text style={[styles.footerText, styles.footerText1]}>
-            {item.comments} comments
+            {item.comments.length} comments
           </Text>
         </TouchableOpacity>
       </View>
@@ -51,19 +85,23 @@ const MeditationCard = ({ item, isLastChild }) => {
   );
 };
 
-const CommunityComponent = ({ data, onPress }) => {
+const CommunityComponent = ({ data,  onPressCategory, onPressSort, category, sort }, ...props) => {
   return (
     <View style={styles.card}>
       <View style={styles.content}>
         <View style={styles.communtyHeader}>
-          <TouchableOpacity style={styles.dropbutton}>
-            <Text style={[styles.text, { paddingVertical: 2 }]}>Sort by</Text>
+          <TouchableOpacity
+            onPress={onPressSort}
+            style={styles.dropbutton}>
+            <Text style={[styles.text, { paddingVertical: 2 }]}>{sort ? sort : 'Sort by'}</Text>
             <SVG_IMAGES.DownArrow_SVG />
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.dropbutton}>
+          <TouchableOpacity
+            onPress={onPressCategory}
+            style={styles.dropbutton}>
             <Text style={[styles.text, { paddingVertical: 2 }]}>
-              Categories
+              {category ? category : 'Categories'}
             </Text>
             <SVG_IMAGES.DownArrow_SVG />
           </TouchableOpacity>
@@ -77,7 +115,8 @@ const CommunityComponent = ({ data, onPress }) => {
           renderItem={({ item, index }) => (
             <MeditationCard
               isLastChild={index === data.length - 1}
-              item={{ ...item, onPress }}
+              item={{ ...item }}
+              {...props}
             />
           )}
           keyExtractor={(item) => item.id}

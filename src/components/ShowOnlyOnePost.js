@@ -12,15 +12,8 @@ import { COLORS } from "../constants/colors";
 import { FONTS } from "../constants/fonts";
 import { SVG_IMAGES } from "../constants/images";
 import TextComponent from "./TextComponent";
-import CustomAvatar from "./BottomSheets/CustomAvatar";
-import { normalize } from "../utils/Metrics";
-import moment from "moment";
-import stylesG from "../assets/css/stylesG";
-import Icons from "../utils/Icons";
-import { useSelector } from "react-redux";
 
 const MeditationCard = ({ item, isLastChild }) => {
-  const user = useSelector((state) => state?.user?.user);
   return (
     <View style={[styles.itemBox]}>
       <View style={styles.header}>
@@ -31,124 +24,45 @@ const MeditationCard = ({ item, isLastChild }) => {
           <Text style={styles.name}>{item.name}</Text>
           <Text style={styles.time}>{item.time}</Text>
         </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[
-            styles.footerIcon,
-            {
-              marginLeft: "auto",
-              marginRight: 0,
-            },
-          ]}
-        >
-          <SVG_IMAGES.Liked_SVG />
-        </TouchableOpacity>
-
-      </View>
-      <Text style={styles.content}>{item.content}</Text>
-
-      <View style={styles.replyBox}>
-
-        <TextComponent
-          color={COLORS.primary}
-          fontSize={11}
-          title={item.reply}
-          fontFamily={FONTS.Samsungsharpsans_Medium}
-        />
-
-        <TouchableOpacity style={styles.footerIcon1}>
-          <View style={{ marginRight: 0, marginBottom: 2 }}>
-            <SVG_IMAGES.Reply_SVG width={15} height={15} />
-          </View>
-
-          <TextComponent
-            color={COLORS.primary}
-            fontSize={11}
-            title={'00 Replies'}
-            fontFamily={FONTS.Samsungsharpsans_Medium}
-          />
-        </TouchableOpacity>
-
-      </View>
-
-    </View>
-  );
-};
-
-
-export const SinglePostShow = ({ item, onPressLike }) => {
-  const user = useSelector((state) => state?.user?.user);
-  const liked = item.likes.map(item => item._id).includes(user._id)
-  return (
-    <View style={[styles.itemBox, { width: '90%', alignSelf: 'center' }]}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={item.onPress} activeOpacity={0.8}>
-          {/* <Image source={item.profileImage} style={styles.profileImage} /> */}
-          <CustomAvatar
-            image={item?.user?.image}
-            width={normalize(50)}
-            height={normalize(50)}
-            fontSize={normalize(26)}
-            borderRadius={normalize(50)}
-            name={item?.user?.username}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={item.onPress} activeOpacity={0.8}>
-          <Text style={styles.name}>{item?.user?.username}</Text>
-          <Text style={styles.time}>{moment(item.createdAt).fromNow()}</Text>
-        </TouchableOpacity>
-        {item.category && (
+        {item.general && (
           <View
             style={[
               styles.dropbutton,
               styles.dropbutton1,
               {
-                backgroundColor: item?.category === 'General' ? COLORS.grey :
-                  item?.category === 'Newcomer' ? COLORS.green :
-                    COLORS.lemon, // Dark background
+                backgroundColor: COLORS.grey, // Dark background
               },
             ]}
           >
-            <Text style={styles.name1}>{item?.category}</Text>
+            <Text style={styles.name1}>{item.general}</Text>
           </View>
         )}
-
+        {item.likesDislike && (
+          <TouchableOpacity
+            style={[
+              styles.footerIcon,
+              {
+                marginLeft: "auto",
+                marginRight: 0,
+              },
+            ]}
+          >
+            <SVG_IMAGES.Liked_SVG />
+          </TouchableOpacity>
+        )}
       </View>
       <Text style={styles.content}>{item.content}</Text>
-
-      <View style={styles.footer}>
-        <View
-          style={styles.footerIcon}>
-          {/* <SVG_IMAGES.Liked_SVG /> */}
-          <TouchableOpacity
-            onPress={onPressLike}
-            style={[stylesG.contentCenter, { paddingHorizontal: normalize(12), paddingVertical: normalize(6), borderWidth: 1, borderColor:!liked?COLORS.grey: '#FF4D67', borderRadius: normalize(50) }]}>
-            <View style={[stylesG.flexRow]}>
-              {liked ?
-                <Icons
-                  name={'heart'}
-                  family={'Fontisto'}
-                  size={15}
-                  color={liked?'#FF4D67':COLORS.grey}
-                /> :
-                <Icons
-                  name={'heart-alt'}
-                  family={'Fontisto'}
-                  size={15}
-                  color={liked?'#FF4D67':COLORS.grey}
-                />
-               } 
-              <Text style={[stylesG.fontBold, { color: liked?'#FF4D67':COLORS.grey, marginLeft: normalize(5), fontSize: normalize(12) }]}>{liked ? 'Liked' : 'Like'}</Text>
-
-            </View>
+      {item.likes && (
+        <View style={styles.footer}>
+          <TouchableOpacity style={styles.footerIcon}>
+            <SVG_IMAGES.Liked_SVG />
           </TouchableOpacity>
+          <Text style={styles.footerText}>🥰 {item.likes} Likes</Text>
+          <Text style={[styles.footerText, styles.footerText1]}>
+            {item.comments} comments
+          </Text>
         </View>
-        <Text style={styles.footerText}>🥰 {item.likes.length} Likes</Text>
-        <Text style={[styles.footerText, styles.footerText1]}>
-          {item.comments} comments
-        </Text>
-      </View>
-
+      )}
       {item.reply && (
         <View style={styles.replyBox}>
           {item.replyShow && (
@@ -178,7 +92,7 @@ export const SinglePostShow = ({ item, onPressLike }) => {
   );
 };
 
-const CommunityOneComponent = ({ data, onPress }) => {
+const ShowOnlyOnePost = ({ data, onPress }) => {
   return (
     <View style={styles.card}>
       <View style={styles.content}>
@@ -199,6 +113,9 @@ const CommunityOneComponent = ({ data, onPress }) => {
     </View>
   );
 };
+
+export default ShowOnlyOnePost;
+
 
 const styles = StyleSheet.create({
   footerIcon1: {
@@ -325,4 +242,3 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CommunityOneComponent;
