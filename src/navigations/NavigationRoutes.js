@@ -22,6 +22,8 @@ import PostScreen from "../screens/pages/createpost/PostScreen";
 import EditProfileDetailsScreen from "../screens/pages/community/EditProfileDetailsScreen";
 import ProfilePictureScreen from "../screens/pages/community/ProfilePictureScreen";
 import MusicScreen from "../screens/pages/music/MusicScreen";
+import ReplyOnComment from "../screens/pages/createpost/ReplyOnComment";
+import ReplyScreen from "../screens/pages/createpost/ReplyScreen";
 const Stack = createStackNavigator();
 
 const NavigationRoutes = () => {
@@ -135,6 +137,18 @@ const NavigationRoutes = () => {
       <Stack.Screen
         name="Music"
         component={MusicScreen}
+        options={{ headerShown: false }}
+      />
+
+      <Stack.Screen
+        name="ReplyOnComment"
+        component={ReplyOnComment}
+        options={{ headerShown: false }}
+      />
+
+       <Stack.Screen
+        name="ReplyScreen"
+        component={ReplyScreen}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

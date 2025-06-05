@@ -86,7 +86,7 @@ const MeditationCard = ({ item, isLastChild,onPressLikeReply,onPressReply,onPres
           fontFamily={FONTS.Samsungsharpsans_Medium}
         />
 
-        <TouchableOpacity 
+        {/* <TouchableOpacity 
         onPress={()=> onPressReply(item)}
         style={styles.footerIcon1}>
           <View style={{ marginRight: 0, marginBottom: 2 }}>
@@ -99,7 +99,7 @@ const MeditationCard = ({ item, isLastChild,onPressLikeReply,onPressReply,onPres
             title={item.replies.length+' Replies'}
             fontFamily={FONTS.Samsungsharpsans_Medium}
           />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
       </View>
 
@@ -108,7 +108,7 @@ const MeditationCard = ({ item, isLastChild,onPressLikeReply,onPressReply,onPres
 };
 
 
-export const SinglePostShow = ({ item, onPressLike }) => {
+export const SingleReplyShow = ({ item, onPressLike }) => {
   const user = useSelector((state) => state?.user?.user);
   const liked = item.likes.map(item => item._id).includes(user._id)
   return (
@@ -128,21 +128,7 @@ export const SinglePostShow = ({ item, onPressLike }) => {
           <Text style={styles.name}>{item?.user?.username}</Text>
           <Text style={styles.time}>{moment(item.createdAt).fromNow()}</Text>
         </TouchableOpacity>
-        {item.category && (
-          <View
-            style={[
-              styles.dropbutton,
-              styles.dropbutton1,
-              {
-                backgroundColor: item?.category === 'General' ? COLORS.grey :
-                  item?.category === 'Newcomer' ? COLORS.green :
-                    COLORS.lemon, // Dark background
-              },
-            ]}
-          >
-            <Text style={styles.name1}>{item?.category}</Text>
-          </View>
-        )}
+    
 
       </View>
       <Text style={styles.content}>{item.content}</Text>
@@ -175,7 +161,7 @@ export const SinglePostShow = ({ item, onPressLike }) => {
         </View>
         <Text style={styles.footerText}>🥰 {item.likes.length} Likes</Text>
         <Text style={[styles.footerText, styles.footerText1]}>
-          {item.comments.length} comments
+          {item.replies.length} replies
         </Text>
       </View>
 
@@ -208,7 +194,7 @@ export const SinglePostShow = ({ item, onPressLike }) => {
   );
 };
 
-const CommunityOneComponent = ({ data, onPress,onPressLikeReply,onPressReply }) => {
+const ReplyOneComponent = ({ data, onPress,onPressLikeReply,onPressReply }) => {
   return (
     <View style={styles.card}>
       <View style={styles.content}>
@@ -217,7 +203,7 @@ const CommunityOneComponent = ({ data, onPress,onPressLikeReply,onPressReply }) 
           renderItem={({ item, index }) => (
             <MeditationCard
               isLastChild={index === data.length - 1}
-              item={{ ...item }}
+              item={{ ...item, onPress }}
               onPressLikeReply={onPressLikeReply}
               onPressReply={onPressReply}
               onPress={onPress}
@@ -358,4 +344,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CommunityOneComponent;
+export default ReplyOneComponent;

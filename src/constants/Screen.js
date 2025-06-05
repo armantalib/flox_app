@@ -53,4 +53,6 @@ export const SCREENS = {
   EditProfileDetails: "EditProfileDetails",
   ProfilePicture: "ProfilePicture",
   Music: "Music",
+  ReplyOnComment: "ReplyOnComment",
+  ReplyScreen: "ReplyScreen",
 };

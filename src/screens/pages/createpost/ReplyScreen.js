@@ -11,8 +11,9 @@ import { moderateScale, scale, verticalScale } from "react-native-size-matters";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { dataPost } from "../../../utils/myAxios";
-import { setCommentReply, setPostDetail } from "../../../storeTolkit/communitySlice";
+import { setCommentReply, setIsReply, setPostDetail } from "../../../storeTolkit/communitySlice";
 import { SCREENS } from "../../../constants/Screen";
+import ReplyOneComponent, { SingleReplyShow } from "../../../components/ReplyOneComponent";
 
 const posts = [
 
@@ -52,17 +53,14 @@ const posts = [
   },
 ];
 
-const PostScreen = () => {
+const ReplyScreen = () => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
-  const { postDetail } = useSelector((state) => state?.community);
+  const { postDetail, commentReply } = useSelector((state) => state?.community);
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    console.log("Ce,",postDetail);
-    
-  }, [])
   
+
 
   const onPressLikeFun = async () => {
     let data = {}
@@ -80,9 +78,10 @@ const PostScreen = () => {
     let data = {}
     const endPoint = 'community/comments/' + item?._id + '/like';
     const response = await dataPost(endPoint, data);
-    const endPoint2 = 'community/posts/' + postDetail?._id + '/single';
+    const endPoint2 = 'community/comment/' + commentReply?._id + '/single/'+postDetail?._id;
     const response2 = await dataPost(endPoint2, data);
     if (response2.success) {
+      dispatch(setCommentReply(response2?.comment))
       dispatch(setPostDetail(response2?.post))
     }
   }
@@ -98,9 +97,9 @@ const PostScreen = () => {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <CustomHeader
-        dotShow
+
         opacity={0}
-        title={"Post"}
+        title={"Reply"}
         onPress={() => navigation.goBack()}
       />
       <ScrollView
@@ -108,12 +107,12 @@ const PostScreen = () => {
         keyboardShouldPersistTaps="handled"
       >
         <View style={styles.wrapper}>
-          <SinglePostShow
-            item={postDetail}
+          <SingleReplyShow
+            item={commentReply}
             onPressLike={() => onPressLikeFun()}
           />
-          <CommunityOneComponent
-            data={postDetail?.comments}
+          <ReplyOneComponent
+            data={commentReply?.replies}
             onPress={() =>
               navigation.navigate(SCREENS.NavigationRoutes, {
                 screen: SCREENS.ProfileDetails,
@@ -121,7 +120,6 @@ const PostScreen = () => {
             }
             onPressLikeReply={(val) => { onPressLikeReplyFun(val) }}
             onPressReply={(item) => {
-              
               dispatch(setCommentReply(item))
               navigation.navigate(SCREENS.NavigationRoutes, {
                 screen: SCREENS.ReplyScreen,
@@ -135,6 +133,7 @@ const PostScreen = () => {
           title={"Reply"}
           backgroundColor={COLORS.blue}
           onPress={() => {
+            dispatch(setIsReply(true))
             navigation.navigate(SCREENS.NavigationRoutes, {
               screen: SCREENS.ReplyOnComment,
             })
@@ -155,5 +154,5 @@ const PostScreen = () => {
   );
 };
 
-export default PostScreen;
+export default ReplyScreen;
 
