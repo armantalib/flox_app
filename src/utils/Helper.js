@@ -108,6 +108,13 @@ export function searchFunctions(query, array) {
   return array.filter(user => user.name.toLowerCase().includes(query.toLowerCase()));
 }
 
+export function searchFunctionCommunity(query, array,tempArray) {
+  if(!query){
+    return tempArray
+  }
+  return array.filter(user => user.user?.username.toLowerCase().includes(query.toLowerCase()));
+}
+
 export function searchByDate(targetMonth, data) {
 
   // Convert ISO date to "YYYY-MM"

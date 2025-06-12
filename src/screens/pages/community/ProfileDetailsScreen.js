@@ -8,7 +8,7 @@ import {
   TouchableHighlight,
   Keyboard,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import styles from "./Styles";
@@ -21,6 +21,13 @@ import UserDetailsComponent from "../../../components/UserDetailsComponent";
 import ProfileAnimatedDotSlider from "../../../components/ProfileAnimatedDotSlider";
 import { SCREENS } from "../../../constants/Screen";
 import BtnPrimary from "../../../components/BtnPrimary";
+import { useDispatch, useSelector } from "react-redux";
+import CustomAvatar from "../../../components/BottomSheets/CustomAvatar";
+import { normalize } from "../../../utils/Metrics";
+import { dataPost } from "../../../utils/myAxios";
+import { showToast } from "../../../components/General";
+import { setUserDetail } from "../../../storeTolkit/userSlice";
+import { setChatToId } from "../../../storeTolkit/ChatData";
 
 const posts = [
   {
@@ -63,6 +70,31 @@ const ProfileDetailsScreen = () => {
   const navigation = useNavigation();
   const [activeTab, setActiveTab] = useState(0);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [isFollow, setIsFollow] = useState(false);
+  const dispatch = useDispatch();
+  const { user, userDetail } = useSelector((state) => state?.user);
+
+
+  useEffect(() => {
+    checkFollowUnFollow();
+  }, [])
+
+  const checkFollowUnFollow = async () => {
+    let data = {
+      followerId: user?._id,
+      followingId: userDetail?._id,
+    }
+    const endPoint = 'general/follow/check';
+    const response = await dataPost(endPoint, data);
+
+
+    if(response?.data){
+      setIsFollow(true)
+    }else{
+      setIsFollow(false)
+    }
+  }
+
 
   // Handle Tab Switch
   const switchTab = (index) => {
@@ -76,6 +108,23 @@ const ProfileDetailsScreen = () => {
     }
     Keyboard.dismiss(); // Optional, in case keyboard is open
   };
+
+  const followUnFollowUser = async () => {
+    if(user?._id == userDetail?._id){
+      showToast("You can't follow yourself.")
+      return
+    }
+    setIsFollow(!isFollow)
+    let data = {
+      followerId: user?._id,
+      followingId: userDetail?._id,
+    }
+    const endPoint = 'general/follow/user';
+    const response = await dataPost(endPoint, data);
+    dispatch(setUserDetail(response?.user))
+
+
+  }
 
   return (
     <TouchableWithoutFeedback activeOpacity={1} onPress={handleOutsidePress}>
@@ -105,7 +154,7 @@ const ProfileDetailsScreen = () => {
             <TextComponent
               color={COLORS.primary}
               fontSize={16}
-              title={"Jane3459"}
+              title={userDetail?.username}
               fontFamily={FONTS.Samsungsharpsans_Bold}
               textAlign={"center"}
               marginBottom={10}
@@ -174,9 +223,17 @@ const ProfileDetailsScreen = () => {
           <View style={{ padding: 20 }}>
             <View style={styles.statsBox}>
               {/* Profile Image */}
-              <Image
+              {/* <Image
                 source={IMAGES.User2_Img} // Replace with actual profile URL
                 style={styles.profileImage}
+              /> */}
+              <CustomAvatar
+                image={userDetail?.image}
+                width={normalize(50)}
+                height={normalize(50)}
+                fontSize={normalize(26)}
+                borderRadius={normalize(50)}
+                name={userDetail?.username}
               />
 
               {/* Stats Section */}
@@ -185,7 +242,7 @@ const ProfileDetailsScreen = () => {
                   <TextComponent
                     color={COLORS.primary}
                     fontSize={15}
-                    title={"315"}
+                    title={userDetail?.postsCount}
                     fontFamily={FONTS.Samsungsharpsans_Bold}
                     textAlign={"center"}
                   />
@@ -201,7 +258,7 @@ const ProfileDetailsScreen = () => {
                   <TextComponent
                     color={COLORS.primary}
                     fontSize={15}
-                    title={"140"}
+                    title={userDetail?.followersCount}
                     fontFamily={FONTS.Samsungsharpsans_Bold}
                     textAlign={"center"}
                   />
@@ -217,7 +274,7 @@ const ProfileDetailsScreen = () => {
                   <TextComponent
                     color={COLORS.primary}
                     fontSize={15}
-                    title={"44"}
+                    title={userDetail?.followingCount}
                     fontFamily={FONTS.Samsungsharpsans_Bold}
                     textAlign={"center"}
                   />
@@ -245,6 +302,7 @@ const ProfileDetailsScreen = () => {
             <View style={styles.btnFlex}>
               <View style={{ width: "50%" }}>
                 <BtnPrimary
+                  onPress={() => followUnFollowUser()}
                   userIcon
                   style={{
                     height: 38,
@@ -255,7 +313,7 @@ const ProfileDetailsScreen = () => {
                     color: COLORS.white,
                     fontSize: 15,
                   }}
-                  title={"Follow"}
+                  title={isFollow?"Following":"Follow"}
                 />
               </View>
               <View style={{ width: "50%" }}>
@@ -265,10 +323,12 @@ const ProfileDetailsScreen = () => {
                   }}
                   userIcon
                   title={"Message"}
-                  navigation={() =>
+                  navigation={() =>{
+                    dispatch(setChatToId(userDetail?._id))
                     navigation.navigate(SCREENS.NavigationRoutes, {
-                      screen: SCREENS.Chat,
+                      screen: SCREENS.InboxScreen,
                     })
+                  }
                   }
                 />
               </View>

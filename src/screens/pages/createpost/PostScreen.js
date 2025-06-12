@@ -58,10 +58,7 @@ const PostScreen = () => {
   const { postDetail } = useSelector((state) => state?.community);
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    console.log("Ce,",postDetail);
-    
-  }, [])
+
   
 
   const onPressLikeFun = async () => {

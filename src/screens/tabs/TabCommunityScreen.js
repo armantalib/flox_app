@@ -13,13 +13,15 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import CommunityComponent from "../../components/CommunityComponent";
 import { SCREENS } from "../../constants/Screen";
 import { useDispatch, useSelector } from "react-redux";
-import { getGreeting } from "../../utils/Helper";
+import { getGreeting, searchFunctionCommunity, searchFunctions } from "../../utils/Helper";
 import { PickerBottomSheet } from "../../components/BottomSheets/PickerBottomSheet";
 import { custom_data } from "../../constants";
 import PickerItem from "../../components/BottomSheets/PickerItem";
 import { dataPost } from "../../utils/myAxios";
 import { useFocusEffect } from '@react-navigation/native';
 import { setPostDetail } from "../../storeTolkit/communitySlice";
+import { Loader } from "../../components/General";
+import { getDateRange } from "../../utils/DateTimeFormate";
 
 const posts = [
   {
@@ -68,7 +70,10 @@ const TabCommunityScreen = (props) => {
   const refSort = useRef();
   const [category, setCategory] = useState('');
   const [sort, setSort] = useState('');
+  const [fromDate, setFromDate] = useState('');
+  const [toDate, setToDate] = useState('');
   const [communityData, setCommunityData] = useState([]);
+  const [communityDataTemp, setCommunityDataTemp] = useState([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [loader, setLoader] = useState(true);
@@ -78,7 +83,7 @@ const TabCommunityScreen = (props) => {
 
   useEffect(() => {
     getCommunity(true);
-  }, [sort, category]);
+  }, [sort, category,fromDate,toDate]);
 
   useEffect(() => {
     if (page > 1) {
@@ -106,14 +111,14 @@ const TabCommunityScreen = (props) => {
       setPage(1);
       setHasMore(true);
       setCommunityData([]);
-      setLoader(true);
+      setCommunityDataTemp([]);
     } else {
       setLoadingMore(true);
     }
     const currentPage = reset ? 1 : page;
     const data = {
-      startDate: '',
-      endDate: '',
+      startDate: fromDate,
+      endDate: toDate,
       sort: sort,
       category: category,
       page: currentPage,
@@ -127,8 +132,10 @@ const TabCommunityScreen = (props) => {
       const newData = response?.data || [];
       if (reset) {
         setCommunityData(newData);
+        setCommunityDataTemp(newData);
       } else {
         setCommunityData(prev => [...prev, ...newData]);
+        setCommunityDataTemp(prev => [...prev, ...newData]);
       }
 
       if (newData.length < 10) setHasMore(false);
@@ -140,9 +147,13 @@ const TabCommunityScreen = (props) => {
 
 
 
+
   return (
     <View style={[tabStyle.safeArea]}>
       <GradientBackground />
+      <Loader
+        loader={loader}
+      />
       <TabHeader
         image={user?.image}
         title={getGreeting()}
@@ -183,6 +194,11 @@ const TabCommunityScreen = (props) => {
             onPressCategory={() => refWarn.current.open()}
             category={category}
             onPressSort={() => refSort.current.open()}
+            onChangeTextSearch={(val) => {
+              const s_data = searchFunctionCommunity(val, communityData, communityDataTemp)
+              setCommunityData(s_data)
+
+            }}
             sort={sort}
             {...props}
           />
@@ -229,6 +245,9 @@ const TabCommunityScreen = (props) => {
             text={item.name}
             onPress={() => {
               setSort(item.name)
+              const range = getDateRange(item.id)
+              setFromDate(range.from)
+              setToDate(range.to)
               refSort.current.close()
             }}
           />

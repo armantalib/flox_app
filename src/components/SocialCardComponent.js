@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -13,6 +13,13 @@ import { FONTS } from "../constants/fonts";
 import { COLORS } from "../constants/colors";
 import { SCREENS } from "../constants/Screen";
 import { useNavigation } from "@react-navigation/native";
+import { dataPost } from "../utils/myAxios";
+import { normalize } from "../utils/Metrics";
+import moment from "moment";
+import CustomAvatar from "./BottomSheets/CustomAvatar";
+import { useDispatch } from "react-redux";
+import { setPostDetail } from "../storeTolkit/communitySlice";
+import { setUserDetail } from "../storeTolkit/userSlice";
 const posts = [
   {
     id: "1",
@@ -38,37 +45,49 @@ const posts = [
 
 const SocialCard = ({ item }) => {
   const navigation = useNavigation();
+   const dispatch = useDispatch();
   return (
     <View style={styles.card}>
       <TouchableOpacity
-        onPress={() =>
+        onPress={() =>{
+          dispatch(setUserDetail(item?.user))
           navigation.navigate(SCREENS.NavigationRoutes, {
             screen: SCREENS.ProfileDetails,
           })
         }
+        }
         style={styles.header}
       >
-        <Image source={item.profileImage} style={styles.profileImage} />
-        <View>
-          <Text style={styles.name}>{item.name}</Text>
-          <Text style={styles.time}>{item.time}</Text>
+        <CustomAvatar
+          image={item?.user?.image}
+          width={normalize(50)}
+          height={normalize(50)}
+          fontSize={normalize(26)}
+          borderRadius={normalize(50)}
+          name={item?.user?.username}
+        />
+        <View style={{ marginLeft: normalize(10) }}>
+          <Text style={styles.name}>{item?.user?.username}</Text>
+          <Text style={styles.time}>{moment(item.createdAt).fromNow()}</Text>
         </View>
       </TouchableOpacity>
 
       <TouchableOpacity
-        onPress={() =>
+        onPress={() =>{
+          dispatch(setPostDetail(item))
           navigation.navigate(SCREENS.NavigationRoutes, {
             screen: SCREENS.Post,
           })
         }
+        }
       >
-        <Text style={styles.content}>{item.content}</Text>
+        <Text style={[styles.content, { marginBottom: normalize(10) }]} numberOfLines={4}>{item.content}</Text>
       </TouchableOpacity>
-      <View style={styles.footer}>
-        <Text style={styles.footerText}>🥰 {item.likes} Likes</Text>
+      <View style={[styles.footer, { width: '90%', alignSelf: 'center', position: 'absolute', bottom: normalize(4) }]}>
+        <Text style={styles.footerText}>🥰 {item.likes.length} Likes</Text>
         <TouchableOpacity>
           <Text style={[styles.footerText, styles.footerText1]}>
-            {item.comments} comments
+            {item.comments.length} comments
           </Text>
         </TouchableOpacity>
       </View>
@@ -76,11 +95,40 @@ const SocialCard = ({ item }) => {
   );
 };
 
-const SocialCardComponent = () => {
+const SocialCardComponent = (props) => {
+  const [communityData, setCommunityData] = useState([]);
+
+  useEffect(() => {
+    getCommunity();
+  }, [])
+
+
+
+  const getCommunity = useCallback(async (reset = false) => {
+
+    const data = {
+      startDate: '',
+      endDate: '',
+      sort: '',
+      category: '',
+      page: 1,
+      limit: 10,
+    };
+
+    const endPoint = 'community/get/1';
+    const response = await dataPost(endPoint, data);
+
+    if (response?.success) {
+      const newData = response?.data || [];
+      setCommunityData(newData);
+    }
+
+  }, []);
+
   return (
     <View style={styles.container}>
       <FlatList
-        data={posts}
+        data={communityData}
         renderItem={({ item }) => <SocialCard item={item} />}
         keyExtractor={(item) => item.id}
         horizontal

@@ -55,4 +55,5 @@ export const SCREENS = {
   Music: "Music",
   ReplyOnComment: "ReplyOnComment",
   ReplyScreen: "ReplyScreen",
+  InboxScreen: "InboxScreen",
 };

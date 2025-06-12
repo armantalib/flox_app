@@ -90,5 +90,42 @@ export function week_start() {
 }
 
 
+export function getDateRange(timePeriodId) {
+    const today = new Date();
+    let fromDate = new Date();
+    let toDate = new Date();
+    
+    switch(timePeriodId) {
+        case '3': // This Week
+            fromDate.setDate(today.getDate() - today.getDay()); // Start of week (Sunday)
+            toDate.setDate(fromDate.getDate() + 6); // End of week (Saturday)
+            break;
+        case '4': // This Month
+            fromDate.setDate(1); // First day of month
+            toDate = new Date(today.getFullYear(), today.getMonth() + 1, 0); // Last day of month
+            break;
+        case '5': // This Year
+            fromDate.setMonth(0, 1); // January 1st
+            toDate = new Date(today.getFullYear(), 11, 31); // December 31st
+            break;
+        case '6': // All Time
+            // For "All Time", you might want to set some very early date
+            fromDate = new Date(0); // Unix epoch start
+            // toDate remains today
+            break;
+        default:
+            // Default to today if unknown ID
+            // fromDate = toDate = today;
+            fromDate = new Date(0);
+    }
+    
+    // Return formatted dates (YYYY-MM-DD)
+    return {
+        from: fromDate.toISOString().split('T')[0],
+        to: toDate.toISOString().split('T')[0]
+    };
+}
+
+
 
 

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -6,6 +6,7 @@ import {
   StyleSheet,
   FlatList,
   TouchableOpacity,
+  Linking,
 } from "react-native";
 import { IMAGES } from "../constants/images";
 import { moderateScale, scale, verticalScale } from "react-native-size-matters";
@@ -16,6 +17,8 @@ import { useNavigation } from "@react-navigation/native";
 import { normalize } from "../utils/Metrics";
 import TextComponent from "./TextComponent";
 import stylesG from "../assets/css/stylesG";
+import { dataPost } from "../utils/myAxios";
+import moment from "moment";
 const posts = [
   {
     id: "1",
@@ -39,18 +42,18 @@ const posts = [
   },
 ];
 
-export const ResourceCard = ({ item,width }) => {
-  const navigation = useNavigation();
+export const ResourceCard = ({ item, width,onPress }) => {
+
   return (
-    <View style={[styles.card,{width:width?width:normalize(230),}]}>
+    <View style={[styles.card, { width: width ? width : normalize(230), }]}>
       <Image
-        source={IMAGES.resource_image}
-        style={{ width: normalize(150), height: normalize(26), resizeMode: 'contain' }}
+        source={item?.image?{uri:item?.image}: IMAGES.resource_image}
+        style={{ width: normalize(150), height: normalize(30), resizeMode: 'stretch'}}
       />
       <TextComponent
         color={COLORS.primary}
         fontSize={normalize(10)}
-        title={"Chemical Proteomics Reveal Human Off-Targets of Fluoroquinolone-Induced Chemical Proteomics Reveal"}
+        title={item.title}
         fontFamily={FONTS.Samsungsharpsans_Bold}
         textAlign={"left"}
         numberOfLines={3}
@@ -60,15 +63,17 @@ export const ResourceCard = ({ item,width }) => {
       <TextComponent
         color={COLORS.primary}
         fontSize={normalize(9)}
-        title={"February 2025"}
+        title={moment(item.createdAt).format('MMM YYYY')}
         fontFamily={FONTS.Samsungsharpsans_Bold}
         textAlign={"left"}
         marginTop={normalize(7)}
         width={'90%'}
       />
-      <Text style={[{ fontSize: normalize(9), fontFamily: FONTS.Samsungsharpsans_Medium, color: COLORS.black, marginTop: normalize(7) }]} numberOfLines={3}><Text style={{ fontFamily: FONTS.Samsungsharpsans_Bold }}>Summary: </Text> This study identifies human protein targets affected by fluoroquinolones, elucidating mechanisms behind FQ-induced</Text>
+      <Text style={[{ fontSize: normalize(9), fontFamily: FONTS.Samsungsharpsans_Medium, color: COLORS.black, marginTop: normalize(7) }]} numberOfLines={3}><Text style={{ fontFamily: FONTS.Samsungsharpsans_Bold }}>Summary: </Text> {item?.summary}</Text>
 
-      <TouchableOpacity style={[{ width: '100%', height: normalize(45), backgroundColor: '#3995FF', borderRadius: normalize(50), marginTop: normalize(15) }, stylesG.contentCenter]}>
+      <TouchableOpacity 
+      onPress={()=>onPress(item)}
+      style={[{ width: '100%', height: normalize(45), backgroundColor: '#3995FF', borderRadius: normalize(50), marginTop: normalize(15) }, stylesG.contentCenter]}>
         <TextComponent
           color={COLORS.white}
           fontSize={normalize(9)}
@@ -82,12 +87,51 @@ export const ResourceCard = ({ item,width }) => {
   );
 };
 
-const ResourcesCardComp = () => {
+const ResourcesCardComp = (props) => {
+  const navigation = useNavigation();
+  const [resourcesData, setResourcesData] = useState([]);
+
+
+  useEffect(() => {
+    getResources(true);
+  }, []);
+  const getResources = useCallback(async (reset = false) => {
+    const data = {
+      startDate: '',
+      endDate: '',
+      sort: '',
+      category: '',
+      page: 1,
+      limit: 10,
+    };
+
+    const endPoint = 'general/resources/get/1';
+    const response = await dataPost(endPoint, data);
+
+    if (response?.success) {
+      const newData = response?.data || [];
+      setResourcesData(newData);
+    }
+  }, []);
+    const openURL = async (url) => {
+    // Check if the link is supported
+    const supported = await Linking.canOpenURL(url);
+
+    if (supported) {
+      // Open the URL in the device's browser
+      await Linking.openURL(url);
+    } else {
+      console.log(`Don't know how to open this URL: ${url}`);
+    }
+  };
   return (
     <View style={styles.container}>
       <FlatList
-        data={posts}
-        renderItem={({ item }) => <ResourceCard item={item} />}
+        data={resourcesData}
+        renderItem={({ item }) => <ResourceCard item={item} 
+        onPress={(val)=>openURL(val?.link)}
+        {...props}
+        />}
         keyExtractor={(item) => item.id}
         horizontal
         showsHorizontalScrollIndicator={false}

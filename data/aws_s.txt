@@ -7,7 +7,13 @@ ec2-54-145-234-123.compute-1.amazonaws.com
 ec2-34-225-57-120.compute-1.amazonaws.com
 
 
-chmod 400 "bantiflox.pem"
+chmod 400 "floxapp_pair.pem"
+
+
+sudo mkdir /var/www/html/admin
+sudo chmod a+rwx /var/www/html/admin
+
+
 
 sudo chmod 777 /media/part1
 sudo rm -rf folderName
@@ -26,6 +32,14 @@ git stash pop
 git stash
 git stash drop
 git pull
+
+cd _7arty_backend
+git stash
+git stash drop
+git pull
+pm2 stop all
+pm2 start index.js
+pm2 restart index.js
 
 rm -rf my-repo
 

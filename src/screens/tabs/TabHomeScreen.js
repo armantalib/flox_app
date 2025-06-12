@@ -152,14 +152,20 @@ const TabHomeScreen = (props) => {
             }
             btnText={"Learn more"}
             userImage
-            onPress={() => console.log()}
+            onPress={() => console.log()} 
           />
           <View style={{ height: verticalScale(25) }} />
           <SeeAllComponent
             title="Hear from floxies"
-            onPress={() => console.log()}
+            onPress={() => {
+              // navigation.navigate(SCREENS.NavigationRoutes, {
+              //   screen: 'TabCommunity',
+              // })
+            }}
           />
-          <SocialCardComponent />
+          <SocialCardComponent
+            {...props}
+          />
           <View style={{ height: verticalScale(15) }} />
           <SeeAllComponent
             title="Resources"
@@ -169,7 +175,9 @@ const TabHomeScreen = (props) => {
               })
             }
           />
-          <ResourcesCardComp />
+          <ResourcesCardComp
+            {...props}
+          />
 
           <View style={{ height: verticalScale(25) }} />
           <TextComponent

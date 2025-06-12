@@ -600,10 +600,7 @@ const drugList =
             id: '1',
             name: 'Most recent (default)'
         },
-        {
-            id: '2',
-            name: 'Most popular'
-        },
+   
         {
             id: '3',
             name: 'This Week'

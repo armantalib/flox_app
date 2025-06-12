@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -18,10 +18,10 @@ import { setPostDetail } from "../storeTolkit/communitySlice";
 import { useDispatch } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import { SCREENS } from "../constants/Screen";
+import SearchTextInput from "./SearchTextInput";
 
 const MeditationCard = ({ item, isLastChild }, ...props) => {
-  console.log("ITe",item);
-  
+
   const dispatch = useDispatch();
   const navigation = useNavigation();
   return (
@@ -85,7 +85,8 @@ const MeditationCard = ({ item, isLastChild }, ...props) => {
   );
 };
 
-const CommunityComponent = ({ data,  onPressCategory, onPressSort, category, sort }, ...props) => {
+const CommunityComponent = ({ data,  onPressCategory, onPressSort, category, sort,onChangeTextSearch }, ...props) => {
+  const [isSearch, setIsSearch] = useState(false)
   return (
     <View style={styles.card}>
       <View style={styles.content}>
@@ -106,10 +107,20 @@ const CommunityComponent = ({ data,  onPressCategory, onPressSort, category, sor
             <SVG_IMAGES.DownArrow_SVG />
           </TouchableOpacity>
 
-          <TouchableOpacity style={{ marginLeft: "auto" }}>
+          <TouchableOpacity 
+          onPress={()=>setIsSearch(!isSearch)}
+          style={{ marginLeft: "auto" }}>
             <SVG_IMAGES.SearchIcon_SVG />
           </TouchableOpacity>
         </View>
+        {isSearch?
+          <SearchTextInput
+            placeholder="Search"
+            style={styles.searchInput}
+            placeholderTextColor={COLORS.primary}
+            onChangeText={onChangeTextSearch}
+            placeholderText={"Search Post"}
+          />:null}
         <FlatList
           data={data}
           renderItem={({ item, index }) => (
