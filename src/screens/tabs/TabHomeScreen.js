@@ -23,6 +23,8 @@ import { dataGet_ } from "../../utils/myAxios";
 import { setStepsData } from "../../storeTolkit/stepsSlice";
 import { setCategoriesHub, setCategoryExplore } from "../../storeTolkit/hubSlice";
 import { getGreeting } from "../../utils/Helper";
+import { useFocusEffect } from '@react-navigation/native';
+import { setChatCount, setNotiCount } from "../../storeTolkit/userSlice";
 
 const data = [
   {
@@ -48,6 +50,7 @@ const TabHomeScreen = (props) => {
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
   const user = useSelector((state) => state?.user?.user);
+
   const { categoriesHub } = useSelector((state) => state?.hub);
   const [userJournal, setUserJournal] = useState(null)
   const [cardData, setCardData] = useState(null)
@@ -74,6 +77,10 @@ const TabHomeScreen = (props) => {
       dispatch(setCategoriesHub(response?.data))
     }
   }
+
+  
+
+
 
 
 

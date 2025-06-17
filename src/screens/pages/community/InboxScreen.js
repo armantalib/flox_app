@@ -4,7 +4,7 @@ import {
   KeyboardAvoidingView, Platform, StyleSheet, Image
 } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
-import { dataGet_, socketUrl } from '../../../utils/myAxios';
+import { dataGet_, dataPut, socketUrl } from '../../../utils/myAxios';
 import {
   receivedMessage,
   setMessagesData,
@@ -20,6 +20,7 @@ import TextComponent from '../../../components/TextComponent';
 import { FONTS } from '../../../constants/fonts';
 import { COLORS } from '../../../constants/colors';
 import stylesG from '../../../assets/css/stylesG';
+import CustomAvatar from '../../../components/BottomSheets/CustomAvatar';
 
 const InboxScreen = (props) => {
   const flatListRef = useRef(null);
@@ -73,17 +74,36 @@ const InboxScreen = (props) => {
     }
   };
 
-  const renderItem = ({ item }) => {
+  const renderItem = ({ item, index }) => {
     const isMyMessage = item?.sender === user?._id;
     const time = moment(item?.createdAt).format('hh:mm A');
+    const onPressLike = () => {
+      dispatch(setMessagesData(
+        messagesData.map((message, i) =>
+          i === index
+            ? { ...message, isLike: !message.isLike } // Create new object for the changed message
+            : message
+        ))
+      );
+      updateLikeMessage();
+    }
 
+    const updateLikeMessage = async () => {
+      const endPoint = 'msg/like/' + item?._id;
+      const res = await dataPut(endPoint, {isLike:!item?.isLike});
+      console.log("CE",res);
+      
+    }
     return (
       <View style={{ marginVertical: 10 }}>
         {isMyMessage ? (
           <View style={styles.rightChat}>
-            <TouchableOpacity>
-              <SVG_IMAGES.HeartNew1_SVG />
-            </TouchableOpacity>
+            <View>
+              {item?.isLike ?
+                <SVG_IMAGES.HeartNew_SVG /> :
+                <SVG_IMAGES.HeartNew1_SVG />
+              }
+            </View>
             <View style={[styles.rightChatBox]}>
               <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} colors={["#3995FF", "#1F8AFF"]}>
                 <View style={styles.switchBackground}>
@@ -123,8 +143,13 @@ const InboxScreen = (props) => {
                 color={COLORS.black}
               />
             </View>
-            <TouchableOpacity>
-              <SVG_IMAGES.HeartNew_SVG />
+            <TouchableOpacity
+              onPress={() => onPressLike()}
+            >
+              {item?.isLike ?
+                <SVG_IMAGES.HeartNew_SVG /> :
+                <SVG_IMAGES.HeartNew1_SVG />
+              }
             </TouchableOpacity>
           </View>
         )}
@@ -147,11 +172,18 @@ const InboxScreen = (props) => {
             <SVG_IMAGES.Arrow_SVG />
           </TouchableOpacity>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Image source={toUserData?.image ? { uri: toUserData?.image } : IMAGES.User2_Img} style={{ width: 40, height: 40, borderRadius: 20 }} />
+            <CustomAvatar
+              image={toUserData?.image}
+              width={normalize(40)}
+              height={normalize(40)}
+              fontSize={normalize(26)}
+              borderRadius={normalize(50)}
+              name={toUserData?.username}
+            />
             <TextComponent
               color={COLORS.primary}
               fontSize={16}
-              title={toUserData?.name || "John Doe"}
+              title={toUserData?.username || "John Doe"}
               fontFamily={FONTS.Samsungsharpsans_Bold}
               textAlign={"center"}
               marginLeft={10}

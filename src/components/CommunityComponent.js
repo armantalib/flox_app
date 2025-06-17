@@ -19,6 +19,7 @@ import { useDispatch } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import { SCREENS } from "../constants/Screen";
 import SearchTextInput from "./SearchTextInput";
+import { setUserDetail } from "../storeTolkit/userSlice";
 
 const MeditationCard = ({ item, isLastChild }, ...props) => {
 
@@ -27,10 +28,11 @@ const MeditationCard = ({ item, isLastChild }, ...props) => {
   return (
     <View style={[styles.itemBox, isLastChild && styles.lastItem]}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={()=>{
-              navigation.navigate(SCREENS.NavigationRoutes, {
-                screen: SCREENS.ProfileDetails,
-              })
+        <TouchableOpacity onPress={() => {
+          dispatch(setUserDetail(item?.user))
+          navigation.navigate(SCREENS.NavigationRoutes, {
+            screen: SCREENS.ProfileDetails,
+          })
         }} activeOpacity={0.8}>
           {/* <Image source={{uri}} style={styles.profileImage} /> */}
           <CustomAvatar
@@ -85,7 +87,7 @@ const MeditationCard = ({ item, isLastChild }, ...props) => {
   );
 };
 
-const CommunityComponent = ({ data,  onPressCategory, onPressSort, category, sort,onChangeTextSearch }, ...props) => {
+const CommunityComponent = ({ data, onPressCategory, onPressSort, category, sort, onChangeTextSearch }, ...props) => {
   const [isSearch, setIsSearch] = useState(false)
   return (
     <View style={styles.card}>
@@ -107,20 +109,20 @@ const CommunityComponent = ({ data,  onPressCategory, onPressSort, category, sor
             <SVG_IMAGES.DownArrow_SVG />
           </TouchableOpacity>
 
-          <TouchableOpacity 
-          onPress={()=>setIsSearch(!isSearch)}
-          style={{ marginLeft: "auto" }}>
+          <TouchableOpacity
+            onPress={() => setIsSearch(!isSearch)}
+            style={{ marginLeft: "auto" }}>
             <SVG_IMAGES.SearchIcon_SVG />
           </TouchableOpacity>
         </View>
-        {isSearch?
+        {isSearch ?
           <SearchTextInput
             placeholder="Search"
             style={styles.searchInput}
             placeholderTextColor={COLORS.primary}
             onChangeText={onChangeTextSearch}
             placeholderText={"Search Post"}
-          />:null}
+          /> : null}
         <FlatList
           data={data}
           renderItem={({ item, index }) => (

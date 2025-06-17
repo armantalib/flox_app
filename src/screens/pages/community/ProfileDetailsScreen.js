@@ -88,9 +88,9 @@ const ProfileDetailsScreen = () => {
     const response = await dataPost(endPoint, data);
 
 
-    if(response?.data){
+    if (response?.data) {
       setIsFollow(true)
-    }else{
+    } else {
       setIsFollow(false)
     }
   }
@@ -110,7 +110,7 @@ const ProfileDetailsScreen = () => {
   };
 
   const followUnFollowUser = async () => {
-    if(user?._id == userDetail?._id){
+    if (user?._id == userDetail?._id) {
       showToast("You can't follow yourself.")
       return
     }
@@ -313,7 +313,7 @@ const ProfileDetailsScreen = () => {
                     color: COLORS.white,
                     fontSize: 15,
                   }}
-                  title={isFollow?"Following":"Follow"}
+                  title={isFollow ? "Following" : "Follow"}
                 />
               </View>
               <View style={{ width: "50%" }}>
@@ -323,7 +323,7 @@ const ProfileDetailsScreen = () => {
                   }}
                   userIcon
                   title={"Message"}
-                  navigation={() =>{
+                  navigation={() => {
                     dispatch(setChatToId(userDetail?._id))
                     navigation.navigate(SCREENS.NavigationRoutes, {
                       screen: SCREENS.InboxScreen,
@@ -336,57 +336,58 @@ const ProfileDetailsScreen = () => {
           </View>
         </View>
 
-        <ScrollView
+        {/* <ScrollView
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ flexGrow: 1 }}
           style={{ zIndex: 0 }}
-        >
-          <View style={[styles.wrapper]}>
-            <View style={styles.card}>
-              {/* Tabs */}
-              <View style={styles.tabsContainer}>
-                <TouchableOpacity
+        > */}
+        <View style={[styles.wrapper]}>
+          <View style={styles.card}>
+            {/* Tabs */}
+            <View style={styles.tabsContainer}>
+              <TouchableOpacity
+                style={[
+                  styles.tab,
+                  {
+                    borderBottomColor:
+                      activeTab === 0 ? COLORS.primary : "#EAEAEA",
+                  },
+                ]}
+                onPress={() => switchTab(0)}
+              >
+                <Text
                   style={[
-                    styles.tab,
-                    {
-                      borderBottomColor:
-                        activeTab === 0 ? COLORS.primary : "#EAEAEA",
-                    },
+                    styles.tabText,
+                    activeTab === 0 && styles.activeTabText,
                   ]}
-                  onPress={() => switchTab(0)}
                 >
-                  <Text
-                    style={[
-                      styles.tabText,
-                      activeTab === 0 && styles.activeTabText,
-                    ]}
-                  >
-                    Posts
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
+                  Posts
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.tab,
+                  {
+                    borderBottomColor:
+                      activeTab === 1 ? COLORS.primary : "#EAEAEA",
+                  },
+                ]}
+                onPress={() => switchTab(1)}
+              >
+                <Text
                   style={[
-                    styles.tab,
-                    {
-                      borderBottomColor:
-                        activeTab === 1 ? COLORS.primary : "#EAEAEA",
-                    },
+                    styles.tabText,
+                    activeTab === 1 && styles.activeTabText,
                   ]}
-                  onPress={() => switchTab(1)}
                 >
-                  <Text
-                    style={[
-                      styles.tabText,
-                      activeTab === 1 && styles.activeTabText,
-                    ]}
-                  >
-                    Stats
-                  </Text>
-                </TouchableOpacity>
-              </View>
-              {activeTab === 0 && <UserDetailsComponent data={posts} />}
-              {activeTab === 1 && (
-                <>
+                  Stats
+                </Text>
+              </TouchableOpacity>
+            </View>
+            {activeTab === 0 && <UserDetailsComponent data={posts} />}
+            {activeTab === 1 && (
+              <>
+                <ScrollView showsVerticalScrollIndicator={false}>
                   <ProfileAnimatedDotSlider />
                   {/* <View style={styles.noChat}>
                   <TextComponent
@@ -397,11 +398,14 @@ const ProfileDetailsScreen = () => {
                     opacity={0.5}
                   />
                 </View> */}
-                </>
-              )}
-            </View>
+                </ScrollView>
+              </>
+            )}
           </View>
-        </ScrollView>
+        </View>
+
+
+        {/* </ScrollView> */}
       </View>
     </TouchableWithoutFeedback>
   );

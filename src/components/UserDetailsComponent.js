@@ -78,6 +78,7 @@ const UserDetailsComponent = ({ data, onPress, hideFollow }) => {
       )}
       keyExtractor={(item) => item.id}
       showsVerticalScrollIndicator={false}
+      style={{ flex: 1 }} // Add this line
     />
   );
 };

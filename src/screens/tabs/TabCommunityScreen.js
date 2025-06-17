@@ -124,10 +124,10 @@ const TabCommunityScreen = (props) => {
       page: currentPage,
       limit: 10,
     };
-
+    setLoader(true)
     const endPoint = 'community/get/' + currentPage;
     const response = await dataPost(endPoint, data);
-
+    setLoader(false)
     if (response?.success) {
       const newData = response?.data || [];
       if (reset) {
@@ -141,7 +141,6 @@ const TabCommunityScreen = (props) => {
       if (newData.length < 10) setHasMore(false);
     }
 
-    setLoader(false);
     setLoadingMore(false);
   }, [category, sort, page, user]);
 

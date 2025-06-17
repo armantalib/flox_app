@@ -52,7 +52,7 @@ const posts = [
   },
 ];
 
-const PostScreen = () => {
+const PostScreen = (props) => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
   const { postDetail } = useSelector((state) => state?.community);
@@ -111,11 +111,7 @@ const PostScreen = () => {
           />
           <CommunityOneComponent
             data={postDetail?.comments}
-            onPress={() =>
-              navigation.navigate(SCREENS.NavigationRoutes, {
-                screen: SCREENS.ProfileDetails,
-              })
-            }
+           
             onPressLikeReply={(val) => { onPressLikeReplyFun(val) }}
             onPressReply={(item) => {
               
@@ -124,6 +120,7 @@ const PostScreen = () => {
                 screen: SCREENS.ReplyScreen,
               })
             }}
+            {...props}
           />
         </View>
       </ScrollView>

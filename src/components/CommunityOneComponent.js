@@ -17,16 +17,25 @@ import { normalize } from "../utils/Metrics";
 import moment from "moment";
 import stylesG from "../assets/css/stylesG";
 import Icons from "../utils/Icons";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setUserDetail } from "../storeTolkit/userSlice";
+import { SCREENS } from "../constants/Screen";
+import { useNavigation } from "@react-navigation/native";
 
-const MeditationCard = ({ item, isLastChild,onPressLikeReply,onPressReply,onPress }) => {
+const MeditationCard = ({ item, isLastChild, onPressLikeReply, onPressReply, onPress }) => {
   const user = useSelector((state) => state?.user?.user);
   const liked = item.likes.map(item => item._id).includes(user._id)
-
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
   return (
     <View style={[styles.itemBox]}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={onPress} activeOpacity={0.8}>
+        <TouchableOpacity onPress={() => {
+          dispatch(setUserDetail(item?.user))
+          navigation.navigate(SCREENS.NavigationRoutes, {
+            screen: SCREENS.ProfileDetails,
+          })
+        }} activeOpacity={0.8}>
           <CustomAvatar
             image={item?.user?.image}
             width={normalize(50)}
@@ -52,7 +61,7 @@ const MeditationCard = ({ item, isLastChild,onPressLikeReply,onPressReply,onPres
         >
           {/* <SVG_IMAGES.Liked_SVG /> */}
           <TouchableOpacity
-            onPress={()=> onPressLikeReply(item)}
+            onPress={() => onPressLikeReply(item)}
             style={[stylesG.contentCenter, { paddingHorizontal: normalize(12), paddingVertical: normalize(6), borderWidth: 1, borderColor: !liked ? COLORS.grey : '#FF4D67', borderRadius: normalize(50) }]}>
             <View style={[stylesG.flexRow]}>
               {liked ?
@@ -82,13 +91,13 @@ const MeditationCard = ({ item, isLastChild,onPressLikeReply,onPressReply,onPres
         <TextComponent
           color={COLORS.primary}
           fontSize={11}
-          title={'🥰 '+item.likes.length+' likes'}
+          title={'🥰 ' + item.likes.length + ' likes'}
           fontFamily={FONTS.Samsungsharpsans_Medium}
         />
 
-        <TouchableOpacity 
-        onPress={()=> onPressReply(item)}
-        style={styles.footerIcon1}>
+        <TouchableOpacity
+          onPress={() => onPressReply(item)}
+          style={styles.footerIcon1}>
           <View style={{ marginRight: 0, marginBottom: 2 }}>
             <SVG_IMAGES.Reply_SVG width={15} height={15} />
           </View>
@@ -96,7 +105,7 @@ const MeditationCard = ({ item, isLastChild,onPressLikeReply,onPressReply,onPres
           <TextComponent
             color={COLORS.primary}
             fontSize={11}
-            title={item.replies.length+' Replies'}
+            title={item.replies.length + ' Replies'}
             fontFamily={FONTS.Samsungsharpsans_Medium}
           />
         </TouchableOpacity>
@@ -111,10 +120,17 @@ const MeditationCard = ({ item, isLastChild,onPressLikeReply,onPressReply,onPres
 export const SinglePostShow = ({ item, onPressLike }) => {
   const user = useSelector((state) => state?.user?.user);
   const liked = item.likes.map(item => item._id).includes(user._id)
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
   return (
     <View style={[styles.itemBox, { width: '90%', alignSelf: 'center' }]}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={item.onPress} activeOpacity={0.8}>
+        <TouchableOpacity onPress={() => {
+          dispatch(setUserDetail(item?.user))
+          navigation.navigate(SCREENS.NavigationRoutes, {
+            screen: SCREENS.ProfileDetails,
+          })
+        }} activeOpacity={0.8}>
           <CustomAvatar
             image={item?.user?.image}
             width={normalize(50)}
@@ -208,7 +224,7 @@ export const SinglePostShow = ({ item, onPressLike }) => {
   );
 };
 
-const CommunityOneComponent = ({ data, onPress,onPressLikeReply,onPressReply }) => {
+const CommunityOneComponent = ({ data, onPress, onPressLikeReply, onPressReply }) => {
   return (
     <View style={styles.card}>
       <View style={styles.content}>

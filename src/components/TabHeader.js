@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   View,
   Text,
@@ -20,6 +20,9 @@ import { SCREENS } from "../constants/Screen";
 import { BlurView } from "@react-native-community/blur";
 import CustomAvatar from "./BottomSheets/CustomAvatar";
 import { normalize } from "../utils/Metrics";
+import { setChatCount, setNotiCount } from "../storeTolkit/userSlice";
+import { dataGet_ } from "../utils/myAxios";
+import { useDispatch, useSelector } from "react-redux";
 
 const { width } = Dimensions.get("window");
 
@@ -31,6 +34,22 @@ const navHeight = screenHeight * 0.085;
 const TabHeader = ({ style, image, title, name, chatcount, noticount }) => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
+   const {chatCount,notiCount} = useSelector((state) => state?.user);
+   const dispatch = useDispatch();
+
+  useEffect(() => {
+  getCounts();
+  }, [])
+  
+
+    const getCounts = async () => {
+      const endPoint = 'users/totalUnseens';
+      const response = await dataGet_(endPoint, {});
+      if(response?.success){
+        dispatch(setChatCount(response?.unseenMessage))
+        dispatch(setNotiCount(response?.notiCount))
+      }
+    }
   return (
     <View
       style={[
@@ -96,14 +115,15 @@ const TabHeader = ({ style, image, title, name, chatcount, noticount }) => {
         }
       >
         <SVG_IMAGES.Notification_Bell_New_SVG width={scale(26)} height={scale(26)} marginRight={5} />
+        {notiCount?
         <LinearGradient
           colors={["#3995FF", "#3995FF"]} // White to Black
           start={{ x: 0, y: 1 }} // Bottom
           end={{ x: 1, y: 0 }} // Top
           style={styles.badge} // Makes the gradient cover the entire image
         >
-          <Text style={styles.badgeText}>{noticount}</Text>
-        </LinearGradient>
+          <Text style={styles.badgeText}>{notiCount}</Text>
+        </LinearGradient>:null}
       </TouchableOpacity>
 
       {/* Notification & Messages Section */}
@@ -118,14 +138,15 @@ const TabHeader = ({ style, image, title, name, chatcount, noticount }) => {
           style={styles.iconWrapper}
         >
           <SVG_IMAGES.Chat_New_SVG width={scale(26)} height={scale(26)} />
+          {chatCount?
           <LinearGradient
             colors={["#3995FF", "#3995FF"]} // White to Black
             start={{ x: 0, y: 1 }} // Bottom
             end={{ x: 1, y: 0 }} // Top
             style={styles.badge} // Makes the gradient cover the entire image
           >
-            <Text style={styles.badgeText}>{chatcount}</Text>
-          </LinearGradient>
+            <Text style={styles.badgeText}>{chatCount}</Text>
+          </LinearGradient>:null}
         </TouchableOpacity>
       </View>
     </View>

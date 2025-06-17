@@ -2,14 +2,17 @@ import { createSlice } from '@reduxjs/toolkit';
 
 type InitialStateType = {
   user: any | null;  // Replace 'any' with actual user type if available
-  userDetail: any | null; 
+  userDetail: any | null;
   isUpdate: boolean;
   isOnline: boolean;
   isReaderConnected: boolean;
+  chatCount: any | null;
+  notiCount: any | null;
+
 };
 
 const initialState: InitialStateType = {
-  user: null,userDetail:null, isUpdate: false, isOnline: false, isReaderConnected: false
+  user: null, userDetail: null, isUpdate: false, isOnline: false, isReaderConnected: false, chatCount: 0, notiCount: 0
 };
 
 const userSlice = createSlice({
@@ -29,15 +32,21 @@ const userSlice = createSlice({
     setIsOnline: (state, action) => {
       state.isOnline = action.payload;
     },
-  
+
     setIsReaderConnected: (state, action) => {
       state.isReaderConnected = action.payload;
+    },
+    setChatCount: (state, action) => {
+      state.chatCount = action.payload;
+    },
+    setNotiCount: (state, action) => {
+      state.notiCount = action.payload;
     },
 
     // Other reducers go here
   },
 });
 
-export const { setUser, setIsOnline,setIsReaderConnected,setUserDetail } = userSlice.actions;
+export const { setUser, setIsOnline, setIsReaderConnected, setUserDetail ,setChatCount,setNotiCount } = userSlice.actions;
 
 export default userSlice.reducer;
