@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -12,63 +12,148 @@ import { COLORS } from "../constants/colors";
 import { FONTS } from "../constants/fonts";
 import { SVG_IMAGES } from "../constants/images";
 import OutlineButton from "./OutlineButton";
+import { dataPost } from "../utils/myAxios";
+import { useNavigation } from "@react-navigation/native";
+import { useDispatch, useSelector } from "react-redux";
+import CustomAvatar from "./BottomSheets/CustomAvatar";
+import { normalize } from "../utils/Metrics";
+import moment from "moment";
+import { setPostDetail } from "../storeTolkit/communitySlice";
+import { SCREENS } from "../constants/Screen";
 
 const MeditationCard = ({ item, isLastChild, hideFollow }) => {
+  const dispatch = useDispatch();
+  const navigation = useNavigation();
   return (
     <View style={[styles.itemBox, isLastChild && styles.lastItem]}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={item.onPress} activeOpacity={0.8}>
-          <Image source={item.profileImage} style={styles.profileImage} />
+        <TouchableOpacity onPress={() => {
+          dispatch(setUserDetail(item?.user))
+          navigation.navigate(SCREENS.NavigationRoutes, {
+            screen: SCREENS.ProfileDetails,
+          })
+        }} activeOpacity={0.8}>
+          {/* <Image source={{uri}} style={styles.profileImage} /> */}
+          <CustomAvatar
+            image={item?.user?.image}
+            width={normalize(50)}
+            height={normalize(50)}
+            fontSize={normalize(26)}
+            borderRadius={normalize(50)}
+            name={item?.user?.username}
+          />
         </TouchableOpacity>
         <TouchableOpacity onPress={item.onPress} activeOpacity={0.8}>
-          <Text style={styles.name}>{item.name}</Text>
-          <Text style={styles.time}>{item.time}</Text>
+          <Text style={styles.name}>{item?.user?.username}</Text>
+          <Text style={styles.time}>{moment(item.createdAt).fromNow()}</Text>
         </TouchableOpacity>
-        <View style={[styles.dropbutton, styles.dropbutton1]}>
-          <Text style={styles.name1}>{item.general}</Text>
+        <View
+          style={[
+            styles.dropbutton,
+            styles.dropbutton1,
+            {
+              backgroundColor: item?.category === 'General' ? COLORS.grey :
+                item?.category === 'Newcomer' ? COLORS.green :
+                  COLORS.lemon, // Dark background
+            },
+          ]}
+        >
+          <Text style={styles.name1}>{item?.category}</Text>
         </View>
         <TouchableOpacity style={styles.dotsSTyle}>
           <SVG_IMAGES.DotsIcon_SVG />
         </TouchableOpacity>
       </View>
-      <Text style={styles.content}>{item.content}</Text>
+      <TouchableOpacity
+        onPress={() => {
+          dispatch(setPostDetail(item))
+          navigation.navigate(SCREENS.NavigationRoutes, {
+            screen: SCREENS.Post,
+          })
+        }}
+      >
+        <Text style={styles.content} numberOfLines={3}>{item.content}</Text>
+      </TouchableOpacity>
       <View style={styles.footer}>
-        <Text style={styles.footerText}>🥰❤️ {item.likes} Likes</Text>
+        <Text style={styles.footerText}>🥰 {item.likes.length} Likes</Text>
         <TouchableOpacity>
           <Text style={[styles.footerText, styles.footerText1]}>
-            {item.comments} comments
+            {item.comments.length} comments
           </Text>
         </TouchableOpacity>
       </View>
-
-      {!hideFollow && (
-        <View style={styles.btnFlex}>
-          <OutlineButton
-            style={{
-              height: 38,
-              paddingHorizontal: moderateScale(13),
-            }}
-            heartIcon
-            title={"Follow"}
-          />
-          <OutlineButton
-            style={{
-              height: 38,
-              paddingHorizontal: moderateScale(13),
-            }}
-            userIcon
-            title={"Comment"}
-          />
-        </View>
-      )}
     </View>
   );
 };
 
-const UserDetailsComponent = ({ data, onPress, hideFollow }) => {
+const UserDetailsComponent = ({ onPress, hideFollow }) => {
+  const [data, setData] = useState([])
+  const [communityData, setCommunityData] = useState([]);
+  const [communityDataTemp, setCommunityDataTemp] = useState([]);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [loader, setLoader] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+   const { user, userDetail } = useSelector((state) => state?.user);
+
+  useEffect(() => {
+    getCommunity(true);
+  }, []);
+
+  useEffect(() => {
+    if (page > 1) {
+      getCommunity();
+    }
+  }, [page]);
+
+  const getCommunity = useCallback(async (reset = false) => {
+    if (loadingMore && !reset) return;
+    if (reset) {
+      setPage(1);
+      setHasMore(true);
+      setCommunityData([]);
+      setCommunityDataTemp([]);
+    } else {
+      setLoadingMore(true);
+    }
+    const currentPage = reset ? 1 : page;
+    const data = {
+      startDate: '',
+      endDate: '',
+      sort: '',
+      category: '',
+      page: currentPage,
+      limit: 10,
+      user_id : userDetail?._id
+
+    };
+    setLoader(true)
+    const endPoint = 'community/get/user/' + currentPage;
+    const response = await dataPost(endPoint, data);
+ 
+    setLoader(false)
+    if (response?.success) {
+      const newData = response?.data || [];
+      if (reset) {
+        setCommunityData(newData);
+        setCommunityDataTemp(newData);
+      } else {
+        setCommunityData(prev => [...prev, ...newData]);
+        setCommunityDataTemp(prev => [...prev, ...newData]);
+      }
+
+      if (newData.length < 10) setHasMore(false);
+    }
+
+    setLoadingMore(false);
+  }, [page]);
+
+
   return (
+    <>
+    <View style={{marginTop:normalize(10)}}></View>
     <FlatList
-      data={data}
+      data={communityData}
       renderItem={({ item, index }) => (
         <MeditationCard
           isLastChild={index === data.length - 1}
@@ -80,6 +165,7 @@ const UserDetailsComponent = ({ data, onPress, hideFollow }) => {
       showsVerticalScrollIndicator={false}
       style={{ flex: 1 }} // Add this line
     />
+    </>
   );
 };
 

@@ -65,7 +65,7 @@ const posts = [
   },
 ];
 
-const ProfileDetailsScreen = () => {
+const ProfileDetailsScreen = (props) => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
   const [activeTab, setActiveTab] = useState(0);
@@ -160,12 +160,13 @@ const ProfileDetailsScreen = () => {
               marginBottom={10}
             />
           </View>
+          {user?._id == userDetail?._id?null:
           <TouchableOpacity
             onPress={() => setShowDropdown(!showDropdown)}
             style={styles.dotsSTyle}
           >
             <SVG_IMAGES.DotsIcon_SVG />
-          </TouchableOpacity>
+          </TouchableOpacity>}
         </View>
         {showDropdown && (
           <View
@@ -384,7 +385,7 @@ const ProfileDetailsScreen = () => {
                 </Text>
               </TouchableOpacity>
             </View>
-            {activeTab === 0 && <UserDetailsComponent data={posts} />}
+            {activeTab === 0 && <UserDetailsComponent data={posts} {...props} />}
             {activeTab === 1 && (
               <>
                 <ScrollView showsVerticalScrollIndicator={false}>
