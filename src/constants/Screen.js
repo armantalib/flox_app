@@ -56,4 +56,5 @@ export const SCREENS = {
   ReplyOnComment: "ReplyOnComment",
   ReplyScreen: "ReplyScreen",
   InboxScreen: "InboxScreen",
+  UpdateUserBio: "UpdateUserBio",
 };

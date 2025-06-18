@@ -58,30 +58,24 @@ const tagsData = [
   { id: 21, title: "Fatigue" },
 ];
 const screenWidth = Dimensions.get("window").width;
-export default function AnimatedDotSlider({  }, ...props) {
+export default function AnimatedDotSliderUser({  }, ...props) {
   const scrollY = useRef(new Animated.Value(0)).current;
   const [selectedTag, setSelectedTag] = useState(1);
   const [currentMonthPer, setCurrentMonthPer] = useState(null);
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const { stepsData } = useSelector((state) => state?.steps);
+  const {stepsData } = useSelector((state) => state?.steps);
 
   useEffect(() => {
     checkPerDateBy();
-    console.log("Run ======>");
-
   }, [stepsData])
 
   const checkPerDateBy = async () => {
-    console.log("Run ======>");
-    
     if (stepsData?.recovery_history) {
       const date = moment().format('YYYY-MM')
       let searchDate = searchByDate(date, stepsData?.recovery_history)
       if (searchDate.length > 0) {
         setCurrentMonthPer(searchDate[0])
-      }else{
-        setCurrentMonthPer(null)
       }
     }
   }
@@ -91,7 +85,7 @@ export default function AnimatedDotSlider({  }, ...props) {
       <Slick
         showsButtons={false}
         dotStyle={{
-          backgroundColor: '#FFFFFF',
+          backgroundColor: '#D4D4D4',
           width: 9,
           height: 9,
           borderRadius: 100,
@@ -135,8 +129,7 @@ export default function AnimatedDotSlider({  }, ...props) {
                   textAlign={"center"}
                 />
               </>
-            </View> 
-            :
+            </View> :
             <View
               style={[
                 tabStyle.tabContainerCenter,

@@ -6,6 +6,7 @@ import {
   StyleSheet,
   FlatList,
   TouchableOpacity,
+  TouchableWithoutFeedback,
 } from "react-native";
 import { moderateScale, scale, verticalScale } from "react-native-size-matters";
 import { COLORS } from "../constants/colors";
@@ -25,7 +26,8 @@ const MeditationCard = ({ item, isLastChild, hideFollow }) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   return (
-    <View style={[styles.itemBox, isLastChild && styles.lastItem]}>
+    <TouchableWithoutFeedback style={[styles.itemBox, isLastChild && styles.lastItem]}>
+      <>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => {
           dispatch(setUserDetail(item?.user))
@@ -82,7 +84,8 @@ const MeditationCard = ({ item, isLastChild, hideFollow }) => {
           </Text>
         </TouchableOpacity>
       </View>
-    </View>
+      </>
+    </TouchableWithoutFeedback>
   );
 };
 

@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     marginBottom: verticalScale(0),
-    marginTop: verticalScale(15),
+    marginTop: verticalScale(1),
   },
   tab: {
     flex: 1,

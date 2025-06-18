@@ -7,6 +7,7 @@ import {
   TouchableWithoutFeedback,
   TouchableHighlight,
   Keyboard,
+  Dimensions,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -24,10 +25,14 @@ import BtnPrimary from "../../../components/BtnPrimary";
 import { useDispatch, useSelector } from "react-redux";
 import CustomAvatar from "../../../components/BottomSheets/CustomAvatar";
 import { normalize } from "../../../utils/Metrics";
-import { dataPost } from "../../../utils/myAxios";
+import { dataGet_, dataPost } from "../../../utils/myAxios";
 import { showToast } from "../../../components/General";
 import { setUserDetail } from "../../../storeTolkit/userSlice";
 import { setChatToId } from "../../../storeTolkit/ChatData";
+import AnimatedDotSlider from "../../../components/AnimatedDotSlider";
+import { tabStyle } from "../../../constants/style";
+import { setStepsData, setStepsDataUser } from "../../../storeTolkit/stepsSlice";
+import AnimatedDotSliderUser from "../../../components/AnimatedDotSliderUser";
 
 const posts = [
   {
@@ -77,6 +82,7 @@ const ProfileDetailsScreen = (props) => {
 
   useEffect(() => {
     checkFollowUnFollow();
+    getFqStateData();
   }, [])
 
   const checkFollowUnFollow = async () => {
@@ -87,13 +93,21 @@ const ProfileDetailsScreen = (props) => {
     const endPoint = 'general/follow/check';
     const response = await dataPost(endPoint, data);
 
-
     if (response?.data) {
       setIsFollow(true)
     } else {
       setIsFollow(false)
     }
   }
+
+  const getFqStateData = async () => {
+    const endPoint = 'antibiotic/check/user/' + userDetail?._id;
+    const response = await dataGet_(endPoint, {});
+    if (response.success) {
+      dispatch(setStepsData(response?.data))
+    }
+  }
+
 
 
   // Handle Tab Switch
@@ -127,288 +141,294 @@ const ProfileDetailsScreen = (props) => {
   }
 
   return (
-    <TouchableWithoutFeedback activeOpacity={1} onPress={handleOutsidePress}>
+    // <TouchableWithoutFeedback activeOpacity={1} onPress={handleOutsidePress}>
+    <View
+      style={[
+        styles.safeArea,
+        {
+          paddingTop: insets.top,
+        },
+      ]}
+    >
       <View
         style={[
-          styles.safeArea,
+          styles.flexRow,
           {
-            paddingTop: insets.top,
+            paddingHorizontal: 20,
           },
         ]}
       >
-        <View
-          style={[
-            styles.flexRow,
-            {
-              paddingHorizontal: 20,
-            },
-          ]}
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={[styles.backBtn]}
         >
-          <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            style={[styles.backBtn]}
-          >
-            <SVG_IMAGES.Arrow_SVG />
-          </TouchableOpacity>
-          <View style={styles.titleCenter}>
+          <SVG_IMAGES.Arrow_SVG />
+        </TouchableOpacity>
+        <View style={styles.titleCenter}>
+          <TextComponent
+            color={COLORS.primary}
+            fontSize={16}
+            title={userDetail?.username}
+            fontFamily={FONTS.Samsungsharpsans_Bold}
+            textAlign={"center"}
+            marginBottom={10}
+          />
+        </View>
+        {user?._id == userDetail?._id ?
+          <TouchableOpacity 
+          onPress={()=>{
+               navigation.navigate(SCREENS.NavigationRoutes, {
+                  screen: SCREENS.UpdateUserBio,
+                })
+          }}
+          style={styles.editStyle}>
             <TextComponent
-              color={COLORS.primary}
-              fontSize={16}
-              title={userDetail?.username}
+              color={COLORS.white}
+              fontSize={12}
+              title={"Edit Bio"}
               fontFamily={FONTS.Samsungsharpsans_Bold}
               textAlign={"center"}
-              marginBottom={10}
             />
-          </View>
-          {user?._id == userDetail?._id?null:
+            <SVG_IMAGES.Edit_SVG />
+          </TouchableOpacity>
+          :
           <TouchableOpacity
             onPress={() => setShowDropdown(!showDropdown)}
             style={styles.dotsSTyle}
           >
             <SVG_IMAGES.DotsIcon_SVG />
           </TouchableOpacity>}
-        </View>
-        {showDropdown && (
-          <View
-            style={[
-              styles.dropdownContainer,
-              {
-                top: insets.top + 40,
-              },
-            ]}
-          >
-            <View style={styles.dropdown}>
-              <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate(SCREENS.NavigationRoutes, {
-                    screen: SCREENS.BlockedUser,
-                  })
-                }
-              >
-                <TextComponent
-                  color={COLORS.black}
-                  fontSize={15}
-                  title={"Block user"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                  textAlign={"center"}
-                />
-              </TouchableOpacity>
-              <View style={styles.dropdownDivider}></View>
-              <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate(SCREENS.NavigationRoutes, {
-                    screen: SCREENS.ReportUser,
-                  })
-                }
-              >
-                <TextComponent
-                  color={COLORS.black}
-                  fontSize={15}
-                  title={"Report post"}
-                  textAlign={"center"}
-                  fontFamily={FONTS.Samsungsharpsans_Bold}
-                />
-              </TouchableOpacity>
-            </View>
-          </View>
-        )}
-
+      </View>
+      {showDropdown && (
         <View
           style={[
+            styles.dropdownContainer,
             {
-              borderBottomWidth: 2,
-              borderBottomColor: "#EAEAEA",
+              top: insets.top + 40,
             },
           ]}
         >
-          <View style={{ padding: 20 }}>
-            <View style={styles.statsBox}>
-              {/* Profile Image */}
-              {/* <Image
-                source={IMAGES.User2_Img} // Replace with actual profile URL
-                style={styles.profileImage}
-              /> */}
-              <CustomAvatar
-                image={userDetail?.image}
-                width={normalize(50)}
-                height={normalize(50)}
-                fontSize={normalize(26)}
-                borderRadius={normalize(50)}
-                name={userDetail?.username}
-              />
-
-              {/* Stats Section */}
-              <View style={styles.statsContainer}>
-                <View style={styles.stat}>
-                  <TextComponent
-                    color={COLORS.primary}
-                    fontSize={15}
-                    title={userDetail?.postsCount}
-                    fontFamily={FONTS.Samsungsharpsans_Bold}
-                    textAlign={"center"}
-                  />
-                  <TextComponent
-                    color={COLORS.primary}
-                    fontSize={11}
-                    title={"Posts"}
-                    fontFamily={FONTS.Samsungsharpsans_Medium}
-                    textAlign={"center"}
-                  />
-                </View>
-                <View style={styles.stat}>
-                  <TextComponent
-                    color={COLORS.primary}
-                    fontSize={15}
-                    title={userDetail?.followersCount}
-                    fontFamily={FONTS.Samsungsharpsans_Bold}
-                    textAlign={"center"}
-                  />
-                  <TextComponent
-                    color={COLORS.primary}
-                    fontSize={11}
-                    title={"Followers"}
-                    fontFamily={FONTS.Samsungsharpsans_Medium}
-                    textAlign={"center"}
-                  />
-                </View>
-                <View style={styles.stat}>
-                  <TextComponent
-                    color={COLORS.primary}
-                    fontSize={15}
-                    title={userDetail?.followingCount}
-                    fontFamily={FONTS.Samsungsharpsans_Bold}
-                    textAlign={"center"}
-                  />
-                  <TextComponent
-                    color={COLORS.primary}
-                    fontSize={11}
-                    title={"Following"}
-                    fontFamily={FONTS.Samsungsharpsans_Medium}
-                    textAlign={"center"}
-                  />
-                </View>
-              </View>
-            </View>
-            {/* Bio Section */}
-            <TextComponent
-              color={COLORS.primary}
-              fontSize={12}
-              title={
-                "My name is Jane from the UK, I was floxed 2 years ago and have been recovering since."
+          <View style={styles.dropdown}>
+            <TouchableOpacity
+              onPress={() => {
+                setShowDropdown(false)
+                navigation.navigate(SCREENS.NavigationRoutes, {
+                  screen: SCREENS.BlockedUser,
+                })
               }
-              fontFamily={FONTS.Samsungsharpsans}
-              lineHeight={16}
-              marginBottom={10}
+              }
+            >
+              <TextComponent
+                color={COLORS.black}
+                fontSize={15}
+                title={"Block user"}
+                fontFamily={FONTS.Samsungsharpsans_Bold}
+                textAlign={"center"}
+              />
+            </TouchableOpacity>
+            <View style={styles.dropdownDivider}></View>
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate(SCREENS.NavigationRoutes, {
+                  screen: SCREENS.ReportUser,
+                })
+              }
+            >
+              <TextComponent
+                color={COLORS.black}
+                fontSize={15}
+                title={"Report post"}
+                textAlign={"center"}
+                fontFamily={FONTS.Samsungsharpsans_Bold}
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
+
+      <View
+        style={[
+          {
+            borderBottomWidth: 2,
+            borderBottomColor: "#EAEAEA",
+          },
+        ]}
+      >
+        <View style={{ padding: 20 }}>
+          <View style={styles.statsBox}>
+            {/* Profile Image */}
+
+            <CustomAvatar
+              image={userDetail?.image}
+              width={normalize(50)}
+              height={normalize(50)}
+              fontSize={normalize(26)}
+              borderRadius={normalize(50)}
+              name={userDetail?.username}
             />
-            <View style={styles.btnFlex}>
-              <View style={{ width: "50%" }}>
-                <BtnPrimary
-                  onPress={() => followUnFollowUser()}
-                  userIcon
-                  style={{
-                    height: 38,
-                    backgroundColor: COLORS.blue,
-                    paddingVertical: 0,
-                  }}
-                  btnText={{
-                    color: COLORS.white,
-                    fontSize: 15,
-                  }}
-                  title={isFollow ? "Following" : "Follow"}
+
+            {/* Stats Section */}
+            <View style={styles.statsContainer}>
+              <View style={styles.stat}>
+                <TextComponent
+                  color={COLORS.primary}
+                  fontSize={15}
+                  title={userDetail?.postsCount}
+                  fontFamily={FONTS.Samsungsharpsans_Bold}
+                  textAlign={"center"}
+                />
+                <TextComponent
+                  color={COLORS.primary}
+                  fontSize={11}
+                  title={"Posts"}
+                  fontFamily={FONTS.Samsungsharpsans_Medium}
+                  textAlign={"center"}
                 />
               </View>
-              <View style={{ width: "50%" }}>
-                <OutlineButton
-                  style={{
-                    height: 38,
-                  }}
-                  userIcon
-                  title={"Message"}
-                  navigation={() => {
-                    dispatch(setChatToId(userDetail?._id))
-                    navigation.navigate(SCREENS.NavigationRoutes, {
-                      screen: SCREENS.InboxScreen,
-                    })
-                  }
-                  }
+              <View style={styles.stat}>
+                <TextComponent
+                  color={COLORS.primary}
+                  fontSize={15}
+                  title={userDetail?.followersCount}
+                  fontFamily={FONTS.Samsungsharpsans_Bold}
+                  textAlign={"center"}
+                />
+                <TextComponent
+                  color={COLORS.primary}
+                  fontSize={11}
+                  title={"Followers"}
+                  fontFamily={FONTS.Samsungsharpsans_Medium}
+                  textAlign={"center"}
+                />
+              </View>
+              <View style={styles.stat}>
+                <TextComponent
+                  color={COLORS.primary}
+                  fontSize={15}
+                  title={userDetail?.followingCount}
+                  fontFamily={FONTS.Samsungsharpsans_Bold}
+                  textAlign={"center"}
+                />
+                <TextComponent
+                  color={COLORS.primary}
+                  fontSize={11}
+                  title={"Following"}
+                  fontFamily={FONTS.Samsungsharpsans_Medium}
+                  textAlign={"center"}
                 />
               </View>
             </View>
           </View>
-        </View>
-
-        {/* <ScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ flexGrow: 1 }}
-          style={{ zIndex: 0 }}
-        > */}
-        <View style={[styles.wrapper]}>
-          <View style={styles.card}>
-            {/* Tabs */}
-            <View style={styles.tabsContainer}>
-              <TouchableOpacity
-                style={[
-                  styles.tab,
-                  {
-                    borderBottomColor:
-                      activeTab === 0 ? COLORS.primary : "#EAEAEA",
-                  },
-                ]}
-                onPress={() => switchTab(0)}
-              >
-                <Text
-                  style={[
-                    styles.tabText,
-                    activeTab === 0 && styles.activeTabText,
-                  ]}
-                >
-                  Posts
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[
-                  styles.tab,
-                  {
-                    borderBottomColor:
-                      activeTab === 1 ? COLORS.primary : "#EAEAEA",
-                  },
-                ]}
-                onPress={() => switchTab(1)}
-              >
-                <Text
-                  style={[
-                    styles.tabText,
-                    activeTab === 1 && styles.activeTabText,
-                  ]}
-                >
-                  Stats
-                </Text>
-              </TouchableOpacity>
+          {/* Bio Section */}
+          <TextComponent
+            color={COLORS.primary}
+            fontSize={12}
+            title={userDetail?.about_me?userDetail?.about_me:'User Bios Not Available'}
+            fontFamily={FONTS.Samsungsharpsans}
+            lineHeight={16}
+            marginBottom={10}
+          />
+          {user?._id == userDetail?._id ?null:
+          <View style={styles.btnFlex}>
+            <View style={{ width: "50%" }}>
+              <BtnPrimary
+                onPress={() => followUnFollowUser()}
+                userIcon
+                style={{
+                  height: 38,
+                  backgroundColor: COLORS.blue,
+                  paddingVertical: 0,
+                }}
+                btnText={{
+                  color: COLORS.white,
+                  fontSize: 15,
+                }}
+                title={isFollow ? "Following" : "Follow"}
+              />
             </View>
-            {activeTab === 0 && <UserDetailsComponent data={posts} {...props} />}
-            {activeTab === 1 && (
-              <>
-                <ScrollView showsVerticalScrollIndicator={false}>
-                  <ProfileAnimatedDotSlider />
-                  {/* <View style={styles.noChat}>
-                  <TextComponent
-                    title={"No posts"}
-                    fontFamily={FONTS.Samsungsharpsans_Bold}
-                    color={COLORS.black}
-                    fontSize={38}
-                    opacity={0.5}
-                  />
-                </View> */}
-                </ScrollView>
-              </>
-            )}
-          </View>
+            <View style={{ width: "50%" }}>
+              <OutlineButton
+                style={{
+                  height: 38,
+                }}
+                userIcon
+                title={"Message"}
+                navigation={() => {
+                  dispatch(setChatToId(userDetail?._id))
+                  navigation.navigate(SCREENS.NavigationRoutes, {
+                    screen: SCREENS.InboxScreen,
+                  })
+                }
+                }
+              />
+            </View>
+          </View>}
         </View>
-
-
-        {/* </ScrollView> */}
       </View>
-    </TouchableWithoutFeedback>
+      <View style={[styles.wrapper]}>
+        <View style={styles.card}>
+          {/* Tabs */}
+          <View style={styles.tabsContainer}>
+            <TouchableOpacity
+              style={[
+                styles.tab,
+                {
+                  borderBottomColor:
+                    activeTab === 0 ? COLORS.primary : "#EAEAEA",
+                },
+              ]}
+              onPress={() => switchTab(0)}
+            >
+              <Text
+                style={[
+                  styles.tabText,
+                  activeTab === 0 && styles.activeTabText,
+                ]}
+              >
+                Posts
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles.tab,
+                {
+                  borderBottomColor:
+                    activeTab === 1 ? COLORS.primary : "#EAEAEA",
+                },
+              ]}
+              onPress={() => switchTab(1)}
+            >
+              <Text
+                style={[
+                  styles.tabText,
+                  activeTab === 1 && styles.activeTabText,
+                ]}
+              >
+                Stats
+              </Text>
+            </TouchableOpacity>
+          </View>
+          {activeTab === 0 && <UserDetailsComponent data={posts} {...props} />}
+          {activeTab === 1 && (
+            <>
+
+              <View style={[tabStyle.tabContainer, { marginBottom: normalize(60), height: Dimensions.get("screen").height * 0.47 }]}>
+                <AnimatedDotSliderUser
+                  {...props}
+                />
+              </View>
+              <View style={{ height: normalize(300) }}></View>
+
+            </>
+          )}
+
+        </View>
+      </View>
+
+
+      {/* </ScrollView> */}
+    </View>
+    // </TouchableWithoutFeedback>
   );
 };
 

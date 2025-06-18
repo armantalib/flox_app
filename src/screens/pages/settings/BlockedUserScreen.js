@@ -1,4 +1,4 @@
-import { View, ScrollView, TouchableOpacity, Image } from "react-native";
+import { View, ScrollView } from "react-native";
 import React, { useState } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
@@ -10,13 +10,30 @@ import { FONTS } from "../../../constants/fonts";
 import CustomHeader from "../../../components/CustomHeader";
 import BtnPrimary from "../../../components/BtnPrimary";
 import { SCREENS } from "../../../constants/Screen";
+import { useSelector } from "react-redux";
+import CustomAvatar from "../../../components/BottomSheets/CustomAvatar";
+import { normalize } from "../../../utils/Metrics";
+import { dataPost } from "../../../utils/myAxios";
+import { Loader } from "../../../components/General";
 const LanguageScreen = () => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
   const [blockedUsers, setBlockedUsers] = useState(false);
+  const [loader, setLoader] = useState(false);
+  const { user, userDetail } = useSelector((state) => state?.user);
+
   const toggleBlockedUser = (user) => {
     setBlockedUsers(!blockedUsers);
   };
+
+  const blockUser = async () => {
+    setLoader(true)
+    let data = {}
+    const endPoint = 'community/block/user/'+userDetail?._id;
+    const response = await dataPost(endPoint, data);
+    setLoader(false)
+    toggleBlockedUser();
+  }
   return (
     <View
       style={[
@@ -27,6 +44,7 @@ const LanguageScreen = () => {
       ]}
     >
       <CustomHeader title={"Blocked Users"} opacity={0} />
+      {/* <Loader loader={loader}/> */}
       <ScrollView
         contentContainerStyle={styles.scrollViewContent}
         keyboardShouldPersistTaps="handled"
@@ -56,14 +74,17 @@ const LanguageScreen = () => {
           />
           {blockedUsers ? null : (
             <View style={styles.profileBox}>
-              <Image
-                source={IMAGES.User1_Img}
-                resizeMode="cover"
-                style={styles.userStyle}
+              <CustomAvatar
+                image={userDetail.image}
+                width={normalize(50)}
+                height={normalize(50)}
+                fontSize={normalize(26)}
+                borderRadius={normalize(50)}
+                name={userDetail?.username}
               />
               <TextComponent
                 fontFamily={FONTS.Samsungsharpsans_Bold}
-                title={"Jane3459"}
+                title={userDetail?.username}
                 fontSize={17}
                 color={COLORS.primary}
               />
@@ -74,10 +95,12 @@ const LanguageScreen = () => {
       <View style={[styles.footBtns]}>
         {blockedUsers ? (
           <BtnPrimary
-            onPress={() =>
-              navigation.navigate(SCREENS.NavigationRoutes, {
-                screen: SCREENS.ProfileDetails,
-              })
+            onPress={() =>{
+              navigation.goBack()
+              // navigation.navigate(SCREENS.NavigationRoutes, {
+              //   screen: SCREENS.ProfileDetails,
+              // })
+            }
             }
             marginBottom={15}
             title={"Return"}
@@ -87,7 +110,8 @@ const LanguageScreen = () => {
           />
         ) : (
           <BtnPrimary
-            onPress={toggleBlockedUser}
+            onPress={()=>blockUser()}
+            loader={loader}
             marginBottom={15}
             title={"Block"}
             style={{

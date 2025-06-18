@@ -25,6 +25,7 @@ import MusicScreen from "../screens/pages/music/MusicScreen";
 import ReplyOnComment from "../screens/pages/createpost/ReplyOnComment";
 import ReplyScreen from "../screens/pages/createpost/ReplyScreen";
 import InboxScreen from "../screens/pages/community/InboxScreen";
+import UpdateUserBio from "../screens/pages/createpost/UpdateUserBio";
 const Stack = createStackNavigator();
 
 const NavigationRoutes = () => {
@@ -147,15 +148,21 @@ const NavigationRoutes = () => {
         options={{ headerShown: false }}
       />
 
-       <Stack.Screen
+      <Stack.Screen
         name="ReplyScreen"
         component={ReplyScreen}
         options={{ headerShown: false }}
       />
 
-         <Stack.Screen
+      <Stack.Screen
         name="InboxScreen"
         component={InboxScreen}
+        options={{ headerShown: false }}
+      />
+
+       <Stack.Screen
+        name="UpdateUserBio"
+        component={UpdateUserBio}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

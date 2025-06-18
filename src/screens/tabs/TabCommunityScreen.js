@@ -20,7 +20,7 @@ import PickerItem from "../../components/BottomSheets/PickerItem";
 import { dataPost } from "../../utils/myAxios";
 import { useFocusEffect } from '@react-navigation/native';
 import { setPostDetail } from "../../storeTolkit/communitySlice";
-import { Loader } from "../../components/General";
+import { Loader, NotFound } from "../../components/General";
 import { getDateRange } from "../../utils/DateTimeFormate";
 
 const posts = [
@@ -201,6 +201,9 @@ const TabCommunityScreen = (props) => {
             sort={sort}
             {...props}
           />
+          {communityData.length == 0 && !loader?
+          <NotFound/>
+          :null}
           <View style={{ height: verticalScale(5) }} />
         </View>
       </ScrollView>

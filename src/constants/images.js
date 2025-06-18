@@ -21,6 +21,7 @@ export const IMAGES = {
   Music_IMG: require("../assets/images/music.jpg"),
   resource_image: require("../assets/images/resource_image.png"),
   change_organization: require("../assets/images/change_organization.png"),
+  no_data_found: require("../assets/images/no_data_found.png"),
 };
 
 /* SVG Images */

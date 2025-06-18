@@ -20,11 +20,12 @@ import { normalize } from "../../utils/Metrics";
 import ResourcesCardComp from "../../components/ResourcesCardComp";
 import { useDispatch, useSelector } from "react-redux";
 import { dataGet_ } from "../../utils/myAxios";
-import { setStepsData } from "../../storeTolkit/stepsSlice";
+import { setStepsData, setStepsDataTemp } from "../../storeTolkit/stepsSlice";
 import { setCategoriesHub, setCategoryExplore } from "../../storeTolkit/hubSlice";
 import { getGreeting } from "../../utils/Helper";
 import { useFocusEffect } from '@react-navigation/native';
 import { setChatCount, setNotiCount } from "../../storeTolkit/userSlice";
+import AnimatedDotSliderUser from "../../components/AnimatedDotSliderUser";
 
 const data = [
   {
@@ -52,8 +53,7 @@ const TabHomeScreen = (props) => {
   const user = useSelector((state) => state?.user?.user);
 
   const { categoriesHub } = useSelector((state) => state?.hub);
-  const [userJournal, setUserJournal] = useState(null)
-  const [cardData, setCardData] = useState(null)
+  const { stepsData, stepsDataTemp } = useSelector((state) => state?.steps);
   const dispatch = useDispatch();
   useEffect(() => {
     if (user?.fq_antibiotic) {
@@ -62,11 +62,22 @@ const TabHomeScreen = (props) => {
     getCardData()
   }, [])
 
+  useFocusEffect(
+    React.useCallback(() => {
+      if (stepsDataTemp) {
+        dispatch(setStepsData(stepsDataTemp))
+      }
+      return () => {
+      };
+    }, [])
+  );
+
   const checkAntibiotic = async () => {
     const endPoint = 'antibiotic/check';
     const response = await dataGet_(endPoint, {});
     if (response.success) {
       dispatch(setStepsData(response?.data))
+      dispatch(setStepsDataTemp(response?.data))
     }
   }
 
@@ -78,7 +89,7 @@ const TabHomeScreen = (props) => {
     }
   }
 
-  
+
 
 
 
@@ -122,7 +133,6 @@ const TabHomeScreen = (props) => {
           />
           <View style={[tabStyle.tabContainer, { marginBottom: normalize(60) }]}>
             <AnimatedDotSlider
-              content={userJournal}
               {...props}
             />
           </View>
@@ -159,7 +169,7 @@ const TabHomeScreen = (props) => {
             }
             btnText={"Learn more"}
             userImage
-            onPress={() => console.log()} 
+            onPress={() => console.log()}
           />
           <View style={{ height: verticalScale(25) }} />
           <SeeAllComponent

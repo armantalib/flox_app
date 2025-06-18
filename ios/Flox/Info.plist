@@ -31,8 +31,10 @@
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<key>NSCameraUsageDescription</key>
+	<string>Flox use for user profile picture</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Flox use for user profile picture</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>

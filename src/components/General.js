@@ -4,6 +4,8 @@ import Toast from 'react-native-simple-toast';
 import Modal from 'react-native-modal';
 import stylesG from '../assets/css/stylesG';
 import { COLORS } from '../constants/colors';
+import { IMAGES } from '../constants/images';
+import { normalize } from '../utils/Metrics';
 
 export const showToast = (message) => {
     Toast.show(message, Toast.LONG);
@@ -37,6 +39,18 @@ export const showToast = (message) => {
       </Modal>
 
       {/* } */}
+    </View>
+  );
+}
+
+export const NotFound = (props) => {
+  return (
+    <View style={{ width: '100%', height:props.height?props.height:normalize(300), justifyContent: 'center', alignItems: 'center' }}>
+
+        <Image
+          source={IMAGES.no_data_found}
+          style={{ width: normalize(250), height: normalize(250), resizeMode: 'contain' }}
+        />
     </View>
   );
 }

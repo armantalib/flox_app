@@ -11,13 +11,16 @@ import { COLORS } from "../../constants/colors";
 import { moderateScale, verticalScale } from "react-native-size-matters";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SCREENS } from "../../constants/Screen";
+import { useDispatch, useSelector } from "react-redux";
+import { getGreeting } from "../../utils/Helper";
+import { setUserDetail } from "../../storeTolkit/userSlice";
 
 const menuItems = [
   {
     id: 1,
     icon: <SVG_IMAGES.ProIcon1_SVG />,
     title: "My profile",
-    link: SCREENS.EditProfileDetails,
+    link: 'ProfileDetails',
   },
   {
     id: 2,
@@ -89,17 +92,19 @@ const menuItems = [
 const TabProfileScreen = () => {
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
+  const user = useSelector((state) => state?.user?.user);
+  const dispatch = useDispatch();
 
   return (
     <View style={[tabStyle.safeArea, { flex: 1 }]}>
       <GradientBackground />
-      
+
       {/* Fixed Header Section with original top spacing */}
       <View style={{ paddingTop: insets.top + insets.top + 57 }}>
         <TabHeader
-          image={IMAGES.UserProfile_IMG}
-          title={"Good morning"}
-          name={"Ben0790"}
+          image={user?.image}
+          title={getGreeting()}
+          name={user?.username}
           chatcount={14}
           noticount={6}
         />
@@ -107,9 +112,9 @@ const TabProfileScreen = () => {
 
 
       {/* Wrapper View with original styling and spacing */}
-      <View style={[tabStyle.wrapper, { 
+      <View style={[tabStyle.wrapper, {
         flex: 1,
-        paddingBottom: insets.bottom * 0 
+        paddingBottom: insets.bottom * 0
       }]}>
         <TextComponent
           color={COLORS.primary}
@@ -134,6 +139,9 @@ const TabProfileScreen = () => {
                 <TouchableOpacity
                   onPress={() => {
                     if (item.link) {
+                      if (item.link == 'ProfileDetails') {
+                        dispatch(setUserDetail(user))
+                      }
                       navigation.navigate(SCREENS.NavigationRoutes, {
                         screen: item.link,
                       });
