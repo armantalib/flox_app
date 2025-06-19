@@ -11,13 +11,50 @@ import CustomHeader from "../../../components/CustomHeader";
 import BtnPrimary from "../../../components/BtnPrimary";
 import { SCREENS } from "../../../constants/Screen";
 import CustomTextInput from "../../../components/CustomTextInput";
+import { dataPost } from "../../../utils/myAxios";
+import { showToast } from "../../../components/General";
+import { useSelector } from "react-redux";
+import CustomAvatar from "../../../components/BottomSheets/CustomAvatar";
+import { normalize } from "../../../utils/Metrics";
+import { ImageOpenGallery, MultiImageOpenGallery, uploadImageToServer } from "../../../utils/ImageLoad";
 const ReportUserScreen = () => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
   const [blockedUsers, setBlockedUsers] = useState(false);
+  const [loader, setLoader] = useState(false);
+  const [content, setContent] = useState('');
+  const [imageProf, setImageProf] = useState('');
+  const { user, userDetail } = useSelector((state) => state?.user);
+  const { postDetail } = useSelector((state) => state?.community);
+
+  const reportPost = async () => {
+    if (!content) {
+      showToast("Please enter reason");
+      return
+    }
+    setLoader(true)
+    let data = {
+      title: userDetail?.username + ' Report User',
+      desc: content,
+      image: imageProf,
+      type: 'user',
+      post:null,
+      report_user: userDetail?._id
+    }
+    const endPoint = 'general/report/post';
+    const response = await dataPost(endPoint, data);
+    setLoader(false)
+    toggleBlockedUser();
+  }
   const toggleBlockedUser = (user) => {
     setBlockedUsers(!blockedUsers);
   };
+
+  const chooseImage = async () => {
+    const imageIs = await ImageOpenGallery();
+    const imageServer = await uploadImageToServer(imageIs)
+    setImageProf(imageServer)
+  }
   return (
     <View
       style={[
@@ -58,24 +95,30 @@ const ReportUserScreen = () => {
           {blockedUsers ? null : (
             <>
               <View style={styles.profileBox}>
-                <Image
-                  source={IMAGES.User1_Img}
-                  resizeMode="cover"
-                  style={[
-                    styles.userStyle,
-                    {
-                      width: 60,
-                      height: 60,
-                    },
-                  ]}
+                <CustomAvatar
+                  image={userDetail?.image}
+                  width={normalize(50)}
+                  height={normalize(50)}
+                  fontSize={normalize(26)}
+                  borderRadius={normalize(50)}
+                  name={userDetail?.username}
                 />
                 <TextComponent
                   fontFamily={FONTS.Samsungsharpsans_Bold}
-                  title={"Jane3459"}
+                  title={userDetail?.username}
                   fontSize={15}
                   color={COLORS.primary}
                 />
-                <TouchableOpacity style={[styles.bgContainer]}>
+                <TouchableOpacity 
+                onPress={()=>chooseImage()}
+                style={[styles.bgContainer]}>
+                  {imageProf?
+                  <Image
+                  source={{uri:imageProf}}
+                  style={{width:150,height:100}}
+                  />
+                  :
+                  <>
                   <SVG_IMAGES.Attachicon_SVG />
                   <TextComponent
                     fontFamily={FONTS.Samsungsharpsans}
@@ -84,12 +127,16 @@ const ReportUserScreen = () => {
                     fontSize={14}
                     color={COLORS.primary}
                   />
+                  </>
+}
                 </TouchableOpacity>
               </View>
               <View style={{ marginBottom: 15 }} />
               <CustomTextInput
                 isMultiline={true}
                 numberOfLines={5}
+                        onChangeText={(val) => setContent(val)}
+                value={content}
                 input={{
                   height: 140,
                   marginBottom: 0,
@@ -121,7 +168,7 @@ const ReportUserScreen = () => {
           />
         ) : (
           <BtnPrimary
-            onPress={toggleBlockedUser}
+            onPress={() => reportPost()}
             marginBottom={15}
             title={"Block"}
             style={{

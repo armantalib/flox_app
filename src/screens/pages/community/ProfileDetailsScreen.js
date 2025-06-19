@@ -228,16 +228,18 @@ const ProfileDetailsScreen = (props) => {
             </TouchableOpacity>
             <View style={styles.dropdownDivider}></View>
             <TouchableOpacity
-              onPress={() =>
+              onPress={() =>{
+                 setShowDropdown(false)
                 navigation.navigate(SCREENS.NavigationRoutes, {
                   screen: SCREENS.ReportUser,
                 })
+              }
               }
             >
               <TextComponent
                 color={COLORS.black}
                 fontSize={15}
-                title={"Report post"}
+                title={"Report User"}
                 textAlign={"center"}
                 fontFamily={FONTS.Samsungsharpsans_Bold}
               />

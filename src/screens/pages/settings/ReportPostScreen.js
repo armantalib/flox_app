@@ -11,10 +11,38 @@ import CustomHeader from "../../../components/CustomHeader";
 import BtnPrimary from "../../../components/BtnPrimary";
 import { SCREENS } from "../../../constants/Screen";
 import CustomTextInput from "../../../components/CustomTextInput";
+import { dataPost } from "../../../utils/myAxios";
+import { showToast } from "../../../components/General";
+import { useSelector } from "react-redux";
 const ReportUserScreen = () => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
   const [blockedUsers, setBlockedUsers] = useState(false);
+  const [loader, setLoader] = useState(false);
+  const [content, setContent] = useState('');
+  const { user, userDetail } = useSelector((state) => state?.user);
+  const { postDetail} = useSelector((state) => state?.community);
+
+  const reportPost = async () => {
+    if (!content) {
+      showToast("Please enter reason");
+    }
+    setLoader(true)
+    let data = {
+      title:postDetail?.title,
+      desc: content,
+      image: '',
+      type: 'post',
+      report_user:null,
+      post: postDetail?._id
+    }
+    const endPoint = 'general/report/post';
+    const response = await dataPost(endPoint, data);
+    setLoader(false)
+    toggleBlockedUser();
+  }
+
+
   const toggleBlockedUser = (user) => {
     setBlockedUsers(!blockedUsers);
   };
@@ -60,6 +88,8 @@ const ReportUserScreen = () => {
               <CustomTextInput
                 isMultiline={true}
                 numberOfLines={5}
+                onChangeText={(val) => setContent(val)}
+                value={content}
                 input={{
                   height: 140,
                   marginBottom: 0,
@@ -79,9 +109,7 @@ const ReportUserScreen = () => {
         {blockedUsers ? (
           <BtnPrimary
             onPress={() =>
-              navigation.navigate(SCREENS.NavigationRoutes, {
-                screen: SCREENS.ProfileDetails,
-              })
+              navigation.goBack()
             }
             marginBottom={15}
             title={"Return"}
@@ -91,9 +119,9 @@ const ReportUserScreen = () => {
           />
         ) : (
           <BtnPrimary
-            onPress={toggleBlockedUser}
+            onPress={(() => { reportPost() })}
             marginBottom={15}
-            title={"Block"}
+            title={"Report"}
             style={{
               marginTop: "auto",
             }}

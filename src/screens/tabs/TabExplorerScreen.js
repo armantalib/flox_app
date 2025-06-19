@@ -19,7 +19,7 @@ import ResourcesCardComp from "../../components/ResourcesCardComp";
 import { dataGet_ } from "../../utils/myAxios";
 import { setExploreStat } from "../../storeTolkit/stepsSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { getGreeting } from "../../utils/Helper";
+import { getGreeting, shareScreenShot } from "../../utils/Helper";
 
 const TabExplorerScreen = (props) => {
   const navigation = useNavigation();
@@ -97,6 +97,8 @@ const TabExplorerScreen = (props) => {
             color={COLORS.primary}
             fontSize={31}
             title={"Petitions"}
+            onPress={()=>shareScreenShot()}
+
             marginBottom={15}
             fontFamily={FONTS.Samsungsharpsans_Bold}
             textAlign={"center"}

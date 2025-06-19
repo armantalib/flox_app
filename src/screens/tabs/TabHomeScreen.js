@@ -22,7 +22,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { dataGet_ } from "../../utils/myAxios";
 import { setStepsData, setStepsDataTemp } from "../../storeTolkit/stepsSlice";
 import { setCategoriesHub, setCategoryExplore } from "../../storeTolkit/hubSlice";
-import { getGreeting } from "../../utils/Helper";
+import { getGreeting, shareScreenShot } from "../../utils/Helper";
 import { useFocusEffect } from '@react-navigation/native';
 import { setChatCount, setNotiCount } from "../../storeTolkit/userSlice";
 import AnimatedDotSliderUser from "../../components/AnimatedDotSliderUser";
@@ -213,7 +213,7 @@ const TabHomeScreen = (props) => {
               "The more floxies we have active here the more we can raise awareness, perform studies, support eachother and fight back against big pharma"
             }
             btnText={"Invite others"}
-            onPress={() => console.log()}
+            onPress={() => shareScreenShot()}
           />
           <View style={{ height: verticalScale(5) }} />
         </View>

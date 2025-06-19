@@ -1,4 +1,4 @@
-import { View, ScrollView, Text, TouchableOpacity } from "react-native";
+import { View, ScrollView, Text, TouchableOpacity, Alert } from "react-native";
 import React from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
@@ -12,9 +12,38 @@ import GradientSwitch from "../../../components/GradientSwitch";
 import BtnPrimary from "../../../components/BtnPrimary";
 import { SCREENS } from "../../../constants/Screen";
 import CustomHeader from "../../../components/CustomHeader";
+import { useSelector } from "react-redux";
+import { deleteValue } from "../../../utils/async_storage";
 const AccountSettingsScreen = () => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
+  const user = useSelector((state) => state?.user?.user);
+
+     const logoutAlert = () => {
+        Alert.alert(
+            'Log Out',
+            'Are you sure to log out?',
+            [
+                {
+                    text: 'Cancel',
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                },
+                { text: 'Log out', onPress: () => logoutApp() }
+            ]
+        );
+    }
+
+    const logoutApp = async () => {
+        deleteValue('token')
+        deleteValue('user_data')
+      navigation.reset({
+            index: 0,
+            routes: [{ name: 'AuthRoutes' }],
+        });
+    }
+
+
   return (
     <View
       style={[
@@ -36,6 +65,8 @@ const AccountSettingsScreen = () => {
                 labelText="Username:"
                 placeholderText={"Select Username"}
                 keyboardType={"email-address"}
+                value={user?.username}
+                disabled={true}
                 rightIcon={() => <SVG_IMAGES.User_SVG />}
                 inputBox={{
                   backgroundColor: "#f5f5f7",
@@ -46,6 +77,9 @@ const AccountSettingsScreen = () => {
                 labelText="Email:"
                 placeholderText={"Select Email"}
                 keyboardType={"email-address"}
+                disabled={true}
+                value={user?.email}
+
                 rightIcon={() => <SVG_IMAGES.Email_SVG />}
                 inputBox={{
                   backgroundColor: "#f5f5f7",
@@ -97,9 +131,7 @@ const AccountSettingsScreen = () => {
               </View>
               <BtnPrimary
                 onPress={() =>
-                  navigation.navigate(SCREENS.AuthRoutes, {
-                    screen: SCREENS.Login,
-                  })
+                logoutAlert()
                 }
                 marginBottom={15}
                 title="Logout"

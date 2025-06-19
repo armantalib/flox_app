@@ -1,6 +1,6 @@
 // StackNavigator.js
-import React from 'react';
-import {createStackNavigator} from '@react-navigation/stack';
+import React, { useEffect, useState } from 'react';
+import { createStackNavigator } from '@react-navigation/stack';
 import ChooseLanguageScreen from '../screens/authscreen/ChooseLanguage';
 import LoginScreen from '../screens/authscreen/LoginScreen';
 import ResetPasswordScreen from '../screens/authscreen/ResetPasswordScreen';
@@ -19,9 +19,46 @@ import StepNineScreen from '../screens/authscreen/steps/StepNineScreen';
 import StepTenScreen from '../screens/authscreen/steps/StepTenScreen';
 import StepYesNoFlaxed from '../screens/authscreen/steps/StepYesNoFlaxed';
 import StepCountScreen from '../screens/authscreen/steps/StepCountScreen';
+import { getItem } from '../utils/async_storage';
+import { useNavigation } from '@react-navigation/native';
+import { useDispatch } from 'react-redux';
+import { setUser } from '../storeTolkit/userSlice';
+import { SCREENS } from '../constants/Screen';
+import GradientBackground from '../components/GradientBackground';
+import { ActivityIndicator, View } from 'react-native';
+import { Loader } from '../components/General';
 const Stack = createStackNavigator();
 
 const AuthRoutes = () => {
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const [isSession, setIsSession] = useState(false)
+
+  useEffect(() => {
+    getDataFromSession();
+  }, [])
+
+  const getDataFromSession = async () => {
+    const token = await getItem('token');
+    const user_data = await getItem('user_data');
+    setIsSession(true)
+    if (token) {
+      setIsSession(true)
+      dispatch(setUser(user_data))
+
+      navigation.navigate(SCREENS.TabRoutes, {
+        screen: SCREENS.TabHome,
+      });
+    }
+  }
+  if (!isSession) {
+    return (<>
+      <GradientBackground />
+      <View style={{width:'100%',height:'100%',justifyContent:'center',alignItems:'center'}}>
+        <ActivityIndicator size={'large'} color={'#000000'}/>
+      </View>
+    </>)
+  }
   return (
     <Stack.Navigator
       initialRouteName="ChooseLanguage"
@@ -31,92 +68,92 @@ const AuthRoutes = () => {
       <Stack.Screen
         name="ChooseLanguage"
         component={ChooseLanguageScreen}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="Login"
         component={LoginScreen}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="ResetPassword"
         component={ResetPasswordScreen}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="CreateYourAccount"
         component={CreateYourAccountScreen}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="VerifyYourEmail"
         component={VerifyYourEmailScreen}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="CreateYourPassword"
         component={CreateYourPasswordScreen}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="StepOne"
         component={StepOneScreen}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="StepTwo"
         component={StepTwoScreen}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="StepThree"
         component={StepThreeScreen}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="StepFour"
         component={StepFourScreen}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="StepFive"
         component={StepFiveScreen}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="StepSix"
         component={StepSixScreen}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="StepSeven"
         component={StepSevenScreen}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="StepEight"
         component={StepEightScreen}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="StepNine"
         component={StepNineScreen}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="StepTen"
         component={StepTenScreen}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
-       <Stack.Screen
+      <Stack.Screen
         name="StepYesNoFlaxed"
         component={StepYesNoFlaxed}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
-         <Stack.Screen
+      <Stack.Screen
         name="StepCountScreen"
         component={StepCountScreen}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
     </Stack.Navigator>
   );

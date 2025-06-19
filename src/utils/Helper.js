@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { Keyboard, Platform, PermissionsAndroid } from 'react-native';
+import Share from 'react-native-share';
 
 export const useKeyboardVisible = () => {
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
@@ -109,6 +110,14 @@ export function searchFunctions(query, array) {
 }
 export function searchFunctionsChat(query, array) {
   return array.filter(user => user.otherUser?.username.toLowerCase().includes(query.toLowerCase()));
+}
+
+export function searchFunctionsNotification(query, array) {
+  return array.filter(user => user.type.toLowerCase().includes(query.toLowerCase()) ||
+  user.title.toLowerCase().includes(query.toLowerCase()) ||
+  user.description.toLowerCase().includes(query.toLowerCase()) ||
+  user.user?.username.toLowerCase().includes(query.toLowerCase())
+);
 }
 
 export function searchFunctionCommunity(query, array,tempArray) {
@@ -299,6 +308,28 @@ export function getGreeting() {
     return "Good Night";
   }
 }
+
+   export const shareScreenShot = (imageUri) => {
+      let p1 = "Discover Flox, the ultimate [describe main function, e.g., productivity tool, fitness tracker, social app]. Whether you're looking to [key benefit 1, e.g., organize tasks, stay fit, connect with friends], our app makes it simple and enjoyable!"
+      let p2 = "\n\n✨ Key Features:✔ \n\n[Feature 1] – [Brief description]✔ \n\n[Feature 2] – [Brief description]✔ \n\n[Feature 3] – [Brief description]✔ \n\n[Feature 4] – [Brief description]" 
+      let p3 ="\n\nWhy Choose Flox?\n\n✅ User-friendly & intuitive design\n\n✅ Fast & reliable performance\n\n✅ [Unique selling point, e.g., offline access, AI-powered suggestions]"
+      let p4 ="\n\n\n📥 Download now and experience the difference!\n👉 [App Store Link]\n👉 [Google Play Link]"
+      const options = {
+            title: 'Flox App',
+            message: p1+p2+p3+p4,
+            // url: imageUri,
+            // type: 'image/jpeg',
+        };
+
+        Share.open(options)
+            .then(res => {
+          
+            })
+            .catch(err => {
+           
+                err && console.log(err);
+            });
+    }
 
 
 

@@ -12,8 +12,9 @@ import { moderateScale, verticalScale } from "react-native-size-matters";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SCREENS } from "../../constants/Screen";
 import { useDispatch, useSelector } from "react-redux";
-import { getGreeting } from "../../utils/Helper";
+import { getGreeting, shareScreenShot } from "../../utils/Helper";
 import { setUserDetail } from "../../storeTolkit/userSlice";
+
 
 const menuItems = [
   {
@@ -50,7 +51,7 @@ const menuItems = [
     id: 6,
     icon: <SVG_IMAGES.ProIcon5_SVG />,
     title: "Invite Friends",
-    link: SCREENS.InviteFriends,
+    link: 'invite',
   },
   {
     id: 7,
@@ -94,6 +95,8 @@ const TabProfileScreen = () => {
   const insets = useSafeAreaInsets();
   const user = useSelector((state) => state?.user?.user);
   const dispatch = useDispatch();
+
+  
 
   return (
     <View style={[tabStyle.safeArea, { flex: 1 }]}>
@@ -141,10 +144,16 @@ const TabProfileScreen = () => {
                     if (item.link) {
                       if (item.link == 'ProfileDetails') {
                         dispatch(setUserDetail(user))
-                      }
+                          navigation.navigate(SCREENS.NavigationRoutes, {
+                        screen: item.link,
+                      });
+                      }else if(item.link== 'invite'){
+                        shareScreenShot()
+                      }else{
                       navigation.navigate(SCREENS.NavigationRoutes, {
                         screen: item.link,
                       });
+                    }
                     }
                   }}
                   key={item.id}

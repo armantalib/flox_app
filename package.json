@@ -37,6 +37,7 @@
     "react-native-render-html": "^6.3.4",
     "react-native-safe-area-context": "^5.2.0",
     "react-native-screens": "4.4.0",
+    "react-native-share": "^12.1.0",
     "react-native-simple-toast": "^3.3.2",
     "react-native-size-matters": "^0.4.2",
     "react-native-slick": "^1.6.0",
