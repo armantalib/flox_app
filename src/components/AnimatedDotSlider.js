@@ -68,12 +68,10 @@ export default function AnimatedDotSlider({  }, ...props) {
 
   useEffect(() => {
     checkPerDateBy();
-    console.log("Run ======>");
 
   }, [stepsData])
 
   const checkPerDateBy = async () => {
-    console.log("Run ======>");
     
     if (stepsData?.recovery_history) {
       const date = moment().format('YYYY-MM')

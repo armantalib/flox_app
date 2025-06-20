@@ -5,7 +5,7 @@ import { SVG_IMAGES } from "../constants/images";
 import TextComponent from "./TextComponent";
 import { moderateScale } from "react-native-size-matters";
 import { useNavigation } from "@react-navigation/native";
-const CustomHeader = ({ title, opacity, rightTitle, dotShow,onPressTitle }) => {
+const CustomHeader = ({ title, opacity, rightTitle, dotShow,onPressTitle,onPressDot }) => {
   const navigation = useNavigation();
   return (
     <View style={styles.header}>
@@ -45,7 +45,9 @@ const CustomHeader = ({ title, opacity, rightTitle, dotShow,onPressTitle }) => {
 
       </TouchableOpacity>
       {dotShow && (
-        <TouchableOpacity style={styles.dotsSTyle}>
+        <TouchableOpacity 
+        onPress={onPressDot}
+        style={styles.dotsSTyle}>
           <SVG_IMAGES.DotsIcon_SVG />
         </TouchableOpacity>
       )}

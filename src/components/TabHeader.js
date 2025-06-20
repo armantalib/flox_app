@@ -20,7 +20,7 @@ import { SCREENS } from "../constants/Screen";
 import { BlurView } from "@react-native-community/blur";
 import CustomAvatar from "./BottomSheets/CustomAvatar";
 import { normalize } from "../utils/Metrics";
-import { setChatCount, setNotiCount } from "../storeTolkit/userSlice";
+import { setChatCount, setNotiCount, setUserDetail } from "../storeTolkit/userSlice";
 import { dataGet_ } from "../utils/myAxios";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -34,7 +34,7 @@ const navHeight = screenHeight * 0.085;
 const TabHeader = ({ style, image, title, name, chatcount, noticount }) => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
-   const {chatCount,notiCount} = useSelector((state) => state?.user);
+   const {chatCount,notiCount,user} = useSelector((state) => state?.user);
    const dispatch = useDispatch();
 
   useEffect(() => {
@@ -68,14 +68,17 @@ const TabHeader = ({ style, image, title, name, chatcount, noticount }) => {
       {/* Profile Section */}
       <TouchableOpacity
         style={styles.profileSection}
-        onPress={() =>
+        onPress={() =>{
+          dispatch(setUserDetail(user))
           navigation.navigate(SCREENS.NavigationRoutes, {
-            screen: SCREENS.EditProfileDetails, // <- replace with your target screen
+            screen: SCREENS.ProfileDetails, // <- replace with your target screen
           })
+        }
         }
       >
         <CustomAvatar
           image={image}
+          user={user}
           width={navHeight - 10}
           height={navHeight - 10}
           fontSize={normalize(26)}

@@ -29,6 +29,7 @@ const MeditationCard = ({ item, isLastChild,onPressLikeReply,onPressReply,onPres
         <TouchableOpacity onPress={onPress} activeOpacity={0.8}>
           <CustomAvatar
             image={item?.user?.image}
+            user={item?.user}
             width={normalize(50)}
             height={normalize(50)}
             fontSize={normalize(26)}
@@ -117,6 +118,7 @@ export const SingleReplyShow = ({ item, onPressLike }) => {
         <TouchableOpacity onPress={item.onPress} activeOpacity={0.8}>
           <CustomAvatar
             image={item?.user?.image}
+            user={item?.user}
             width={normalize(50)}
             height={normalize(50)}
             fontSize={normalize(26)}

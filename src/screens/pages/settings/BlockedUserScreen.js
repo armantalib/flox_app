@@ -76,6 +76,7 @@ const LanguageScreen = () => {
             <View style={styles.profileBox}>
               <CustomAvatar
                 image={userDetail.image}
+                user={userDetail}
                 width={normalize(50)}
                 height={normalize(50)}
                 fontSize={normalize(26)}

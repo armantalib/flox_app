@@ -100,6 +100,7 @@ const CreatePostScreen = (props) => {
 
                   <CustomAvatar
                     image={user?.image}
+                    user={user}
                     width={normalize(70)}
                     height={normalize(70)}
                     fontSize={normalize(26)}

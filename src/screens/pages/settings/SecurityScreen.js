@@ -75,6 +75,7 @@ const SecurityScreen = () => {
                   <View style={styles.userPro}>
                     <CustomAvatar
                       image={item?.image}
+                      user={item}
                       width={normalize(50)}
                       height={normalize(50)}
                       fontSize={normalize(26)}

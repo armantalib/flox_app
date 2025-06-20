@@ -174,6 +174,7 @@ const InboxScreen = (props) => {
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <CustomAvatar
               image={toUserData?.image}
+              user={toUserData}
               width={normalize(40)}
               height={normalize(40)}
               fontSize={normalize(26)}

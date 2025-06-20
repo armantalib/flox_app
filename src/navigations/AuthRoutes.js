@@ -30,35 +30,11 @@ import { Loader } from '../components/General';
 const Stack = createStackNavigator();
 
 const AuthRoutes = () => {
-  const navigation = useNavigation();
-  const dispatch = useDispatch();
-  const [isSession, setIsSession] = useState(false)
 
-  useEffect(() => {
-    getDataFromSession();
-  }, [])
 
-  const getDataFromSession = async () => {
-    const token = await getItem('token');
-    const user_data = await getItem('user_data');
-    setIsSession(true)
-    if (token) {
-      setIsSession(true)
-      dispatch(setUser(user_data))
 
-      navigation.navigate(SCREENS.TabRoutes, {
-        screen: SCREENS.TabHome,
-      });
-    }
-  }
-  if (!isSession) {
-    return (<>
-      <GradientBackground />
-      <View style={{width:'100%',height:'100%',justifyContent:'center',alignItems:'center'}}>
-        <ActivityIndicator size={'large'} color={'#000000'}/>
-      </View>
-    </>)
-  }
+
+
   return (
     <Stack.Navigator
       initialRouteName="ChooseLanguage"

@@ -1,4 +1,4 @@
-import { View, ScrollView, KeyboardAvoidingView } from "react-native";
+import { View, ScrollView, KeyboardAvoidingView, TouchableOpacity } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import styles from "./Styles";
@@ -9,10 +9,13 @@ import CommunityOneComponent, { SinglePostShow } from "../../../components/Commu
 import BtnPrimary from "../../../components/BtnPrimary";
 import { moderateScale, scale, verticalScale } from "react-native-size-matters";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { dataPost } from "../../../utils/myAxios";
 import { setCommentReply, setPostDetail } from "../../../storeTolkit/communitySlice";
 import { SCREENS } from "../../../constants/Screen";
+import TextComponent from "../../../components/TextComponent";
+import { FONTS } from "../../../constants/fonts";
+import { setUserDetail } from "../../../storeTolkit/userSlice";
 
 const posts = [
 
@@ -57,9 +60,10 @@ const PostScreen = (props) => {
   const navigation = useNavigation();
   const { postDetail } = useSelector((state) => state?.community);
   const dispatch = useDispatch();
+    const [showDropdown, setShowDropdown] = useState(false);
 
 
-  
+
 
   const onPressLikeFun = async () => {
     let data = {}
@@ -73,7 +77,7 @@ const PostScreen = (props) => {
   }
 
   const onPressLikeReplyFun = async (item) => {
-    
+
     let data = {}
     const endPoint = 'community/comments/' + item?._id + '/like';
     const response = await dataPost(endPoint, data);
@@ -98,8 +102,60 @@ const PostScreen = (props) => {
         dotShow
         opacity={0}
         title={"Post"}
+        onPressDot={() => {
+          setShowDropdown(!showDropdown)
+        }}
         onPress={() => navigation.goBack()}
       />
+      {showDropdown && (
+        <View
+          style={[
+            styles.dropdownContainer,
+            {
+              top: insets.top + 40,
+            },
+          ]}
+        >
+          <View style={styles.dropdown}>
+            <TouchableOpacity
+              onPress={() => {
+                setShowDropdown(false)
+                navigation.navigate(SCREENS.NavigationRoutes, {
+                  screen: SCREENS.ReportPost,
+                })
+              }
+              }
+            >
+              <TextComponent
+                color={COLORS.black}
+                fontSize={15}
+                title={"Report Post"}
+                fontFamily={FONTS.Samsungsharpsans_Bold}
+                textAlign={"center"}
+              />
+            </TouchableOpacity>
+            <View style={styles.dropdownDivider}></View>
+            <TouchableOpacity
+              onPress={() => {
+                setShowDropdown(false)
+                dispatch(setUserDetail(postDetail?.user))
+                navigation.navigate(SCREENS.NavigationRoutes, {
+                  screen: SCREENS.ReportUser,
+                })
+              }
+              }
+            >
+              <TextComponent
+                color={COLORS.black}
+                fontSize={15}
+                title={"Report User"}
+                textAlign={"center"}
+                fontFamily={FONTS.Samsungsharpsans_Bold}
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
       <ScrollView
         contentContainerStyle={{ flexGrow: 1 }}
         keyboardShouldPersistTaps="handled"
@@ -111,10 +167,8 @@ const PostScreen = (props) => {
           />
           <CommunityOneComponent
             data={postDetail?.comments}
-           
             onPressLikeReply={(val) => { onPressLikeReplyFun(val) }}
             onPressReply={(item) => {
-              
               dispatch(setCommentReply(item))
               navigation.navigate(SCREENS.NavigationRoutes, {
                 screen: SCREENS.ReplyScreen,

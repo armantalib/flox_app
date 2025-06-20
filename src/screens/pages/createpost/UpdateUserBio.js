@@ -27,6 +27,7 @@ import PickerItem from "../../../components/BottomSheets/PickerItem";
 import { custom_data } from "../../../constants";
 import { dataPost, dataPut } from "../../../utils/myAxios";
 import { setUser, setUserDetail } from "../../../storeTolkit/userSlice";
+import { storeData } from "../../../utils/async_storage";
 
 const UpdateUserBio = (props) => {
   const insets = useSafeAreaInsets();
@@ -74,6 +75,7 @@ const UpdateUserBio = (props) => {
     if (response?.success) {
       dispatch(setUserDetail(response?.user))
       dispatch(setUser(response?.user))
+          storeData('user_data',response?.user)
       navigation.goBack()
     }
   }
@@ -104,6 +106,7 @@ const UpdateUserBio = (props) => {
 
                   <CustomAvatar
                     image={user?.image}
+                    user={user}
                     width={normalize(70)}
                     height={normalize(70)}
                     fontSize={normalize(26)}

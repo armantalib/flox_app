@@ -210,7 +210,7 @@ const ReourceDetailsScreen = (props) => {
                     if (item.name == 'All') {
                       setCategory('')
                     } else {
-                      setCategory(itbem.name)
+                      setCategory(item.name)
                     }
                     setSelectedCategory(item.name)
                   }}

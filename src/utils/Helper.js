@@ -331,5 +331,19 @@ export function getGreeting() {
             });
     }
 
+  export function removeHtmlTags(str) {
+   // Remove HTML tags
+  let text = str.replace(/<[^>]*>/g, '');
+  // Replace common HTML entities with their plain text equivalents
+  text = text.replace(/&nbsp;/g, ' ');    // Replace &nbsp; with space
+  text = text.replace(/&amp;/g, '&');     // Replace &amp; with &
+  text = text.replace(/&lt;/g, '<');      // Replace &lt; with <
+  text = text.replace(/&gt;/g, '>');      // Replace &gt; with >
+  text = text.replace(/&quot;/g, '"');    // Replace &quot; with "
+  text = text.replace(/&apos;/g, "'");    // Replace &apos; with '
+  // You can add more entities if needed
+  return text;
+}
+
 
 

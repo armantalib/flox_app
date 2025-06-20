@@ -61,9 +61,9 @@ const MeditationCard = ({ item, isLastChild }, ...props) => {
         >
           <Text style={styles.name1}>{item?.category}</Text>
         </View>
-        <TouchableOpacity style={styles.dotsSTyle}>
+        {/* <TouchableOpacity style={styles.dotsSTyle}>
           <SVG_IMAGES.DotsIcon_SVG />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
       <TouchableOpacity
         onPress={() => {

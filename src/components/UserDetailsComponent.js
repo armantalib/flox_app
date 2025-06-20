@@ -38,6 +38,7 @@ const MeditationCard = ({ item, isLastChild, hideFollow }) => {
           {/* <Image source={{uri}} style={styles.profileImage} /> */}
           <CustomAvatar
             image={item?.user?.image}
+            user={item?.user}
             width={normalize(50)}
             height={normalize(50)}
             fontSize={normalize(26)}

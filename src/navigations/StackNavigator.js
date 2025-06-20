@@ -8,17 +8,23 @@ import { StyleSheet } from "react-native";
 import AuthRoutes from "./AuthRoutes";
 import { BottomTabNavigator } from "./BottomTabNavigator";
 import NavigationRoutes from "./NavigationRoutes";
+import CheckSession from "./CheckSession";
 const Stack = createStackNavigator();
 
 const MainStackNavigator = () => {
   return (
     <Stack.Navigator
-      initialRouteName="AuthRoutes"
+      initialRouteName="CheckSession"
       screenOptions={{
         headerMode: "screen",
         // ...TransitionPresets.FadeFromBottomAndroid, // Add this line for slide transition
       }}
     >
+        <Stack.Screen
+        name="CheckSession"
+        component={CheckSession}
+        options={{ headerShown: false }}
+      />
       <Stack.Screen
         name="AuthRoutes"
         component={AuthRoutes}

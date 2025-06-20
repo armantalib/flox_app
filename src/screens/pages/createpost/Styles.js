@@ -96,6 +96,26 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
     marginBottom: 10,
   },
+    //
+  dropdownContainer: {
+    position: "absolute",
+    right: 15,
+    backgroundColor: COLORS.white,
+    borderRadius: 15,
+    padding: 17,
+    shadowColor: COLORS.black,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    zIndex: 999,
+  },
+  dropdownDivider: {
+    height: 1,
+    width: "100%",
+    backgroundColor: "#EAEAEA",
+    marginVertical: 15,
+  },
 });
 
 export default styles;

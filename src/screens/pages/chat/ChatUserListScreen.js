@@ -121,6 +121,7 @@ getData()
               >
                 <CustomAvatar
                   image={item?.otherUser?.image}
+                  user={item?.otherUser}
                   width={normalize(53)}
                   height={normalize(53)}
                   fontSize={normalize(26)}

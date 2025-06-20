@@ -66,7 +66,7 @@ const ExploreDetailsScreen = () => {
                   <Text style={styles.duration}>{hubPostDetail.min_read}</Text>
                   <Text style={styles.title} numberOfLines={2}>{hubPostDetail.title}</Text>
                 </View>
-
+                 {hubPostDetail.audio? 
                 <TouchableOpacity
                   onPress={() => {
                     dispatch(setMusicDetail(hubPostDetail))
@@ -81,7 +81,7 @@ const ExploreDetailsScreen = () => {
                     size={35}
                     color={'#FFFFFF'}
                   />
-                </TouchableOpacity>
+                </TouchableOpacity>:null}
 
                 <View style={styles.overlay} />
               </View>

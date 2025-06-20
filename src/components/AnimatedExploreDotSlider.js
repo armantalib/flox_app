@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Animated,
   Dimensions,
@@ -33,6 +33,15 @@ const screenWidth = Dimensions.get("window").width;
 export default function AnimatedExploreDotSlider({ content }) {
   const scrollY = useRef(new Animated.Value(0)).current;
   const { exploreStat } = useSelector((state) => state?.steps);
+  const [userAges, setUserAges] = useState(exploreStat?.userAges[0])
+
+  useEffect(() => {
+setUserAges(exploreStat?.userAges[0])
+  }, [exploreStat])
+  
+  console.log("EX",exploreStat);
+  
+
   return (
     <View style={{ flex: 1, position: "relative", padding: 7 }}>
       <Slick
@@ -159,63 +168,63 @@ export default function AnimatedExploreDotSlider({ content }) {
             </View>
             <AgeBarStat
               age="65+"
-              maleValue={"5"}
-              femaleValue={"4"}
+                        maleValue={userAges?.age61 ? userAges?.age11.maleCount : "0"}
+              femaleValue={userAges?.age61 ? userAges?.age11.femaleCount : "0"}
             />
             <AgeBarStat
               age="60-64"
-              maleValue={"5"}
-              femaleValue={"3"}
+                        maleValue={userAges?.age61 ? userAges?.age11.maleCount : "0"}
+              femaleValue={userAges?.age61 ? userAges?.age11.femaleCount : "0"}
             />
             <AgeBarStat
               age="55-59"
-              maleValue={"4"}
-              femaleValue={"5"}
+                     maleValue={userAges?.age56 ? userAges?.age11.maleCount : "0"}
+              femaleValue={userAges?.age56 ? userAges?.age11.femaleCount : "0"}
             />
             <AgeBarStat
               age="50-54"
-              maleValue={"2"}
-              femaleValue={"3"}
+                    maleValue={userAges?.age51 ? userAges?.age11.maleCount : "0"}
+              femaleValue={userAges?.age51 ? userAges?.age11.femaleCount : "0"}
             />
             <AgeBarStat
               age="45-49"
-              maleValue={"2"}
-              femaleValue={"4"}
+                      maleValue={userAges?.age46 ? userAges?.age11.maleCount : "0"}
+              femaleValue={userAges?.age46 ? userAges?.age11.femaleCount : "0"}
             />
             <AgeBarStat
               age="40-44"
-              maleValue={"5"}
-              femaleValue={"4"}
+                       maleValue={userAges?.age41 ? userAges?.age11.maleCount : "0"}
+              femaleValue={userAges?.age41 ? userAges?.age11.femaleCount : "0"}
             />
             <AgeBarStat
               age="35-39"
-              maleValue={"5"}
-              femaleValue={"3"}
+                      maleValue={userAges?.age36 ? userAges?.age11.maleCount : "0"}
+              femaleValue={userAges?.age36 ? userAges?.age11.femaleCount : "0"}
             />
             <AgeBarStat
               age="30-34"
-              maleValue={"4"}
-              femaleValue={"5"}
+                     maleValue={userAges?.age31 ? userAges?.age11.maleCount : "0"}
+              femaleValue={userAges?.age31 ? userAges?.age11.femaleCount : "0"}
             />
             <AgeBarStat
               age="25-29"
-              maleValue={"2"}
-              femaleValue={"3"}
+                         maleValue={userAges?.age26 ? userAges?.age11.maleCount : "0"}
+              femaleValue={userAges?.age26 ? userAges?.age11.femaleCount : "0"}
             />
             <AgeBarStat
               age="20-24"
-              maleValue={"2"}
-              femaleValue={"4"}
+              maleValue={userAges?.age21 ? userAges?.age11.maleCount : "0"}
+              femaleValue={userAges?.age21 ? userAges?.age11.femaleCount : "0"}
             />
             <AgeBarStat
               age="15-19"
-              maleValue={"5"}
-              femaleValue={"4"}
+              maleValue={userAges?.age16 ? userAges?.age11.maleCount : "0"}
+              femaleValue={userAges?.age16 ? userAges?.age11.femaleCount : "0"}
             />
             <AgeBarStat
               age="10-14"
-              maleValue={"5"}
-              femaleValue={"4"}
+              maleValue={userAges?.age11 ? userAges?.age11.maleCount : "0"}
+              femaleValue={userAges?.age11 ? userAges?.age11.femaleCount : "0"}
             />
           </View>
         </View>

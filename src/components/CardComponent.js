@@ -17,6 +17,7 @@ import { SVG_IMAGES } from "../constants/images";
 import moment from "moment";
 import { useDispatch } from "react-redux";
 import { setHubPostDetail } from "../storeTolkit/hubSlice";
+import { removeHtmlTags } from "../utils/Helper";
 
 const MeditationCard = ({ item, showLiked }) => {
   const navigation = useNavigation();
@@ -95,7 +96,7 @@ const MeditationCard = ({ item, showLiked }) => {
           >
             <Text style={styles.title}>{item.title}</Text>
           </TouchableOpacity>
-          <Text style={styles.description} numberOfLines={3}>{item.desc}</Text>
+          <Text style={styles.description} numberOfLines={3}>{removeHtmlTags(item.desc)}</Text>
         </View>
       </View>
     </View>

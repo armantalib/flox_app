@@ -29,7 +29,7 @@ const ReportUserScreen = () => {
     }
     setLoader(true)
     let data = {
-      title:postDetail?.title,
+      title:'Report Post',
       desc: content,
       image: '',
       type: 'post',

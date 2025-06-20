@@ -60,6 +60,7 @@ const SocialCard = ({ item }) => {
       >
         <CustomAvatar
           image={item?.user?.image}
+          user={item?.user}
           width={normalize(50)}
           height={normalize(50)}
           fontSize={normalize(26)}

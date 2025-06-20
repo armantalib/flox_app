@@ -175,13 +175,13 @@ const ProfileDetailsScreen = (props) => {
           />
         </View>
         {user?._id == userDetail?._id ?
-          <TouchableOpacity 
-          onPress={()=>{
-               navigation.navigate(SCREENS.NavigationRoutes, {
-                  screen: SCREENS.UpdateUserBio,
-                })
-          }}
-          style={styles.editStyle}>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate(SCREENS.NavigationRoutes, {
+                screen: SCREENS.UpdateUserBio,
+              })
+            }}
+            style={styles.editStyle}>
             <TextComponent
               color={COLORS.white}
               fontSize={12}
@@ -228,8 +228,8 @@ const ProfileDetailsScreen = (props) => {
             </TouchableOpacity>
             <View style={styles.dropdownDivider}></View>
             <TouchableOpacity
-              onPress={() =>{
-                 setShowDropdown(false)
+              onPress={() => {
+                setShowDropdown(false)
                 navigation.navigate(SCREENS.NavigationRoutes, {
                   screen: SCREENS.ReportUser,
                 })
@@ -259,15 +259,28 @@ const ProfileDetailsScreen = (props) => {
         <View style={{ padding: 20 }}>
           <View style={styles.statsBox}>
             {/* Profile Image */}
+            <View>
 
-            <CustomAvatar
-              image={userDetail?.image}
-              width={normalize(50)}
-              height={normalize(50)}
-              fontSize={normalize(26)}
-              borderRadius={normalize(50)}
-              name={userDetail?.username}
-            />
+              <CustomAvatar
+                image={userDetail?.image}
+                user={userDetail}
+                width={normalize(50)}
+                height={normalize(50)}
+                fontSize={normalize(26)}
+                borderRadius={normalize(50)}
+                name={userDetail?.username}
+              />
+              {user?._id == userDetail?._id?
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate(SCREENS.NavigationRoutes, {
+                    screen: SCREENS.ProfilePicture,
+                  })
+                }}
+                style={[styles.editImage]}>
+                <SVG_IMAGES.Edit_Image_SVG />
+              </TouchableOpacity>:null}
+            </View>
 
             {/* Stats Section */}
             <View style={styles.statsContainer}>
@@ -325,46 +338,46 @@ const ProfileDetailsScreen = (props) => {
           <TextComponent
             color={COLORS.primary}
             fontSize={12}
-            title={userDetail?.about_me?userDetail?.about_me:'User Bios Not Available'}
+            title={userDetail?.about_me ? userDetail?.about_me : 'User Bios Not Available'}
             fontFamily={FONTS.Samsungsharpsans}
             lineHeight={16}
             marginBottom={10}
           />
-          {user?._id == userDetail?._id ?null:
-          <View style={styles.btnFlex}>
-            <View style={{ width: "50%" }}>
-              <BtnPrimary
-                onPress={() => followUnFollowUser()}
-                userIcon
-                style={{
-                  height: 38,
-                  backgroundColor: COLORS.blue,
-                  paddingVertical: 0,
-                }}
-                btnText={{
-                  color: COLORS.white,
-                  fontSize: 15,
-                }}
-                title={isFollow ? "Following" : "Follow"}
-              />
-            </View>
-            <View style={{ width: "50%" }}>
-              <OutlineButton
-                style={{
-                  height: 38,
-                }}
-                userIcon
-                title={"Message"}
-                navigation={() => {
-                  dispatch(setChatToId(userDetail?._id))
-                  navigation.navigate(SCREENS.NavigationRoutes, {
-                    screen: SCREENS.InboxScreen,
-                  })
-                }
-                }
-              />
-            </View>
-          </View>}
+          {user?._id == userDetail?._id ? null :
+            <View style={styles.btnFlex}>
+              <View style={{ width: "50%" }}>
+                <BtnPrimary
+                  onPress={() => followUnFollowUser()}
+                  userIcon
+                  style={{
+                    height: 38,
+                    backgroundColor: COLORS.blue,
+                    paddingVertical: 0,
+                  }}
+                  btnText={{
+                    color: COLORS.white,
+                    fontSize: 15,
+                  }}
+                  title={isFollow ? "Following" : "Follow"}
+                />
+              </View>
+              <View style={{ width: "50%" }}>
+                <OutlineButton
+                  style={{
+                    height: 38,
+                  }}
+                  userIcon
+                  title={"Message"}
+                  navigation={() => {
+                    dispatch(setChatToId(userDetail?._id))
+                    navigation.navigate(SCREENS.NavigationRoutes, {
+                      screen: SCREENS.InboxScreen,
+                    })
+                  }
+                  }
+                />
+              </View>
+            </View>}
         </View>
       </View>
       <View style={[styles.wrapper]}>
