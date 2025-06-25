@@ -24,7 +24,10 @@ import { ResourceCard } from "../../../components/ResourcesCardComp";
 import { normalize } from "../../../utils/Metrics";
 import { useFocusEffect } from '@react-navigation/native';
 import { dataPost } from "../../../utils/myAxios";
-import { Loader } from "../../../components/General";
+import { Loader, NotFound } from "../../../components/General";
+import { getItem, storeData } from "../../../utils/async_storage";
+import { useDispatch, useSelector } from "react-redux";
+import { setResourceData } from "../../../storeTolkit/stepsSlice";
 
 const categories = ["All", "Studies", "FDA", "Drug Warnings", "Recovery"];
 
@@ -90,13 +93,14 @@ const ReourceDetailsScreen = (props) => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const [resourceData, setResourcesData] = useState([]);
   const [resourceDataTemp, setResourcesDataTemp] = useState([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-  const [loader, setLoader] = useState(true);
+  const [loader, setLoader] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [category, setCategory] = useState('');
+  const dispatch = useDispatch();
+  const { resourceData } = useSelector((state) => state?.steps);
 
   useEffect(() => {
     getResources(true);
@@ -123,11 +127,12 @@ const ReourceDetailsScreen = (props) => {
 
 
   const getResources = useCallback(async (reset = false) => {
+    const resource_data = await getItem('resource_data');
+    if (resource_data) dispatch(setResourceData(resource_data))
     if (loadingMore && !reset) return;
     if (reset) {
       setPage(1);
       setHasMore(true);
-      setResourcesData([]);
       setResourcesDataTemp([]);
     } else {
       setLoadingMore(true);
@@ -146,12 +151,15 @@ const ReourceDetailsScreen = (props) => {
     const response = await dataPost(endPoint, data);
 
     if (response?.success) {
+      console.log(response?.data);
+      
       const newData = response?.data || [];
       if (reset) {
-        setResourcesData(newData);
+        dispatch(setResourceData(newData))
         setResourcesDataTemp(newData);
+        storeData('resource_data', newData)
       } else {
-        setResourcesData(prev => [...prev, ...newData]);
+        dispatch(setResourceData(prev => [...prev, ...newData]))
         setResourcesDataTemp(prev => [...prev, ...newData]);
       }
 
@@ -237,7 +245,8 @@ const ReourceDetailsScreen = (props) => {
             }}
             keyboardShouldPersistTaps="handled"
           >
-            <View style={{ marginHorizontal: verticalScale(0) }}>
+            {!loader && resourceData.length==0?<NotFound/>:null}
+                        <View style={{ marginHorizontal: verticalScale(0) }}>
               {resourceData.map((item, index) => (
                 <ResourceCard
                   width={'100%'}

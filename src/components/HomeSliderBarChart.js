@@ -116,10 +116,10 @@ const HomeSliderBarChart = (props) => {
             chartConfig={{
               backgroundColor: "transparent",
               backgroundGradientFrom: "#000000",
-              backgroundGradientTo: "#FFFFFF",
+              backgroundGradientTo: "#000000",
               decimalPlaces: 0, // optional, defaults to 2dp
-              color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-              labelColor: (opacity = 1) => `#FFFFFF`,
+              color: (opacity = 1) => `rgba(101, 100, 184, ${opacity})`,
+              labelColor: () => "#6564b8",
               style: {
                 borderRadius: 10
               },

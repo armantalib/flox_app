@@ -17,6 +17,7 @@ import { setChatToId } from "../../../storeTolkit/ChatData";
 import CustomAvatar from "../../../components/BottomSheets/CustomAvatar";
 import { normalize } from "../../../utils/Metrics";
 import { searchFunctionsChat } from "../../../utils/Helper";
+import { getItem, storeData } from "../../../utils/async_storage";
 const ChatUserListScreen = (props) => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
@@ -46,6 +47,8 @@ getData()
   }
 
   const getData = async () => {
+    const chat_users = await getItem('chat_users');
+    if(chat_users) setData(chat_users)
     // await deleteValue('intro_screen')
     let data = {}
     const endPoint = 'msg/conversations';
@@ -55,6 +58,7 @@ getData()
     setIsRefreshing(false);
     if (res?.success == true) {
       setData(res?.conversations)
+      storeData('chat_users',res?.conversations)
       setDataTemp(res?.conversations)
     } else {
       setInfoModal2(true)

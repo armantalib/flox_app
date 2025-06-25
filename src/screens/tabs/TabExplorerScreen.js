@@ -20,6 +20,7 @@ import { dataGet_ } from "../../utils/myAxios";
 import { setExploreStat } from "../../storeTolkit/stepsSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { getGreeting, shareScreenShot } from "../../utils/Helper";
+import { getItem, storeData } from "../../utils/async_storage";
 
 const TabExplorerScreen = (props) => {
   const navigation = useNavigation();
@@ -34,10 +35,13 @@ const TabExplorerScreen = (props) => {
     }
   }, [])
   const checkAntibiotic = async () => {
+    const explore_counts = await getItem('explore_counts');
+    if(explore_counts) dispatch(setExploreStat(explore_counts))
     const endPoint = 'antibiotic/counts';
     const response = await dataGet_(endPoint, {});
     if (response.success) {
       dispatch(setExploreStat(response))
+      storeData('explore_counts',response)
     }
   }
 

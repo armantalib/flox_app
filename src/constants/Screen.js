@@ -57,4 +57,5 @@ export const SCREENS = {
   ReplyScreen: "ReplyScreen",
   InboxScreen: "InboxScreen",
   UpdateUserBio: "UpdateUserBio",
+  DownloadDataScreen: "DownloadDataScreen",
 };

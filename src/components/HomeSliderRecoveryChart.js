@@ -109,17 +109,17 @@ const HomeSliderRecoveryChart = (props) => {
             chartConfig={{
               backgroundColor: "transparent",
               backgroundGradientFrom: "#000000",
-              backgroundGradientTo: "#FFFFFF",
+              backgroundGradientTo: "#000000",
               decimalPlaces: 0,
-              color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-              labelColor: () => "#FFFFFF",
+              color: (opacity = 1) => `rgba(101, 100, 184, ${opacity})`,
+              labelColor: () => "#6564b8",
               style: {
                 borderRadius: 10,
               },
               propsForDots: {
-                r: "6",
+                r: "3",
                 strokeWidth: "2",
-                stroke: "#FFFFFF",
+                stroke: "#6564b8",
               },
             }}
             bezier

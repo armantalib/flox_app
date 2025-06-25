@@ -18,6 +18,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useDispatch } from "react-redux";
 import { SCREENS } from "../constants/Screen";
 import { setHubPostDetail } from "../storeTolkit/hubSlice";
+import { removeHtmlTags } from "../utils/Helper";
 
 const MeditationCard = ({ item, showLiked, onPressPray }) => {
   const [isLiked, setIsLiked] = useState(false);
@@ -40,6 +41,8 @@ const MeditationCard = ({ item, showLiked, onPressPray }) => {
       <View style={styles.content}>
         <View style={styles.imageContainer}>
           <Image source={{uri:item?.image}} style={styles.image} />
+                 {moment(item.createdAt).format('DD/MM/YYYY') == moment().format('DD/MM/YYYY') ?
+     
           <LinearGradient
             colors={["#3995FF", "#3995FF"]}
             start={{ x: 0, y: 1 }}
@@ -47,7 +50,7 @@ const MeditationCard = ({ item, showLiked, onPressPray }) => {
             style={styles.badgeContainer}
           >
             <Text style={styles.badgeText}>New</Text>
-          </LinearGradient>
+          </LinearGradient>:null}
           {item.createdAt && <Text style={styles.dateText}>{moment(item?.createdAt).format('DD/MM/YYYY')}</Text>}
           <Text style={styles.duration}>{item.min_read}</Text>
           {showLiked && (
@@ -78,7 +81,7 @@ const MeditationCard = ({ item, showLiked, onPressPray }) => {
         </View>
         <View style={{ paddingHorizontal: moderateScale(5) }}>
           <Text style={styles.title} numberOfLines={2}>{item.title}</Text>
-          <Text style={styles.description} numberOfLines={2}>{item.desc}</Text>
+          <Text style={styles.description} numberOfLines={2}>{removeHtmlTags(item.desc)}</Text>
         </View>
       </View>
     </TouchableOpacity>

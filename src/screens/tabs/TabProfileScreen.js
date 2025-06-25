@@ -33,7 +33,7 @@ const menuItems = [
     id: 3,
     icon: <SVG_IMAGES.DownloadData_SVG />,
     title: "Download Data",
-    link: SCREENS.Security,
+    link: SCREENS.DownloadDataScreen,
   },
   {
     id: 4,

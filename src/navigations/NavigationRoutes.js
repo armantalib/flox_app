@@ -26,6 +26,7 @@ import ReplyOnComment from "../screens/pages/createpost/ReplyOnComment";
 import ReplyScreen from "../screens/pages/createpost/ReplyScreen";
 import InboxScreen from "../screens/pages/community/InboxScreen";
 import UpdateUserBio from "../screens/pages/createpost/UpdateUserBio";
+import DownloadDataScreen from "../screens/pages/settings/DownloadDataScreen";
 const Stack = createStackNavigator();
 
 const NavigationRoutes = () => {
@@ -157,6 +158,12 @@ const NavigationRoutes = () => {
       <Stack.Screen
         name="InboxScreen"
         component={InboxScreen}
+        options={{ headerShown: false }}
+      />
+
+        <Stack.Screen
+        name="DownloadDataScreen"
+        component={DownloadDataScreen}
         options={{ headerShown: false }}
       />
 

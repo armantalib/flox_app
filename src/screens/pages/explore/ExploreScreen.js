@@ -13,7 +13,7 @@ import { IMAGES } from "../../../constants/images";
 import { verticalScale } from "react-native-size-matters";
 import { SCREENS } from "../../../constants/Screen";
 import { useDispatch, useSelector } from "react-redux";
-import { dataGet_ } from "../../../utils/myAxios";
+import { dataGet_, dataPost } from "../../../utils/myAxios";
 import { setExploreData, setFilterData, setHubPostDetail, setIsSameData } from "../../../storeTolkit/hubSlice";
 import { getItem, storeData } from "../../../utils/async_storage";
 
@@ -96,13 +96,13 @@ const ExploreScreen = () => {
 
   useEffect(() => {
     getCardData();
-  }, [categoryExplore])
+  }, [categoryExplore,selectedCategoryAll])
 
 
   const getCardData = async () => {
     const exploreData1 = await getItem('exploreData');
     const exploreFilter = await getItem('exploreFilter');
-    if (isSameData == categoryExplore?._id) {
+    if (isSameData == categoryExplore?._id || !isSameData) {
       dispatch(setExploreData(exploreData1))
       dispatch(setFilterData(exploreFilter))
     }else{
@@ -112,7 +112,9 @@ const ExploreScreen = () => {
     }
     dispatch(setIsSameData(categoryExplore?._id))
     const endPoint = 'hub/category/posts/' + categoryExplore?._id;
-    const response = await dataGet_(endPoint, {});
+    const response = await dataPost(endPoint, {
+      sub_category : selectedCategory =='All'?'':selectedCategoryAll?._id
+    });
     if (response.success) {
       dispatch(setExploreData(response?.data))
       storeData('exploreData', response?.data)

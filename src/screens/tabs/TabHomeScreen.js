@@ -87,12 +87,12 @@ const TabHomeScreen = (props) => {
 
   const getCardData = async () => {
     const categoriesHub = await getItem('categoriesHub');
-    if(categoriesHub)  dispatch(setCategoriesHub(categoriesHub))
+    if (categoriesHub) dispatch(setCategoriesHub(categoriesHub))
     const endPoint = 'hub/category/post';
     const response = await dataGet_(endPoint, {});
     if (response.success) {
       dispatch(setCategoriesHub(response?.data))
-      storeData('categoriesHub',response?.data)
+      storeData('categoriesHub', response?.data)
     }
   }
 

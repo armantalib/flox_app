@@ -6,7 +6,9 @@ type InitialStateType = {
   stepsData: any | null;  // Replace 'any' with actual user type if available
   stepsDataTemp: any | null;  // Replace 'any' with actual user type if available
   stepsDataUser: any | null;  // Replace 'any' with actual user type if available
-
+  resourceData: any | null;  // Replace 'any' with actual user type if available
+  isSameData: any | null;
+  resourceFilter: any | null;
 };
 
 const initialState: InitialStateType = {
@@ -14,7 +16,10 @@ const initialState: InitialStateType = {
   stepsData: null,
   stepsDataTemp: null,
   stepsDataUser: null,
-  exploreStat: null
+  exploreStat: null,
+  resourceData: [],
+  isSameData: null,
+  resourceFilter: [],
 };
 
 const stepsSlice = createSlice({
@@ -36,12 +41,21 @@ const stepsSlice = createSlice({
     setExploreStat: (state, action) => {
       state.exploreStat = action.payload;
     },
+     setResourceData: (state, action) => {
+      state.resourceData = action.payload;
+    },
+      setIsSameData: (state, action) => {
+      state.isSameData = action.payload;
+    },
+       setResourceFilter: (state, action) => {
+      state.resourceFilter = action.payload;
+    },
 
 
     // Other reducers go here
   },
 });
 
-export const { setSteps, setStepsData, setExploreStat,setStepsDataUser,setStepsDataTemp } = stepsSlice.actions;
+export const { setSteps, setStepsData, setExploreStat,setStepsDataUser,setStepsDataTemp,setResourceData,setIsSameData,setResourceFilter } = stepsSlice.actions;
 
 export default stepsSlice.reducer;
