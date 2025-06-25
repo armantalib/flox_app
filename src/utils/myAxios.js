@@ -2,8 +2,8 @@ import axios from 'axios';
 import { showToast } from '../components/General';
 import { getItem } from './async_storage';
 
-// const urlParent = "https://api.antiflox.com/";
-const urlParent = "http://192.168.100.43:8080/"
+const urlParent = "https://api.antiflox.com/";
+// const urlParent = "http://192.168.100.43:8080/"
 const mainUrl = urlParent + "api/";
 export const socketUrl = urlParent;
 

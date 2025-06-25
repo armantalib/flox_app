@@ -12,12 +12,14 @@ import GradientSwitch from "../../../components/GradientSwitch";
 import BtnPrimary from "../../../components/BtnPrimary";
 import { SCREENS } from "../../../constants/Screen";
 import CustomHeader from "../../../components/CustomHeader";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { deleteValue } from "../../../utils/async_storage";
+import { setStepsData } from "../../../storeTolkit/stepsSlice";
 const AccountSettingsScreen = () => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
   const user = useSelector((state) => state?.user?.user);
+   const dispatch = useDispatch();
 
      const logoutAlert = () => {
         Alert.alert(
@@ -37,6 +39,7 @@ const AccountSettingsScreen = () => {
     const logoutApp = async () => {
         deleteValue('token')
         deleteValue('user_data')
+         dispatch(setStepsData(null))
       navigation.reset({
             index: 0,
             routes: [{ name: 'AuthRoutes' }],

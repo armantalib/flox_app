@@ -46,9 +46,9 @@ const TabExplorerScreen = (props) => {
     <View style={[tabStyle.safeArea]}>
       <GradientBackground />
       <TabHeader
-        image={IMAGES.UserProfile_IMG}
+        image={user?.image}
         title={getGreeting()}
-        name={"Ben0790"}
+        name={user?.username}
         chatcount={14}
         noticount={6}
       />
@@ -97,7 +97,7 @@ const TabExplorerScreen = (props) => {
             color={COLORS.primary}
             fontSize={31}
             title={"Petitions"}
-            onPress={()=>shareScreenShot()}
+            onPress={() => shareScreenShot()}
 
             marginBottom={15}
             fontFamily={FONTS.Samsungsharpsans_Bold}

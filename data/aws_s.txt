@@ -33,7 +33,7 @@ git stash
 git stash drop
 git pull
 
-cd _7arty_backend
+cd flox_backend
 git stash
 git stash drop
 git pull

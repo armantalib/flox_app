@@ -37,6 +37,8 @@ const StepNineScreen = (props) => {
   const { pData } = props.route.params
 
   const submitData = async () => {
+    console.log("RE");
+    
     setLoader(true)
     let data2 = {...pData}
     const endPoint = 'antibiotic/create';

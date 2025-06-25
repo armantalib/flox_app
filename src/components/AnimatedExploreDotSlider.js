@@ -113,7 +113,7 @@ setUserAges(exploreStat?.userAges[0])
                 <Text style={tabStyle.label}>Men</Text>
               </View>
               <View style={tabStyle.column}>
-                <Text style={tabStyle.percentage}>{exploreStat?.malePercent}%</Text>
+                <Text style={tabStyle.percentage}>{parseFloat(exploreStat?.malePercent).toFixed(0)}%</Text>
                 <Text style={tabStyle.label}>Percent</Text>
               </View>
             </View>
@@ -128,7 +128,7 @@ setUserAges(exploreStat?.userAges[0])
                 <Text style={tabStyle.label}>Women</Text>
               </View>
               <View style={tabStyle.column}>
-                <Text style={tabStyle.percentage}>{exploreStat?.femalePercent}%</Text>
+                <Text style={tabStyle.percentage}>{parseFloat(exploreStat?.femalePercent).toFixed(0)}%</Text>
                 <Text style={tabStyle.label}>Percent</Text>
               </View>
             </View>
@@ -321,7 +321,7 @@ setUserAges(exploreStat?.userAges[0])
                   <TextComponent
                     color={COLORS.primary}
                     fontSize={22}
-                    title={item.percentage + "%"}
+                    title={parseFloat(item.percentage).toFixed(0) + "%"}
                     fontFamily={FONTS.Samsungsharpsans_Bold}
                   />
                 </View>
@@ -477,7 +477,7 @@ setUserAges(exploreStat?.userAges[0])
                   <TextComponent
                     color={COLORS.primary}
                     fontSize={22}
-                    title={item.avgPills}
+                    title={parseFloat(item.avgPills).toFixed(1)}
                     fontFamily={FONTS.Samsungsharpsans_Bold}
                   />
                 </View>
@@ -633,7 +633,7 @@ setUserAges(exploreStat?.userAges[0])
                   <TextComponent
                     color={COLORS.primary}
                     fontSize={22}
-                    title={item.avgPills}
+                    title={parseFloat(item.avgPills).toFixed(1)}
                     fontFamily={FONTS.Samsungsharpsans_Bold}
                   />
                 </View>
@@ -705,7 +705,7 @@ setUserAges(exploreStat?.userAges[0])
                 <Text style={tabStyle.label}>Yes</Text>
               </View>
               <View style={tabStyle.column}>
-                <Text style={tabStyle.percentage}>{exploreStat?.doctorWarn?.warnYesPer}%</Text>
+                <Text style={tabStyle.percentage}>{parseFloat(exploreStat?.doctorWarn?.warnYesPer).toFixed(0)}%</Text>
                 <Text style={tabStyle.label}>Percent</Text>
               </View>
             </View>
@@ -720,7 +720,7 @@ setUserAges(exploreStat?.userAges[0])
                 <Text style={tabStyle.label}>No</Text>
               </View>
               <View style={tabStyle.column}>
-                <Text style={tabStyle.percentage}>{exploreStat?.doctorWarn?.warnNoPer}%</Text>
+                <Text style={tabStyle.percentage}>{parseFloat(exploreStat?.doctorWarn?.warnNoPer).toFixed(0)}%</Text>
                 <Text style={tabStyle.label}>Percent</Text>
               </View>
             </View>
@@ -751,7 +751,7 @@ setUserAges(exploreStat?.userAges[0])
                 <Text style={tabStyle.label}>Yes</Text>
               </View>
               <View style={tabStyle.column}>
-                <Text style={tabStyle.percentage}>{numberWithCommas(exploreStat?.doctorSupport?.warnYesPerSup)}%</Text>
+                <Text style={tabStyle.percentage}>{parseFloat(exploreStat?.doctorSupport?.warnYesPerSup).toFixed(0)}%</Text>
                 <Text style={tabStyle.label}>Percent</Text>
               </View>
             </View>
@@ -766,7 +766,7 @@ setUserAges(exploreStat?.userAges[0])
                 <Text style={tabStyle.label}>No</Text>
               </View>
               <View style={tabStyle.column}>
-                <Text style={tabStyle.percentage}>{numberWithCommas(exploreStat?.doctorSupport?.warnNoPerSup)}%</Text>
+                <Text style={tabStyle.percentage}>{parseFloat(exploreStat?.doctorSupport?.warnNoPerSup).toFixed(0)}%</Text>
                 <Text style={tabStyle.label}>Percent</Text>
               </View>
             </View>
@@ -907,7 +907,7 @@ setUserAges(exploreStat?.userAges[0])
                 <TextComponent
                   color={COLORS.primary}
                   fontSize={22}
-                  title={numberWithCommas(exploreStat?.severity?.sev_moderateP)}
+                  title={parseFloat(exploreStat?.severity?.sev_moderateP).toFixed(0)}
                   fontFamily={FONTS.Samsungsharpsans_Bold}
                   textAlign={'right'}
                 />
@@ -951,7 +951,7 @@ setUserAges(exploreStat?.userAges[0])
                 <TextComponent
                   color={COLORS.primary}
                   fontSize={22}
-                  title={numberWithCommas(exploreStat?.severity?.sev_severeP)}
+                  title={parseFloat(exploreStat?.severity?.sev_severeP).toFixed(0)}
                   fontFamily={FONTS.Samsungsharpsans_Bold}
                   textAlign={'right'}
                 />
@@ -994,7 +994,7 @@ setUserAges(exploreStat?.userAges[0])
                 <TextComponent
                   color={COLORS.primary}
                   fontSize={22}
-                  title={numberWithCommas(exploreStat?.severity?.sev_severePlusP)}
+                  title={parseFloat(exploreStat?.severity?.sev_severePlusP).toFixed(0)}
                   fontFamily={FONTS.Samsungsharpsans_Bold}
                 />
               </View>
@@ -1141,13 +1141,13 @@ setUserAges(exploreStat?.userAges[0])
                 <TextComponent
                   color={COLORS.primary}
                   fontSize={22}
-                  title={"2,145"}
+                  title={"2"}
                   fontFamily={FONTS.Samsungsharpsans_Bold}
                 />
                 <TextComponent
                   color={COLORS.primary}
                   fontSize={22}
-                  title={"56%"}
+                  title={"50%"}
                   fontFamily={FONTS.Samsungsharpsans_Bold}
                 />
               </View>
@@ -1182,13 +1182,13 @@ setUserAges(exploreStat?.userAges[0])
                 <TextComponent
                   color={COLORS.primary}
                   fontSize={22}
-                  title={"1,145"}
+                  title={"1"}
                   fontFamily={FONTS.Samsungsharpsans_Bold}
                 />
                 <TextComponent
                   color={COLORS.primary}
                   fontSize={22}
-                  title={"28%"}
+                  title={"10%"}
                   fontFamily={FONTS.Samsungsharpsans_Bold}
                 />
               </View>
@@ -1223,13 +1223,13 @@ setUserAges(exploreStat?.userAges[0])
                 <TextComponent
                   color={COLORS.primary}
                   fontSize={22}
-                  title={"2,145"}
+                  title={"1"}
                   fontFamily={FONTS.Samsungsharpsans_Bold}
                 />
                 <TextComponent
                   color={COLORS.primary}
                   fontSize={22}
-                  title={"56%"}
+                  title={"10%"}
                   fontFamily={FONTS.Samsungsharpsans_Bold}
                 />
               </View>
@@ -1264,13 +1264,13 @@ setUserAges(exploreStat?.userAges[0])
                 <TextComponent
                   color={COLORS.primary}
                   fontSize={22}
-                  title={"1,145"}
+                  title={"1"}
                   fontFamily={FONTS.Samsungsharpsans_Bold}
                 />
                 <TextComponent
                   color={COLORS.primary}
                   fontSize={22}
-                  title={"28%"}
+                  title={"10%"}
                   fontFamily={FONTS.Samsungsharpsans_Bold}
                 />
               </View>
@@ -1452,7 +1452,7 @@ setUserAges(exploreStat?.userAges[0])
                   <TextComponent
                     color={COLORS.primary}
                     fontSize={22}
-                    title={item.yesPercentage + '%'}
+                    title={parseFloat(item.yesPercentage).toFixed(0) + '%'}
                     fontFamily={FONTS.Samsungsharpsans_Bold}
                   />
                 </View>

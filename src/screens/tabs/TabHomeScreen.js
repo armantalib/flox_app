@@ -26,6 +26,7 @@ import { getGreeting, shareScreenShot } from "../../utils/Helper";
 import { useFocusEffect } from '@react-navigation/native';
 import { setChatCount, setNotiCount } from "../../storeTolkit/userSlice";
 import AnimatedDotSliderUser from "../../components/AnimatedDotSliderUser";
+import { getItem, storeData } from "../../utils/async_storage";
 
 const data = [
   {
@@ -69,23 +70,29 @@ const TabHomeScreen = (props) => {
       }
       return () => {
       };
-    }, [])
+    }, [stepsData])
   );
 
   const checkAntibiotic = async () => {
+    const stepsData1 = await getItem('stepsData');
+    if (stepsData1) dispatch(setStepsData(stepsData1))
     const endPoint = 'antibiotic/check';
     const response = await dataGet_(endPoint, {});
     if (response.success) {
       dispatch(setStepsData(response?.data))
       dispatch(setStepsDataTemp(response?.data))
+      storeData('stepsData', response?.data)
     }
   }
 
   const getCardData = async () => {
+    const categoriesHub = await getItem('categoriesHub');
+    if(categoriesHub)  dispatch(setCategoriesHub(categoriesHub))
     const endPoint = 'hub/category/post';
     const response = await dataGet_(endPoint, {});
     if (response.success) {
       dispatch(setCategoriesHub(response?.data))
+      storeData('categoriesHub',response?.data)
     }
   }
 

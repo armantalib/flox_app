@@ -30,7 +30,7 @@ const HomeSymptomSliderComp = (props) => {
     if (stepsData) {
       setState(stepsData)
     }
-  }, [])
+  }, [state])
 
 
   const toggleTendon = (key, value) => {

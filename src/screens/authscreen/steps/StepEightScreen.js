@@ -32,7 +32,8 @@ import PickerItem from "../../../components/BottomSheets/PickerItem";
 import { normalize } from "../../../utils/Metrics";
 import stylesG from "../../../assets/css/stylesG";
 import { showToast } from "../../../components/General";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setStepsData } from "../../../storeTolkit/stepsSlice";
 
 const tribes = [
   {
@@ -50,9 +51,12 @@ const StepEightScreen = (props) => {
   const refWarn = useRef();
   const { pData } = props.route.params
   const {stepsData} = useSelector((state) => state?.steps);
+       const dispatch = useDispatch();
+
 
   useEffect(() => {
     if (stepsData) {
+      // dispatch(setStepsData(null))
       setDrugData(stepsData?.recovery_history)
     }
   }, [])

@@ -19,9 +19,10 @@ import { custom_data } from "../../constants";
 import PickerItem from "../../components/BottomSheets/PickerItem";
 import { dataPost } from "../../utils/myAxios";
 import { useFocusEffect } from '@react-navigation/native';
-import { setPostDetail } from "../../storeTolkit/communitySlice";
+import { setCommunityData, setPostDetail } from "../../storeTolkit/communitySlice";
 import { Loader, NotFound } from "../../components/General";
 import { getDateRange } from "../../utils/DateTimeFormate";
+import { getItem, storeData } from "../../utils/async_storage";
 
 const posts = [
   {
@@ -66,24 +67,25 @@ const TabCommunityScreen = (props) => {
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
   const user = useSelector((state) => state?.user?.user);
+  const {communityData} = useSelector((state) => state?.community);
   const refWarn = useRef();
   const refSort = useRef();
   const [category, setCategory] = useState('');
   const [sort, setSort] = useState('');
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
-  const [communityData, setCommunityData] = useState([]);
+
   const [communityDataTemp, setCommunityDataTemp] = useState([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-  const [loader, setLoader] = useState(true);
+  const [loader, setLoader] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const dispatch = useDispatch();
 
 
   useEffect(() => {
     getCommunity(true);
-  }, [sort, category,fromDate,toDate]);
+  }, [sort, category, fromDate, toDate]);
 
   useEffect(() => {
     if (page > 1) {
@@ -95,6 +97,7 @@ const TabCommunityScreen = (props) => {
     React.useCallback(() => {
       // Do something when the screen is focused
       // setLoadingMore(false)
+      getStorageCommunity()
       getCommunity(page == 1 ? true : false);
       return () => {
         // Do something when the screen is unfocused
@@ -103,14 +106,23 @@ const TabCommunityScreen = (props) => {
     }, [page])
   );
 
+  const getStorageCommunity = async () => {
+    const communityData1 = await getItem('communityData');
 
+    if (communityData1) {
+      setLoader(false)
+      // setCommunityData(communityData)
+      dispatch(setCommunityData(communityData1))
+      setCommunityDataTemp(communityData1)
+    }
+  }
 
   const getCommunity = useCallback(async (reset = false) => {
     if (loadingMore && !reset) return;
     if (reset) {
       setPage(1);
       setHasMore(true);
-      setCommunityData([]);
+      // dispatch(setCommunityData([]))
       setCommunityDataTemp([]);
     } else {
       setLoadingMore(true);
@@ -124,17 +136,18 @@ const TabCommunityScreen = (props) => {
       page: currentPage,
       limit: 10,
     };
-    setLoader(true)
+    // setLoader(true)
     const endPoint = 'community/get/' + currentPage;
     const response = await dataPost(endPoint, data);
     setLoader(false)
     if (response?.success) {
       const newData = response?.data || [];
       if (reset) {
-        setCommunityData(newData);
+        dispatch(setCommunityData(newData))
         setCommunityDataTemp(newData);
+        storeData('communityData', newData)
       } else {
-        setCommunityData(prev => [...prev, ...newData]);
+        dispatch(setCommunityData(prev => [...prev, ...newData]))
         setCommunityDataTemp(prev => [...prev, ...newData]);
       }
 
@@ -195,15 +208,14 @@ const TabCommunityScreen = (props) => {
             onPressSort={() => refSort.current.open()}
             onChangeTextSearch={(val) => {
               const s_data = searchFunctionCommunity(val, communityData, communityDataTemp)
-              setCommunityData(s_data)
-
+              dispatch(setCommunityData(s_data))
             }}
             sort={sort}
             {...props}
           />
-          {communityData.length == 0 && !loader?
-          <NotFound/>
-          :null}
+          {communityData.length == 0 && !loader ?
+            <NotFound />
+            : null}
           <View style={{ height: verticalScale(5) }} />
         </View>
       </ScrollView>

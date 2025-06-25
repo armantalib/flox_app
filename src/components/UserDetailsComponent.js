@@ -21,6 +21,7 @@ import { normalize } from "../utils/Metrics";
 import moment from "moment";
 import { setPostDetail } from "../storeTolkit/communitySlice";
 import { SCREENS } from "../constants/Screen";
+import { NotFound } from "./General";
 
 const MeditationCard = ({ item, isLastChild, hideFollow }) => {
   const dispatch = useDispatch();
@@ -156,6 +157,8 @@ const UserDetailsComponent = ({ onPress, hideFollow }) => {
   return (
     <>
     <View style={{marginTop:normalize(10)}}></View>
+    {communityData.length==0?<NotFound height={normalize(400)} />:null}
+
     <FlatList
       data={communityData}
       renderItem={({ item, index }) => (
