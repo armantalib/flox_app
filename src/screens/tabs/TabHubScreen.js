@@ -17,6 +17,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { dataGet_ } from "../../utils/myAxios";
 import { setCategoriesHub, setCategoryExplore } from "../../storeTolkit/hubSlice";
 import { getGreeting } from "../../utils/Helper";
+import { getItem, storeData } from "../../utils/async_storage";
 
 const data = [
   {
@@ -112,10 +113,13 @@ const TabHubScreen = () => {
   }, [])
 
   const getCardData = async () => {
+    const categoriesHub1 = await getItem('categoriesHub');
+    if(categoriesHub1)setCategoriesHub(categoriesHub1)
     const endPoint = 'hub/category/post';
     const response = await dataGet_(endPoint, {});
     if (response.success) {
       dispatch(setCategoriesHub(response?.data))
+      storeData('categoriesHub',response?.data)
     }
   }
   return (
@@ -147,59 +151,29 @@ const TabHubScreen = () => {
         <View style={[tabStyle.wrapper]}>
           <View style={{ paddingTop: verticalScale(27) }} />
           <TextComponent
-              color={COLORS.primary}
-              fontSize={31}
-              title={"Recovery Hub"}
-              marginBottom={25}
-              fontFamily={FONTS.Samsungsharpsans_Bold}
-              textAlign={"center"}
-            />
-          {categoriesHub.map((item,index)=>(
-          <>
-            <SeeAllComponent
-              title={item.category}
-              onPress={() =>{
-                   dispatch(setCategoryExplore(item))
-                navigation.navigate(SCREENS.NavigationRoutes, {
-                  screen: SCREENS.Explore,
-                })
-              }
-              }
-            />
-            <CardComponent showLiked data={item?.posts} />
-          </>
+            color={COLORS.primary}
+            fontSize={31}
+            title={"Recovery Hub"}
+            marginBottom={25}
+            fontFamily={FONTS.Samsungsharpsans_Bold}
+            textAlign={"center"}
+          />
+          {categoriesHub.map((item, index) => (
+            <>
+              <SeeAllComponent
+                title={item.category}
+                onPress={() => {
+                  dispatch(setCategoryExplore(item))
+                  navigation.navigate(SCREENS.NavigationRoutes, {
+                    screen: SCREENS.Explore,
+                  })
+                }
+                }
+              />
+              <CardComponent showLiked data={item?.posts} />
+            </>
           ))}
-          {/* 
-          <View style={{ height: verticalScale(25) }} />
-          <SeeAllComponent
-            title="Science"
-            onPress={() =>
-              navigation.navigate(SCREENS.NavigationRoutes, {
-                screen: SCREENS.Explore,
-              })
-            }
-          /> */}
-          {/* <CardComponent showLiked data={data1} />
-          <View style={{ height: verticalScale(25) }} />
-          <SeeAllComponent
-            title="Recovery Stories"
-            onPress={() =>
-              navigation.navigate(SCREENS.NavigationRoutes, {
-                screen: SCREENS.Explore,
-              })
-            }
-          />
-          <CardComponent showLiked data={data2} />
-          <View style={{ height: verticalScale(25) }} />
-          <SeeAllComponent
-            title="Nutrition"
-            onPress={() =>
-              navigation.navigate(SCREENS.NavigationRoutes, {
-                screen: SCREENS.Explore,
-              })
-            }
-          />
-          <CardComponent showLiked data={data3} /> */}
+
           <View style={{ height: verticalScale(5) }} />
         </View>
       </ScrollView>

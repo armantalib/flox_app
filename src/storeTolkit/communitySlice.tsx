@@ -3,8 +3,10 @@ import { createSlice } from '@reduxjs/toolkit';
 type InitialStateType = {
   postDetail: any | null;
   communityData: any | null;
+  communityDataUser: any | null;
   commentReply: any | null;
   isReply: any | null;
+  isSameUserVisit: any | null;
 
 
 };
@@ -14,6 +16,8 @@ const initialState: InitialStateType = {
   commentReply: null,
   isReply: false,
   communityData: [],
+  communityDataUser: [],
+  isSameUserVisit: null
 
 };
 
@@ -24,14 +28,20 @@ const communitySlice = createSlice({
     setPostDetail: (state, action) => {
       state.postDetail = action.payload;
     },
-      setCommentReply: (state, action) => {
+    setCommentReply: (state, action) => {
       state.commentReply = action.payload;
     },
-      setCommunityData: (state, action) => {
+    setCommunityData: (state, action) => {
       state.communityData = action.payload;
     },
-      setIsReply: (state, action) => {
+     setCommunityDataUser: (state, action) => {
+      state.communityDataUser = action.payload;
+    },
+    setIsReply: (state, action) => {
       state.isReply = action.payload;
+    },
+    setIsSameUserVisit: (state, action) => {
+      state.isSameUserVisit = action.payload;
     },
 
 
@@ -41,6 +51,6 @@ const communitySlice = createSlice({
   },
 });
 
-export const { setPostDetail, setCommentReply,setIsReply,setCommunityData } = communitySlice.actions;
+export const { setPostDetail, setCommentReply, setIsReply, setCommunityData, setIsSameUserVisit,setCommunityDataUser } = communitySlice.actions;
 
 export default communitySlice.reducer;

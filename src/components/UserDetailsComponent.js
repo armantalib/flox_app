@@ -19,9 +19,10 @@ import { useDispatch, useSelector } from "react-redux";
 import CustomAvatar from "./BottomSheets/CustomAvatar";
 import { normalize } from "../utils/Metrics";
 import moment from "moment";
-import { setPostDetail } from "../storeTolkit/communitySlice";
+import { setCommunityDataUser, setIsSameUserVisit, setPostDetail } from "../storeTolkit/communitySlice";
 import { SCREENS } from "../constants/Screen";
 import { NotFound } from "./General";
+import { getItem, storeData } from "../utils/async_storage";
 
 const MeditationCard = ({ item, isLastChild, hideFollow }) => {
   const dispatch = useDispatch();
@@ -100,6 +101,8 @@ const UserDetailsComponent = ({ onPress, hideFollow }) => {
   const [loader, setLoader] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
    const { user, userDetail } = useSelector((state) => state?.user);
+   const { communityDataUser , isSameUserVisit } = useSelector((state) => state?.community);
+     const dispatch = useDispatch();
 
   useEffect(() => {
     getCommunity(true);
@@ -112,6 +115,12 @@ const UserDetailsComponent = ({ onPress, hideFollow }) => {
   }, [page]);
 
   const getCommunity = useCallback(async (reset = false) => {
+    const communityDataUser1 = await getItem('communityDataUser');
+    if(isSameUserVisit == userDetail?._id){
+      dispatch(setCommunityDataUser(communityDataUser1))
+    }else{
+       dispatch(setCommunityDataUser([]))
+    }
     if (loadingMore && !reset) return;
     if (reset) {
       setPage(1);
@@ -133,6 +142,7 @@ const UserDetailsComponent = ({ onPress, hideFollow }) => {
 
     };
     setLoader(true)
+    dispatch(setIsSameUserVisit(userDetail?._id))
     const endPoint = 'community/get/user/' + currentPage;
     const response = await dataPost(endPoint, data);
  
@@ -140,10 +150,12 @@ const UserDetailsComponent = ({ onPress, hideFollow }) => {
     if (response?.success) {
       const newData = response?.data || [];
       if (reset) {
-        setCommunityData(newData);
+        dispatch(setCommunityDataUser(newData))
+        storeData('communityDataUser',newData)
+        // setCommunityData(newData);
         setCommunityDataTemp(newData);
       } else {
-        setCommunityData(prev => [...prev, ...newData]);
+        dispatch(setCommunityDataUser(prev => [...prev, ...newData]))
         setCommunityDataTemp(prev => [...prev, ...newData]);
       }
 
@@ -157,10 +169,10 @@ const UserDetailsComponent = ({ onPress, hideFollow }) => {
   return (
     <>
     <View style={{marginTop:normalize(10)}}></View>
-    {communityData.length==0?<NotFound height={normalize(400)} />:null}
+    {communityDataUser.length==0?<NotFound height={normalize(400)} />:null}
 
     <FlatList
-      data={communityData}
+      data={communityDataUser}
       renderItem={({ item, index }) => (
         <MeditationCard
           isLastChild={index === data.length - 1}

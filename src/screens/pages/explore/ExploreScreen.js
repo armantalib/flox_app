@@ -14,7 +14,8 @@ import { verticalScale } from "react-native-size-matters";
 import { SCREENS } from "../../../constants/Screen";
 import { useDispatch, useSelector } from "react-redux";
 import { dataGet_ } from "../../../utils/myAxios";
-import { setHubPostDetail } from "../../../storeTolkit/hubSlice";
+import { setExploreData, setFilterData, setHubPostDetail, setIsSameData } from "../../../storeTolkit/hubSlice";
+import { getItem, storeData } from "../../../utils/async_storage";
 
 const categories = [
   "All",
@@ -91,9 +92,7 @@ const ExploreScreen = () => {
   const dispatch = useDispatch();
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedCategoryAll, setSelectedCategoryAll] = useState(null);
-  const [exploreData, setExploreData] = useState([]);
-  const [filterData, setFilterData] = useState([]);
-  const { categoryExplore } = useSelector((state) => state?.hub);
+  const { categoryExplore, exploreData, filterData, isSameData } = useSelector((state) => state?.hub);
 
   useEffect(() => {
     getCardData();
@@ -101,10 +100,22 @@ const ExploreScreen = () => {
 
 
   const getCardData = async () => {
+    const exploreData1 = await getItem('exploreData');
+    const exploreFilter = await getItem('exploreFilter');
+    if (isSameData == categoryExplore?._id) {
+      dispatch(setExploreData(exploreData1))
+      dispatch(setFilterData(exploreFilter))
+    }else{
+      dispatch(setExploreData([]))
+      dispatch(setFilterData([]))
+
+    }
+    dispatch(setIsSameData(categoryExplore?._id))
     const endPoint = 'hub/category/posts/' + categoryExplore?._id;
     const response = await dataGet_(endPoint, {});
     if (response.success) {
-      setExploreData(response?.data)
+      dispatch(setExploreData(response?.data))
+      storeData('exploreData', response?.data)
     }
     if (response?.categories.length >= 1) {
       let obj = {
@@ -117,7 +128,8 @@ const ExploreScreen = () => {
       }
       let mArray = response?.categories;
       mArray.unshift(obj)
-      setFilterData(mArray)
+      dispatch(setFilterData(mArray))
+      storeData('exploreFilter',mArray)
 
     }
   }

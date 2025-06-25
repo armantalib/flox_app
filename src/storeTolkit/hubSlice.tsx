@@ -5,6 +5,9 @@ type InitialStateType = {
   categoryExplore: any | null;
   hubPostDetail: any | null;
   musicDetail: any | null;
+  exploreData: any | null;
+  filterData: any | null;
+  isSameData: any | null;
 
 
 };
@@ -14,6 +17,9 @@ const initialState: InitialStateType = {
   hubPostDetail:null,
   categoryExplore:null,
   musicDetail:null,
+  exploreData:[],
+  filterData:[],
+  isSameData:null,
 
 };
 
@@ -33,6 +39,15 @@ const hubSlice = createSlice({
     setMusicDetail: (state, action) => {
       state.musicDetail = action.payload;
     },
+     setExploreData: (state, action) => {
+      state.exploreData = action.payload;
+    },
+     setFilterData: (state, action) => {
+      state.filterData = action.payload;
+    },
+      setIsSameData: (state, action) => {
+      state.isSameData = action.payload;
+    },
 
 
 
@@ -40,6 +55,6 @@ const hubSlice = createSlice({
   },
 });
 
-export const { setCategoriesHub,setHubPostDetail,setCategoryExplore,setMusicDetail } = hubSlice.actions;
+export const { setCategoriesHub,setHubPostDetail,setCategoryExplore,setMusicDetail,setExploreData ,setFilterData,setIsSameData } = hubSlice.actions;
 
 export default hubSlice.reducer;
