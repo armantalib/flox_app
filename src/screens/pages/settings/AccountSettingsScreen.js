@@ -13,38 +13,41 @@ import BtnPrimary from "../../../components/BtnPrimary";
 import { SCREENS } from "../../../constants/Screen";
 import CustomHeader from "../../../components/CustomHeader";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteValue } from "../../../utils/async_storage";
-import { setStepsData } from "../../../storeTolkit/stepsSlice";
+import { clearAllData, deleteValue } from "../../../utils/async_storage";
+import { setStepsData, setStepsDataTemp } from "../../../storeTolkit/stepsSlice";
 const AccountSettingsScreen = () => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
   const user = useSelector((state) => state?.user?.user);
-   const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
-     const logoutAlert = () => {
-        Alert.alert(
-            'Log Out',
-            'Are you sure to log out?',
-            [
-                {
-                    text: 'Cancel',
-                    onPress: () => console.log("Cancel Pressed"),
-                    style: "cancel"
-                },
-                { text: 'Log out', onPress: () => logoutApp() }
-            ]
-        );
-    }
+  const logoutAlert = () => {
+    Alert.alert(
+      'Log Out',
+      'Are you sure to log out?',
+      [
+        {
+          text: 'Cancel',
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel"
+        },
+        { text: 'Log out', onPress: () => logoutApp() }
+      ]
+    );
+  }
 
-    const logoutApp = async () => {
-        deleteValue('token')
-        deleteValue('user_data')
-         dispatch(setStepsData(null))
-      navigation.reset({
-            index: 0,
-            routes: [{ name: 'AuthRoutes' }],
-        });
-    }
+  const logoutApp = async () => {
+    deleteValue('token')
+    deleteValue('user_data')
+    deleteValue('stepsData')
+    clearAllData()
+    dispatch(setStepsData(null))
+    dispatch(setStepsDataTemp(null))
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'AuthRoutes' }],
+    });
+  }
 
 
   return (
@@ -134,7 +137,7 @@ const AccountSettingsScreen = () => {
               </View>
               <BtnPrimary
                 onPress={() =>
-                logoutAlert()
+                  logoutAlert()
                 }
                 marginBottom={15}
                 title="Logout"

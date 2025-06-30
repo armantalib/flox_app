@@ -28,9 +28,10 @@ import {
 import { useSelector } from "react-redux";
 import { numberWithCommas } from "../utils/Math";
 import moment from "moment";
+import ExploreSliderBarChart from "./ExploreSliderBarChart";
 const screenWidth = Dimensions.get("window").width;
 
-export default function AnimatedExploreDotSlider({ content }) {
+export default function AnimatedExploreDotSlider({ content },...props) {
   const scrollY = useRef(new Animated.Value(0)).current;
   const { exploreStat } = useSelector((state) => state?.steps);
   const [userAges, setUserAges] = useState(exploreStat?.userAges[0])
@@ -602,7 +603,7 @@ export default function AnimatedExploreDotSlider({ content }) {
                     style={[
                       tabStyle.dropbutton1,
                       {
-                        width: 90,
+                        width: normalize(90),
                         paddingHorizontal: 5,
                       },
                     ]}
@@ -610,6 +611,7 @@ export default function AnimatedExploreDotSlider({ content }) {
                     <TextComponent
                       color={COLORS.white}
                       fontSize={9}
+                      numberOfLines={1}
                       title={item.combine}
                       fontFamily={FONTS.Samsungsharpsans_Bold}
                     />
@@ -618,6 +620,8 @@ export default function AnimatedExploreDotSlider({ content }) {
                   <TextComponent
                     color={COLORS.primary}
                     fontSize={22}
+                    width={normalize(20)}
+                    textAlign={'right'}
                     title={item.minPills}
                     fontFamily={FONTS.Samsungsharpsans_Bold}
                   />
@@ -625,12 +629,16 @@ export default function AnimatedExploreDotSlider({ content }) {
                   <TextComponent
                     color={COLORS.primary}
                     fontSize={22}
+                        width={normalize(40)}
+                    textAlign={'right'}
                     title={item.maxPills}
                     fontFamily={FONTS.Samsungsharpsans_Bold}
                   />
                   <TextComponent
                     color={COLORS.primary}
                     fontSize={22}
+                        width={normalize(60)}
+                    textAlign={'right'}
                     title={parseFloat(item.avgPills).toFixed(1)}
                     fontFamily={FONTS.Samsungsharpsans_Bold}
                   />
@@ -841,7 +849,7 @@ export default function AnimatedExploreDotSlider({ content }) {
                   style={[
                     tabStyle.dropbutton1,
                     {
-                      width: 90,
+              width: normalize(100),
                       paddingHorizontal: 5,
                     },
                   ]}
@@ -858,6 +866,7 @@ export default function AnimatedExploreDotSlider({ content }) {
                   fontSize={22}
                   title={numberWithCommas(exploreStat?.severity?.sev_mild)}
                   fontFamily={FONTS.Samsungsharpsans_Bold}
+                  width={50}
                   textAlign={'right'}
                 />
                 <TextComponent
@@ -865,6 +874,9 @@ export default function AnimatedExploreDotSlider({ content }) {
                   fontSize={22}
                   title={numberWithCommas(exploreStat?.severity?.sev_mildP)}
                   fontFamily={FONTS.Samsungsharpsans_Bold}
+                            width={50}
+                  textAlign={'right'}
+
                 />
               </View>
               <View
@@ -883,7 +895,7 @@ export default function AnimatedExploreDotSlider({ content }) {
                   style={[
                     tabStyle.dropbutton1,
                     {
-                      width: 90,
+               width: normalize(100),
                       paddingHorizontal: 5,
                     },
                   ]}
@@ -900,7 +912,8 @@ export default function AnimatedExploreDotSlider({ content }) {
                   fontSize={22}
                   title={numberWithCommas(exploreStat?.severity?.sev_moderate)}
                   fontFamily={FONTS.Samsungsharpsans_Bold}
-                  textAlign={'center'}
+                  textAlign={'right'}
+                            width={50}
                 />
                 <TextComponent
                   color={COLORS.primary}
@@ -908,6 +921,7 @@ export default function AnimatedExploreDotSlider({ content }) {
                   title={parseFloat(exploreStat?.severity?.sev_moderateP).toFixed(0)}
                   fontFamily={FONTS.Samsungsharpsans_Bold}
                   textAlign={'right'}
+                            width={50}
                 />
               </View>
 
@@ -927,7 +941,7 @@ export default function AnimatedExploreDotSlider({ content }) {
                   style={[
                     tabStyle.dropbutton1,
                     {
-                      width: 90,
+                    width: normalize(100),
                       paddingHorizontal: 5,
                     },
                   ]}
@@ -935,6 +949,7 @@ export default function AnimatedExploreDotSlider({ content }) {
                   <TextComponent
                     color={COLORS.white}
                     fontSize={9}
+                    
                     title={'Severe'}
                     fontFamily={FONTS.Samsungsharpsans_Bold}
                   />
@@ -945,6 +960,7 @@ export default function AnimatedExploreDotSlider({ content }) {
                   title={numberWithCommas(exploreStat?.severity?.sev_severe)}
                   fontFamily={FONTS.Samsungsharpsans_Bold}
                   textAlign={'right'}
+                            width={50}
                 />
                 <TextComponent
                   color={COLORS.primary}
@@ -952,6 +968,7 @@ export default function AnimatedExploreDotSlider({ content }) {
                   title={parseFloat(exploreStat?.severity?.sev_severeP).toFixed(0)}
                   fontFamily={FONTS.Samsungsharpsans_Bold}
                   textAlign={'right'}
+                            width={50}
                 />
               </View>
 
@@ -971,7 +988,7 @@ export default function AnimatedExploreDotSlider({ content }) {
                   style={[
                     tabStyle.dropbutton1,
                     {
-                      width: 90,
+                      width: normalize(100),
                       paddingHorizontal: 5,
                     },
                   ]}
@@ -988,12 +1005,16 @@ export default function AnimatedExploreDotSlider({ content }) {
                   fontSize={22}
                   title={numberWithCommas(exploreStat?.severity?.sev_severePlus)}
                   fontFamily={FONTS.Samsungsharpsans_Bold}
+                            width={50}
+                            textAlign={'right'}
                 />
                 <TextComponent
                   color={COLORS.primary}
                   fontSize={22}
                   title={parseFloat(exploreStat?.severity?.sev_severePlusP).toFixed(0)}
                   fontFamily={FONTS.Samsungsharpsans_Bold}
+                            width={50}
+                                 textAlign={'right'}
                 />
               </View>
               <Text style={tabStyle.boldTextFont}>
@@ -1124,7 +1145,7 @@ export default function AnimatedExploreDotSlider({ content }) {
                   style={[
                     tabStyle.dropbutton1,
                     {
-                      width: 90,
+                      width: normalize(100),
                       paddingHorizontal: 5,
                     },
                   ]}
@@ -1132,6 +1153,7 @@ export default function AnimatedExploreDotSlider({ content }) {
                   <TextComponent
                     color={COLORS.white}
                     fontSize={9}
+                    numberOfLines={1}
                     title={"Tendonitis"}
                     fontFamily={FONTS.Samsungsharpsans_Bold}
                   />
@@ -1430,6 +1452,7 @@ export default function AnimatedExploreDotSlider({ content }) {
                       tabStyle.dropbutton1,
                       {
                         minWidth: normalize(10),
+                        width: normalize(100),
                         paddingHorizontal: normalize(10),
                       },
                     ]}
@@ -1438,6 +1461,7 @@ export default function AnimatedExploreDotSlider({ content }) {
                       color={COLORS.white}
                       fontSize={9}
                       title={item.name}
+                      numberOfLines={1}
                       fontFamily={FONTS.Samsungsharpsans_Bold}
                     />
                   </TouchableOpacity>
@@ -1445,11 +1469,15 @@ export default function AnimatedExploreDotSlider({ content }) {
                     color={COLORS.primary}
                     fontSize={22}
                     title={item.total}
+                    width={60}
+                    textAlign={'right'}
                     fontFamily={FONTS.Samsungsharpsans_Bold}
                   />
                   <TextComponent
                     color={COLORS.primary}
                     fontSize={22}
+                    width={normalize(70)}
+                    textAlign={'right'}
                     title={parseFloat(item.yesPercentage).toFixed(0) + '%'}
                     fontFamily={FONTS.Samsungsharpsans_Bold}
                   />
@@ -1499,158 +1527,10 @@ export default function AnimatedExploreDotSlider({ content }) {
           />
         </View>
         {/* 10th Slide */}
-        <View
-          style={{
-            flex: 1,
-          }}
-        >
-          {/* Scrollable Tags Container */}
-          <View style={[stylesG.spaceBetween]}>
-            <TextComponent
-              color={COLORS.primary}
-              fontSize={normalize(20)}
-              title={"Average recovery"}
-              marginBottom={15}
-              fontFamily={FONTS.Samsungsharpsans_Bold}
-              textAlign={"center"}
-            />
-
-
-
-            <TextComponent
-              color={COLORS.primary}
-              fontSize={normalize(20)}
-              title={"65 %"}
-              textAlign={"center"}
-              marginBottom={15}
-              fontFamily={FONTS.Samsungsharpsans_Bold}
-            />
-          </View>
-          <View style={[stylesG.spaceBetween]}>
-            <View style={[{ width: '73%', height: normalize(38), borderColor: '#2C2C2C', borderWidth: normalize(0.5), borderRadius: normalize(50), justifyContent: 'center' }]}>
-              <View style={[stylesG.flexRow, { overflow: 'hidden' }]}>
-                <ScrollView horizontal showsHorizontalScrollIndicator={false} showsVerticalScrollIndicator={false}>
-                  <TouchableOpacity style={[{ paddingLeft: normalize(10), marginLeft: normalize(5), paddingRight: normalize(10), height: normalize(38) }, stylesG.contentCenter]}>
-                    <TextComponent
-                      color={COLORS.primary}
-                      fontSize={normalize(9)}
-                      title={"Mild"}
-                      textAlign={"left"}
-                      fontFamily={FONTS.Samsungsharpsans_Medium}
-                    />
-                  </TouchableOpacity>
-                  <TouchableOpacity style={[{ paddingLeft: normalize(10), marginLeft: normalize(5), paddingRight: normalize(10), height: normalize(38), backgroundColor: COLORS.black, borderRadius: normalize(50) }, stylesG.contentCenter]}>
-                    <TextComponent
-                      color={COLORS.white}
-                      fontSize={normalize(9)}
-                      title={"Moderate"}
-                      textAlign={"left"}
-                      fontFamily={FONTS.Samsungsharpsans_Medium}
-                    />
-                  </TouchableOpacity>
-                  <TouchableOpacity style={[{ paddingLeft: normalize(10), marginLeft: normalize(5), paddingRight: normalize(10), height: normalize(38) }, stylesG.contentCenter]}>
-                    <TextComponent
-                      color={COLORS.primary}
-                      fontSize={normalize(9)}
-                      title={"Severe"}
-                      textAlign={"left"}
-                      fontFamily={FONTS.Samsungsharpsans_Medium}
-                    />
-                  </TouchableOpacity>
-                  <TouchableOpacity style={[{ paddingLeft: normalize(10), marginLeft: normalize(5), paddingRight: normalize(10), height: normalize(38) }, stylesG.contentCenter]}>
-                    <TextComponent
-                      color={COLORS.primary}
-                      fontSize={normalize(9)}
-                      title={"Severe+"}
-                      textAlign={"left"}
-                      fontFamily={FONTS.Samsungsharpsans_Medium}
-                    />
-                  </TouchableOpacity>
-                </ScrollView>
-              </View>
-            </View>
-            <View>
-              <TouchableOpacity
-                style={[
-                  tabStyle.dropbutton1,
-                  {
-                    width: 80,
-                    paddingHorizontal: 5,
-                  },
-                ]}
-              >
-                <View style={[stylesG.flexRow]}>
-                  <TextComponent
-                    color={COLORS.white}
-                    fontSize={normalize(10)}
-                    title={"1 Year"}
-                    fontFamily={FONTS.Samsungsharpsans_Bold}
-                  />
-                </View>
-              </TouchableOpacity>
-            </View>
-          </View>
-          <View
-            style={[
-              {
-                height: Dimensions.get("screen").height * 0.255,
-                flexDirection: "row",
-                overflow: "hidden",
-                paddingTop: 10,
-                marginTop: normalize(10),
-                marginBottom: verticalScale(1),
-              },
-            ]}
-          >
-
-
-            <LineChart
-              data={{
-                labels: ["January", "February", "March", "April", "May", "June"],
-                datasets: [
-                  {
-                    data: [
-                      Math.random() * 100,
-                      Math.random() * 100,
-                      Math.random() * 100,
-                      Math.random() * 100,
-                      Math.random() * 100,
-                      Math.random() * 100
-                    ]
-                  }
-                ]
-              }}
-              width={Dimensions.get("window").width} // from react-native
-              height={normalize(190)}
-              yAxisLabel=""
-              yAxisSuffix="%"
-              yAxisInterval={1} // optional, defaults to 1
-              chartConfig={{
-                backgroundColor: "transparent",
-                backgroundGradientFrom: "#000000",
-                backgroundGradientTo: "#FFFFFF",
-                decimalPlaces: 0, // optional, defaults to 2dp
-                color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                labelColor: (opacity = 1) => `#FFFFFF`,
-                style: {
-                  borderRadius: 10
-                },
-                propsForDots: {
-                  r: "6",
-                  strokeWidth: "2",
-                  stroke: "#FFFFFF"
-                }
-              }}
-              bezier
-              style={{
-                marginVertical: 8,
-                borderRadius: 10
-              }}
-            />
-
-          </View>
-
-        </View>
+        <ExploreSliderBarChart
+        {...props}
+        />
+  
         {/* 10th Slide */}
         <View
           style={{
@@ -1723,7 +1603,7 @@ export default function AnimatedExploreDotSlider({ content }) {
                     style={[
                       tabStyle.dropbutton1,
                       {
-                        width: 90,
+                        width: normalize(90),
                         paddingHorizontal: 5,
                       },
                     ]}
@@ -1732,6 +1612,7 @@ export default function AnimatedExploreDotSlider({ content }) {
                       color={COLORS.white}
                       fontSize={9}
                       title={item.country}
+                      numberOfLines={1}
                       fontFamily={FONTS.Samsungsharpsans_Bold}
                     />
                   </TouchableOpacity>
@@ -1739,11 +1620,15 @@ export default function AnimatedExploreDotSlider({ content }) {
                     color={COLORS.primary}
                     fontSize={22}
                     title={item.count}
+                    width={50}
+                    textAlign={'center'}
                     fontFamily={FONTS.Samsungsharpsans_Bold}
                   />
                   <TextComponent
                     color={COLORS.primary}
                     fontSize={22}
+                        width={50}
+                    textAlign={'right'}
                     title={item.percent + '%'}
                     fontFamily={FONTS.Samsungsharpsans_Bold}
                   />

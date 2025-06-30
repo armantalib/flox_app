@@ -117,7 +117,9 @@ const UserDetailsComponent = ({ onPress, hideFollow }) => {
   const getCommunity = useCallback(async (reset = false) => {
     const communityDataUser1 = await getItem('communityDataUser');
     if(isSameUserVisit == userDetail?._id){
+      if(communityDataUser1){
       dispatch(setCommunityDataUser(communityDataUser1))
+      }
     }else{
        dispatch(setCommunityDataUser([]))
     }

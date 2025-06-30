@@ -4,7 +4,7 @@ import { moderateScale, verticalScale } from 'react-native-size-matters';
 import { COLORS } from '../constants/colors';
 import TextComponent from './TextComponent';
 import { FONTS } from '../constants/fonts';
-import {tabStyle } from '../constants/style';
+import { tabStyle } from '../constants/style';
 import { useSelector } from 'react-redux';
 import ToggleSwitch from "./ToggleSwitch";
 import {
@@ -20,8 +20,8 @@ const HomeSliderRecoveryChart = (props) => {
   const [toggleSwitch, setToggleSwitch] = useState('Monthly');
   const { stepsData } = useSelector((state) => state?.steps);
   const [currentMonthPer, setCurrentMonthPer] = useState(null);
-  const [labelData, setLabels] = useState(["Jan", "Feb", "Mar", "Apr", "May", "Jun",
-    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]);
+  const [labelData, setLabels] = useState(["J", "F", "M", "A", "M", "J",
+    "J", "A", "S", "O", "N", "D"]);
   const [graphData, setGraphData] = useState([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
 
   useEffect(() => {
@@ -33,6 +33,8 @@ const HomeSliderRecoveryChart = (props) => {
   }, [stepsData, toggleSwitch])
 
   const checkPerDateBy = async () => {
+    console.log("CE",stepsData?.recovery_history);
+    
     if (stepsData?.recovery_history) {
       const date = moment().format('YYYY-MM')
       let searchDate = searchByDate(date, stepsData?.recovery_history)
@@ -40,8 +42,8 @@ const HomeSliderRecoveryChart = (props) => {
         setCurrentMonthPer(searchDate[0].percentage)
       }
       const recoverData1 = getAverageYearPercentage(2025, stepsData?.recovery_history)
-      setLabels(["Jan", "Feb", "Mar", "Apr", "May", "Jun",
-        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"])
+      setLabels(["J", "F", "M", "A", "M", "J",
+        "J", "A", "S", "O", "N", "D"])
       setGraphData(recoverData1?.monthlySums)
     }
   }
@@ -86,49 +88,61 @@ const HomeSliderRecoveryChart = (props) => {
       </View>
       <View
         style={{
-          paddingTop: 10,
-          marginTop: normalize(10),
+          // paddingTop: 1,
+          // marginTop: normalize(1),
           marginBottom: verticalScale(1),
+          marginLeft:normalize(-10)
         }}
       >
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          <LineChart
-            data={{
-              labels: labelData,
-              datasets: [
-                {
-                  data: graphData
-                }
-              ]
-            }}
-            width={screenWidth * 1.6} // Wider than screen to fit all months
-            height={normalize(240)}
-            yAxisLabel=""
-            yAxisSuffix="%"
-            yAxisInterval={1}
-            chartConfig={{
-              backgroundColor: "transparent",
-              backgroundGradientFrom: "#000000",
-              backgroundGradientTo: "#000000",
-              decimalPlaces: 0,
-              color: (opacity = 1) => `rgba(101, 100, 184, ${opacity})`,
-              labelColor: () => "#6564b8",
-              style: {
-                borderRadius: 10,
-              },
-              propsForDots: {
-                r: "3",
-                strokeWidth: "2",
-                stroke: "#6564b8",
-              },
-            }}
-            bezier
-            style={{
-              marginVertical: 8,
+        {/* <ScrollView horizontal showsHorizontalScrollIndicator={false}> */}
+        <LineChart
+          data={{
+            labels: labelData,
+            datasets: [
+              {
+                data: graphData
+              }
+            ]
+          }}
+          width={screenWidth-normalize(58)} // Wider than screen to fit all months
+          height={normalize(280)}
+          yAxisLabel=""
+          yAxisSuffix="%"
+          yAxisInterval={1}
+          chartConfig={{
+            backgroundColor: "transparent",
+            backgroundGradientFrom: "#FFFFFF",
+            backgroundGradientTo: "#FFFFFF",
+            decimalPlaces: 0,
+            color: (opacity = 1) => `rgba(44, 44, 44, ${opacity})`,
+            labelColor: () => "#2C2C2C",
+            style: {
               borderRadius: 10,
-            }}
-          />
-        </ScrollView>
+            },
+            propsForDots: {
+              r: "1",
+              strokeWidth: "1",
+              stroke: "#2C2C2C",
+            },
+            propsForLabels: {
+              fontSize: 10, // Reduce font size if needed
+            },
+              propsForBackgroundLines: {
+        strokeWidth: 0, // This removes the grid lines
+      },
+          }}
+          bezier
+          style={{
+            marginVertical: 2,
+            borderRadius: 10,
+            
+          }}
+          
+          withDots={true} // Consider removing dots if space is tight
+          withShadow={true} // Remove shadow to save space
+          segments={labelData.length} // Adjust segments to match your data points 
+        />
+
       </View>
     </View>
   );

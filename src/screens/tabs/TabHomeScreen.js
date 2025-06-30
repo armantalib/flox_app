@@ -82,6 +82,12 @@ const TabHomeScreen = (props) => {
       dispatch(setStepsData(response?.data))
       dispatch(setStepsDataTemp(response?.data))
       storeData('stepsData', response?.data)
+    } else {
+      if (user?.fq_antibiotic) {
+        navigation.navigate(SCREENS.AuthRoutes, {
+          screen: SCREENS.StepThree,
+        });
+      }
     }
   }
 

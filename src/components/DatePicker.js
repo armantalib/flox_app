@@ -1,12 +1,12 @@
-import React, { Component,useState,useEffect } from 'react';
-import { Text, TouchableOpacity, ImageBackground, Image, View, Platform } from 'react-native';
+import React, { Component, useState, useEffect } from 'react';
+import { Text, TouchableOpacity, ImageBackground, Image, View, Platform, useColorScheme } from 'react-native';
 import Modal from 'react-native-modal';
 import DatePicker from 'react-native-date-picker';
 import moment from 'moment';
 import { IMAGES } from '../constants/images';
 import { FONTS } from '../constants/fonts';
 import { COLORS } from '../constants/colors';
-import { date_format,time_format } from '../utils/DateTimeFormate';
+import { date_format, time_format } from '../utils/DateTimeFormate';
 export default class DatePicker2 extends Component {
     constructor(props) {
         super(props);
@@ -128,7 +128,8 @@ export default class DatePicker2 extends Component {
 
 
 export const DatePickerModal = (props) => {
-    const [dateSend,setDateSend] = useState(new Date())
+    const [dateSend, setDateSend] = useState(new Date())
+    const colorScheme = useColorScheme();
     return (
         <View>
             <Modal
@@ -140,37 +141,44 @@ export const DatePickerModal = (props) => {
                     <View style={{ flex: 2 }}></View>
                     <View style={{ flex: 4, justifyContent: 'flex-end' }}>
                         <View style={{ width: '100%' }}>
-                            <View style={{ width: '100%', backgroundColor: COLORS.white, height: 200, borderRadius: 15 }}>
+                            <View style={{ width: '100%', backgroundColor: colorScheme === 'dark' ? '#121212' : 'white', height: 200, borderRadius: 15 }}>
                                 <View style={{ height: 140, alignItems: 'center' }}>
                                     {props.type == 'time' ?
                                         <DatePicker
                                             date={dateSend}
-                                            onDateChange={customDate => {setDateSend(customDate)}}
+                                            onDateChange={customDate => { setDateSend(customDate) }}
                                             mode={'time'}
+                                            theme={colorScheme}
+                                            textColor={colorScheme === 'dark' ? 'white' : 'black'} // Fix visibility
                                         />
                                         :
                                         <DatePicker
                                             date={dateSend}
                                             maximumDate={props.maximumDate}
-                                            onDateChange={customDate => {setDateSend(customDate)}}
+                                            onDateChange={customDate => { setDateSend(customDate) }}
                                             mode={'date'}
+                                            theme={colorScheme}
+                                            textColor={colorScheme === 'dark' ? 'white' : 'black'} // Fix visibility
+                                            style={{
+                                                backgroundColor: colorScheme === 'dark' ? '#121212' : 'white',
+                                            }}
                                         />
                                     }
 
                                 </View>
                                 <TouchableOpacity
                                     onPress={() => {
-                             
+
                                         props.confirmDate(dateSend)
                                         props.close();
                                     }}
-                                    style={{ width: '100%', backgroundColor: COLORS.white, height: 50, marginTop: 5, justifyContent: 'space-around', alignItems: 'center', borderRadius: 15, }}>
-                                    <Text style={{ fontSize: 16, fontFamily: FONTS.Samsungsharpsans_Bold, color: COLORS.primary }}>Confirm</Text>
+                                    style={{ width: '90%', backgroundColor: colorScheme === 'dark' ? '#121212' : 'white', height: 50, marginTop: 5,alignSelf:'center',borderColor:COLORS.border,borderWidth:1, justifyContent: 'space-around', alignItems: 'center', borderRadius: 15, }}>
+                                    <Text style={{ fontSize: 16, fontFamily: FONTS.Samsungsharpsans_Bold, color:colorScheme === 'dark' ? 'white' : COLORS.primary }}>Confirm</Text>
                                 </TouchableOpacity>
                             </View>
                             <TouchableOpacity
                                 onPress={() => props.close()}
-                                style={{ width: '100%', backgroundColor: COLORS.white, height: 50, marginTop: 5, justifyContent: 'space-around', alignItems: 'center', borderRadius: 15 }}>
+                                style={{ width: '100%', backgroundColor: colorScheme === 'dark' ? '#121212' : 'white', height: 50, marginTop: 5, justifyContent: 'space-around', alignItems: 'center', borderRadius: 15 }}>
                                 <Text style={{ fontSize: 16, fontFamily: FONTS.Samsungsharpsans_Bold, color: COLORS.danger }}>Cancel</Text>
                             </TouchableOpacity>
                         </View>

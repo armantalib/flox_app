@@ -236,6 +236,45 @@ export function getYearlyStepTotals(targetYear, data) {
   };
 }
 
+export function getYearlyPercentageMonthly(targetYear, data) {
+  const monthlyPercentageSums = Array(12).fill(0); // Index 0 = Jan, ..., 11 = Dec
+  const monthlyEntryCounts = Array(12).fill(0);
+
+  data.forEach(item => {
+    item.all_dates.forEach(dateStr => {
+      const date = new Date(dateStr);
+      if (isNaN(date)) return;
+
+      const year = date.getUTCFullYear();
+      const month = date.getUTCMonth(); // 0 = Jan, ..., 11 = Dec
+
+      if (year === targetYear) {
+        const percentage = parseFloat(item.average_percentage);
+        const entries = parseInt(item.total_entries, 10);
+
+        if (!isNaN(percentage) && !isNaN(entries)) {
+          monthlyPercentageSums[month] += percentage * entries;
+          monthlyEntryCounts[month] += entries;
+        }
+      }
+    });
+  });
+
+  // Compute weighted average for each month
+  const monthlyPercentages = monthlyPercentageSums.map((sum, i) =>
+    monthlyEntryCounts[i] > 0 ? sum / monthlyEntryCounts[i] : 0
+  );
+
+  const totalEntries = monthlyEntryCounts.reduce((a, b) => a + b, 0);
+  const totalPercentageSum = monthlyPercentageSums.reduce((a, b) => a + b, 0);
+  const totalAverage = totalEntries > 0 ? totalPercentageSum / totalEntries : 0;
+
+  return {
+    monthlySteps:monthlyPercentages, // Array of 12 values (Jan to Dec)
+   totalSteps: totalAverage
+  };
+}
+
 
 export function getYearlyStepCounts(data, startYear, endYear) {
   const yearsCount = endYear - startYear + 1;
@@ -260,6 +299,43 @@ export function getYearlyStepCounts(data, startYear, endYear) {
   return {
     yearlySteps: yearlyStepSums,
     average: totalSteps // total steps across all years
+  };
+}
+
+export function getYearlyAveragePercentages(data, startYear, endYear) {
+  const yearsCount = endYear - startYear + 1;
+  const yearlyPercentageSums = new Array(yearsCount).fill(0);
+  const yearlyEntryCounts = new Array(yearsCount).fill(0);
+
+  data.forEach(monthData => {
+    monthData.all_dates.forEach(dateStr => {
+      const dateObj = new Date(dateStr);
+      if (isNaN(dateObj.getTime())) return;
+
+      const year = dateObj.getUTCFullYear();
+      if (year >= startYear && year <= endYear) {
+        const index = year - startYear;
+        const percentage = parseFloat(monthData.average_percentage);
+        const entries = parseInt(monthData.total_entries, 10);
+
+        if (!isNaN(percentage) && !isNaN(entries)) {
+          yearlyPercentageSums[index] += percentage * entries;
+          yearlyEntryCounts[index] += entries;
+        }
+      }
+    });
+  });
+
+  const yearlyAverages = yearlyPercentageSums.map((sum, i) =>
+    yearlyEntryCounts[i] > 0 ? sum / yearlyEntryCounts[i] : 0
+  );
+
+  const totalPercentageSum = yearlyPercentageSums.reduce((sum, val) => sum + val, 0);
+  const totalEntries = yearlyEntryCounts.reduce((sum, val) => sum + val, 0);
+
+  return {
+    yearlySteps: yearlyAverages,
+    average: totalEntries > 0 ? totalPercentageSum / totalEntries : 0
   };
 }
 

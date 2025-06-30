@@ -18,6 +18,7 @@ import CustomAvatar from "../../../components/BottomSheets/CustomAvatar";
 import { normalize } from "../../../utils/Metrics";
 import { searchFunctionsChat } from "../../../utils/Helper";
 import { getItem, storeData } from "../../../utils/async_storage";
+import { NotFound } from "../../../components/General";
 const ChatUserListScreen = (props) => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
@@ -66,7 +67,6 @@ getData()
   }
 
   const applySearch = (query) => {
-    console.log("Quer", query);
 
     if (!query) {
       let data1 = [...dataTemp]
@@ -99,6 +99,7 @@ getData()
             onChangeText={(val) => applySearch(val)}
             placeholderText={"Search messages"}
           />
+          {data.length == 0 && !loader?<NotFound height={500}/>:null}
           <FlatList
             data={data}
             refreshControl={

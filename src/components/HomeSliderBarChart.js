@@ -21,8 +21,8 @@ const HomeSliderBarChart = (props) => {
   const [toggleSwitch, setToggleSwitch] = useState('Monthly');
   const { stepsData } = useSelector((state) => state?.steps);
   const [currentMonthPer, setCurrentMonthPer] = useState(0);
-  const [labelData, setLabels] = useState(["Jan", "Feb", "Mar", "Apr", "May", "Jun",
-    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]);
+  const [labelData, setLabels] = useState(["J", "F", "M", "A", "M", "J",
+    "J", "A", "S", "O", "N", "D"]);
   const [graphData, setGraphData] = useState([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
 
   useEffect(() => {
@@ -36,8 +36,8 @@ const HomeSliderBarChart = (props) => {
   const checkPerDateBy = async () => {
     if (stepsData?.count_history) {
       const recoverData1 = getYearlyStepTotals(2025, stepsData?.count_history)
-      setLabels(["Jan", "Feb", "Mar", "Apr", "May", "Jun",
-        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"])
+      setLabels(["J", "F", "M", "A", "M", "J",
+        "J", "A", "S", "O", "N", "D"])
       setCurrentMonthPer(recoverData1?.totalSteps)
       setGraphData(recoverData1?.monthlySteps)
     }
@@ -96,42 +96,63 @@ const HomeSliderBarChart = (props) => {
           },
         ]}
       >
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          <BarChart
-            style={{
-              marginVertical: 8,
-              borderRadius: 10
-            }}
-            data={{
-              labels: labelData,
-              datasets: [
-                {
-                  data: graphData
-                }
-              ]
-            }}
-            width={screenWidth * 1.6}
-            height={normalize(240)}
-            yAxisLabel=""
-            chartConfig={{
-              backgroundColor: "transparent",
-              backgroundGradientFrom: "#000000",
-              backgroundGradientTo: "#000000",
-              decimalPlaces: 0, // optional, defaults to 2dp
-              color: (opacity = 1) => `rgba(101, 100, 184, ${opacity})`,
-              labelColor: () => "#6564b8",
-              style: {
-                borderRadius: 10
-              },
-              propsForDots: {
-                r: "6",
-                strokeWidth: "2",
-                stroke: "#FFFFFF"
+        <BarChart
+
+          data={{
+            labels: labelData,
+            datasets: [
+              {
+                data: graphData,
+           
               }
-            }}
-            verticalLabelRotation={30}
-          />
-        </ScrollView>
+            ]
+          }}
+          width={screenWidth - normalize(70)} // Wider than screen to fit all months
+          height={normalize(240)}
+          yAxisLabel=""
+          fromZero={true} // Start Y-axis at 0
+
+          chartConfig={{
+            backgroundColor: "transparent",
+            backgroundGradientFrom: "#FFFFFF",
+            backgroundGradientTo: "#FFFFFF",
+            decimalPlaces: 0,
+            color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, // Fallback
+            labelColor: () => "#2C2C2C",
+            barPercentage: 0.2, // Reduces bar width (0.5 = 50% of available space)
+            style: {
+              borderRadius: 10,
+            },
+            propsForBackgroundLines: {
+              strokeWidth: 0, // No grid lines
+            },
+            propsForDots: {
+              r: "1",
+              strokeWidth: "1",
+              stroke: "#2C2C2C",
+            },
+            propsForLabels: {
+              fontSize: 10, // Reduce font size if needed
+            },
+            propsForBackgroundLines: {
+              strokeWidth: 0, // This removes the grid lines
+            },
+
+            fillShadowGradient: '#000000', // ⭐ Force solid black fill
+            fillShadowGradientOpacity: 1,   // ⭐ No transparency
+
+          }}
+          bezier
+          style={{
+            marginVertical: 2,
+            borderRadius: 10,
+
+          }}
+          withDots={false} // Disable dots for cleaner look
+          withShadow={false} // No shadow
+          verticalLabelRotation={30} // Angled X-axis labels
+          showBarTops={false} // Remove caps from bars
+        />
       </View>
     </View>
   );
