@@ -73,7 +73,7 @@ export async function dataGetFileUpload(endPoint, body) {
 
 export async function dataPost(endPoint, body) {
   const token = await getItem('token');
-  console.log("Toe", token);
+  // console.log("Toe", token);
   return axios({
     method: 'post',
     url: mainUrl + endPoint,
@@ -100,7 +100,7 @@ export async function dataPost(endPoint, body) {
 
 export async function dataPost2(endPoint, body) {
   const token = await getItem('token');
-  console.log("Toe", token);
+  // console.log("Toe", token);
   return axios({
     method: 'post',
     url: mainUrl + endPoint,
@@ -125,7 +125,7 @@ export async function dataPost2(endPoint, body) {
 
 export async function dataPostUrl(endPoint, body) {
   const token = await getItem('token');
-  console.log("Toe", token);
+  // console.log("Toe", token);
   return axios({
     method: 'post',
     url: endPoint,
@@ -150,7 +150,7 @@ export async function dataPostUrl(endPoint, body) {
 
 export async function dataPut(endPoint, body) {
   const token = await getItem('token');
-  console.log("Toe", token);
+  // console.log("Toe", token);
   return axios({
     method: 'put',
     url: mainUrl + endPoint,
@@ -174,7 +174,7 @@ export async function dataPut(endPoint, body) {
 
 export async function dataDelete(endPoint, body) {
   const token = await getItem('token');
-  console.log("Toe", token);
+  // console.log("Toe", token);
   return axios({
     method: 'delete',
     url: mainUrl + endPoint,
@@ -196,7 +196,7 @@ export async function dataDelete(endPoint, body) {
 
 export async function dataGet_(endPoint, body) {
   const token = await getItem('token');
-  console.log("Toe", token);
+  // console.log("Toe", token);
   return axios({
     method: 'get',
     url: mainUrl + endPoint,
